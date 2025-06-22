@@ -1,7 +1,7 @@
 name: navi4all
-description: "A new Flutter project."
+description: "Multi-modal navigation for everyone"
 publish_to: 'none'
-version: 0.1.0
+version: 0.0.2
 
 environment:
   sdk: ^3.8.1
@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  google_fonts: ^6.2.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +19,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/stadt_kl_red.png
+    - assets/stadt_kl_white.png
