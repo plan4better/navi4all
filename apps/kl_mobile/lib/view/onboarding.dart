@@ -74,39 +74,26 @@ class _WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Willkommen bei\nNavi4All.',
-            textAlign: TextAlign.left,
             style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 31,
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
               color: Colors.white,
-              height: 1.2,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             'Die App, die Sie durch\nKaiserslautern führt.',
-            textAlign: TextAlign.left,
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-              color: Colors.white,
-              height: 1.2,
-            ),
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
           const SizedBox(height: 16),
           Text(
             'Wischen Sie nach links, um fortzufahren.',
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 13,
-              color: Colors.white,
-              height: 1.2,
-            ),
+            style: const TextStyle(fontSize: 14, color: Colors.white),
           ),
         ],
       ),
@@ -136,25 +123,24 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
       backgroundColor: Navi4AllColors.klRed,
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 40),
             Center(
               child: Text(
                 'Wählen Sie Ihr Profil',
                 style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
                   color: Colors.white,
-                  height: 1.2,
                 ),
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 32),
             Column(
               children: List.generate(
                 profiles.length,
                 (index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: AccessibleSelector(
                     label: profiles[index],
                     selected: _selectedIndex == index,
@@ -185,40 +171,31 @@ class _FinishScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             'Sie sind fertig!',
-            textAlign: TextAlign.center,
             style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 31,
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
               color: Colors.white,
-              height: 1.2,
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
           Text(
-            'Ihr Profil wurde erfolgreich\nausgewählt. Was möchten Sie\nnun tun?',
+            'Ihr Profil wurde erfolgreich ausgewählt.\nWas möchten Sie nun tun?',
+            style: const TextStyle(fontSize: 18, color: Colors.white),
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-              color: Colors.white,
-              height: 1.2,
-            ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
           Column(
             children: [
               AccessibleButton(
                 label: 'Zum App-Tutorial',
                 style: AccessibleButtonStyle.white,
-                onTap: () {
-                  // TODO: Navigate to app tutorial
-                },
+                onTap: () {},
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               AccessibleButton(
                 label: 'Startbildschirm gehen',
                 style: AccessibleButtonStyle.white,

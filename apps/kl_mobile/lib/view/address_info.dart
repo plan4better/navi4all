@@ -165,9 +165,9 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   AccessibleButton(
                     label: 'Startbildschirm',
                     style: AccessibleButtonStyle.pink,
-                    onTap: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    },
+                    onTap: () => Navigator.of(
+                      context,
+                    ).popUntil((route) => route.isFirst),
                   ),
                 ],
               ),

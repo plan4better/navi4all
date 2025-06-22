@@ -5,7 +5,7 @@ import 'package:navi4all/util/theme/geometry.dart';
 class AccessibleButton extends StatelessWidget {
   final String label;
   final AccessibleButtonStyle style;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const AccessibleButton({
     super.key,

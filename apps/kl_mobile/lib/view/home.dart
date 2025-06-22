@@ -14,6 +14,8 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: 32),
+              Spacer(),
               AccessibleButton(
                 label: 'Suchen',
                 style: AccessibleButtonStyle.pink,
@@ -25,24 +27,28 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 37),
+              const SizedBox(height: 32),
               AccessibleButton(
                 label: 'Gespeichert',
                 style: AccessibleButtonStyle.pink,
                 onTap: () {},
               ),
-              const SizedBox(height: 37),
+              const SizedBox(height: 32),
               AccessibleButton(
                 label: 'Route',
                 style: AccessibleButtonStyle.pink,
                 onTap: () {},
               ),
-              const SizedBox(height: 37),
+              const SizedBox(height: 32),
               AccessibleButton(
                 label: 'Einstellungen',
                 style: AccessibleButtonStyle.pink,
                 onTap: () {},
               ),
+              const SizedBox(height: 32),
+              Spacer(),
+              Image.asset("assets/stadt_kl_red.png", width: 100),
+              const SizedBox(height: 32),
             ],
           ),
         ),
