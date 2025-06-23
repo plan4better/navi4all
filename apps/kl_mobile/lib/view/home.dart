@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'search.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 32),
               Spacer(),
               AccessibleButton(
-                label: 'Suchen',
+                label: AppLocalizations.of(context)!.homeSearchButton,
                 style: AccessibleButtonStyle.pink,
                 onTap: () {
                   Navigator.of(context).push(
@@ -29,21 +30,21 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               AccessibleButton(
-                label: 'Gespeichert',
+                label: AppLocalizations.of(context)!.homeSavedButton,
                 style: AccessibleButtonStyle.pink,
-                onTap: () {},
+                onTap: null,
               ),
               const SizedBox(height: 32),
               AccessibleButton(
-                label: 'Route',
+                label: AppLocalizations.of(context)!.homeRouteButton,
                 style: AccessibleButtonStyle.pink,
-                onTap: () {},
+                onTap: null,
               ),
               const SizedBox(height: 32),
               AccessibleButton(
-                label: 'Einstellungen',
+                label: AppLocalizations.of(context)!.homeSettingsButton,
                 style: AccessibleButtonStyle.pink,
-                onTap: () {},
+                onTap: null,
               ),
               const SizedBox(height: 32),
               Spacer(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/util/theme/colors.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/util/theme/geometry.dart';
@@ -26,6 +27,7 @@ class RouteNavigationScreen extends StatefulWidget {
 
 class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
   bool isPaused = false;
+  bool isMuted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +40,17 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
             children: [
               const SizedBox(height: 48),
               Semantics(
-                label:
-                    'Sie fahren nach ${widget.address}. In 30 Minuten erreichen Sie Ihr Ziel.',
+                label: AppLocalizations.of(context)!
+                    .routeNavigationDescriptionSemantic(
+                      widget.address,
+                      "30 Minuten",
+                    ),
                 child: Column(
                   children: [
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Sie fahren nach",
+                        AppLocalizations.of(context)!.routeNavigationTitle,
                         style: TextStyle(color: Navi4AllColors.klRed),
                       ),
                     ),
@@ -64,7 +69,9 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "in 30 Minuten erreichen Sie Ihr Ziel",
+                        AppLocalizations.of(
+                          context,
+                        )!.routeNavigationTimeToArrival("30 min"),
                         style: TextStyle(
                           color: Navi4AllColors.klRed,
                           fontWeight: FontWeight.bold,
@@ -81,35 +88,70 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
                   children: [
                     _NavigationStep(
                       index: 1,
-                      action: 'Fahren Sie geradeaus',
-                      description: 'auf Waldstraße',
-                      timeToStep: 'in 50 Metern',
+                      action: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepContinueStraight,
+                      description: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepOntoLocation("Waldstraße"),
+                      timeToStep: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepTimeToAction("50 m"),
                       isCurrent: true,
                     ),
                     _NavigationStep(
                       index: 2,
-                      action: 'Biegen Sie links ab',
-                      description: 'auf Pariser Straße',
-                      timeToStep: 'in 100 Metern',
+                      action: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepTurnLeft,
+                      description: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepOntoLocation("Pariser Straße"),
+                      timeToStep: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepTimeToAction("100 m"),
                     ),
                     _NavigationStep(
                       index: 3,
-                      action: 'Warten Sie auf den Bus',
-                      description: 'Buslinie 5 Richtung Stadtmitte',
-                      timeToStep: 'in 5 Minuten',
+                      action: AppLocalizations.of(context)!
+                          .routeNavigationStepAwaitMode(
+                            AppLocalizations.of(context)!.commonModeBus,
+                          ),
+                      description: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepModeDescription("5", "Stadtmitte"),
+                      timeToStep: AppLocalizations.of(
+                        context,
+                      )!.routeNavigationStepTimeToAction("5 min"),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 20),
               AccessibleButton(
-                label: 'Stummschalten',
+                label: !isMuted
+                    ? AppLocalizations.of(
+                        context,
+                      )!.routeNavigationMuteButtonMuteText
+                    : AppLocalizations.of(
+                        context,
+                      )!.routeNavigationMuteButtonUnmuteText,
                 style: AccessibleButtonStyle.pink,
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    isMuted = !isMuted;
+                  });
+                },
               ),
               SizedBox(height: 20),
               AccessibleButton(
-                label: !isPaused ? 'Pause' : 'Fortsetzen',
+                label: !isPaused
+                    ? AppLocalizations.of(
+                        context,
+                      )!.routeNavigationPauseButtonPauseText
+                    : AppLocalizations.of(
+                        context,
+                      )!.routeNavigationPauseButtonResumeText,
                 style: AccessibleButtonStyle.pink,
                 onTap: () {
                   setState(() {
@@ -119,7 +161,7 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
               ),
               SizedBox(height: 20),
               AccessibleButton(
-                label: 'Stop',
+                label: AppLocalizations.of(context)!.routeNavigationStopButton,
                 style: AccessibleButtonStyle.pink,
                 onTap: () => Navigator.of(context).pop(),
               ),
@@ -146,13 +188,12 @@ class _NavigationStep extends StatelessWidget {
     this.isCurrent = false,
   });
 
-  String get _widgetSemanticsLabel =>
-      'Navigation Schritt $index: $action $description $timeToStep';
-
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: _widgetSemanticsLabel,
+      label: AppLocalizations.of(
+        context,
+      )!.routeNavigationStepSemantic(index, action, description, timeToStep),
       child: Semantics(
         excludeSemantics: true,
         child: Container(

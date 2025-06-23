@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/util/theme/colors.dart';
 import 'home.dart';
 import 'package:navi4all/view/common/accessible_selector.dart';
@@ -78,7 +79,7 @@ class _WelcomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Willkommen bei\nNavi4All.',
+            AppLocalizations.of(context)!.onboardingWelcomeTitle,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 32,
@@ -87,12 +88,12 @@ class _WelcomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Die App, die Sie durch\nKaiserslautern führt.',
+            AppLocalizations.of(context)!.onboardingWelcomeSubtitle,
             style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
           const SizedBox(height: 16),
           Text(
-            'Wischen Sie nach links, um fortzufahren.',
+            AppLocalizations.of(context)!.onboardingWelcomeHint,
             style: const TextStyle(fontSize: 14, color: Colors.white),
           ),
         ],
@@ -115,9 +116,11 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final profiles = [
-      'Blinde Benutzer',
-      'Sehbehinderunge Benutzer',
-      'Allgemeine Benutzer',
+      AppLocalizations.of(context)!.onboardingProfileSelectionBlindUserTitle,
+      AppLocalizations.of(
+        context,
+      )!.onboardingProfileSelectionVisionImpairedUserTitle,
+      AppLocalizations.of(context)!.onboardingProfileSelectionGeneralUserTitle,
     ];
     return Scaffold(
       backgroundColor: Navi4AllColors.klRed,
@@ -127,7 +130,7 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
           children: [
             Center(
               child: Text(
-                'Wählen Sie Ihr Profil',
+                AppLocalizations.of(context)!.onboardingProfileSelectionTitle,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 32,
@@ -145,13 +148,7 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
                     label: profiles[index],
                     selected: _selectedIndex == index,
                     onTap: () {
-                      setState(() {
-                        if (_selectedIndex == index) {
-                          _selectedIndex = -1; // Deselect if already selected
-                        } else {
-                          _selectedIndex = index; // Select the new profile
-                        }
-                      });
+                      setState(() => _selectedIndex = index);
                     },
                   ),
                 ),
@@ -174,7 +171,7 @@ class _FinishScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Sie sind fertig!',
+            AppLocalizations.of(context)!.onboardingFinishTitle,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 32,
@@ -183,7 +180,7 @@ class _FinishScreen extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Text(
-            'Ihr Profil wurde erfolgreich ausgewählt.\nWas möchten Sie nun tun?',
+            AppLocalizations.of(context)!.onboardingFinishSubtitle,
             style: const TextStyle(fontSize: 18, color: Colors.white),
             textAlign: TextAlign.center,
           ),
@@ -191,13 +188,17 @@ class _FinishScreen extends StatelessWidget {
           Column(
             children: [
               AccessibleButton(
-                label: 'Zum App-Tutorial',
+                label: AppLocalizations.of(
+                  context,
+                )!.onboardingFinishAppTutorialButton,
                 style: AccessibleButtonStyle.white,
-                onTap: () {},
+                onTap: null,
               ),
               const SizedBox(height: 20),
               AccessibleButton(
-                label: 'Startbildschirm gehen',
+                label: AppLocalizations.of(
+                  context,
+                )!.onboardingFinishHomeScreenButton,
                 style: AccessibleButtonStyle.white,
                 onTap: () {
                   Navigator.of(context).pushReplacement(

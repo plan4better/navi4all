@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/util/theme/colors.dart';
 import 'package:navi4all/view/routing/route_navigation.dart';
 
@@ -46,9 +47,12 @@ class JourneyOption extends StatelessWidget {
         );
       },
       child: Semantics(
-        label:
-            'Reiseoption: $duration, von $startTime bis $endTime, '
-            'bestehend aus $_segmentsDescription',
+        label: AppLocalizations.of(context)!.journeyOptionSemantic(
+          duration,
+          startTime,
+          endTime,
+          _segmentsDescription,
+        ),
         child: Semantics(
           excludeSemantics: true,
           child: Container(

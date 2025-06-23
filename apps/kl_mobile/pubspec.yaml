@@ -9,7 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   google_fonts: ^6.2.1
+  intl: any
   shared_preferences: ^2.5.3
 
 dev_dependencies:
@@ -19,6 +22,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/stadt_kl_red.png

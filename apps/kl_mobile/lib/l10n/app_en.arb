@@ -1,0 +1,150 @@
+{
+    "@@locale": "en",
+    "appTitle": "Navi4All",
+    "commonModeWalking": "Walking",
+    "commonModeBus": "Bus",
+    "commonModeTram": "Tram",
+    "commonModeUBahn": "Subway",
+    "commonModeSBahn": "S-Bahn",
+    "commonModeTrain": "Train",
+    "commonHomeScreenButton": "Home Screen",
+    "commonBackButtonSemantic": "Back",
+    "commonMicButtonSemantic": "Voice input",
+    "onboardingWelcomeTitle": "Welcome to\nNavi4All.",
+    "onboardingWelcomeSubtitle": "The app that guides you\nthrough Kaiserlautern.",
+    "onboardingWelcomeHint": "Swipe left to continue with setup.",
+    "onboardingProfileSelectionTitle": "Select your profile",
+    "onboardingProfileSelectionBlindUserTitle": "Blind User",
+    "onboardingProfileSelectionVisionImpairedUserTitle": "Vision Impaired User",
+    "onboardingProfileSelectionGeneralUserTitle": "General User",
+    "onboardingFinishTitle": "All done!",
+    "onboardingFinishSubtitle": "Your profile has been selected.\nWhat would you like to do next?",
+    "onboardingFinishAppTutorialButton": "View App Tutorial",
+    "onboardingFinishHomeScreenButton": "Get Started",
+    "homeSearchButton": "Search",
+    "homeSavedButton": "Saved",
+    "homeRouteButton": "Route",
+    "homeSettingsButton": "Settings",
+    "searchTextFieldHint": "Search here",
+    "addressInfoBackToSearchButtonSemantic": "Back to search results",
+    "addressInfoWalkingRoutesButton": "Walking",
+    "addressInfoPublicTransportRoutesButton": "Public Transport",
+    "addressInfoSaveAddressButton": "Save Address",
+    "routeOptionsCurrentLocationText": "Current location",
+    "routeOptionsRouteSettingsButton": "Route Settings",
+    "routeOptionsSaveRouteButton": "Save Route",
+    "origDestPickerSwapButtonSemantic": "Start- und Zielort tauschen",
+    "origDestPickerOriginSemantic": "Origin: {origin}",
+    "@origDestPickerOriginSemantic": {
+        "placeholders": {
+            "origin": {
+                "type": "String"
+            }
+        }
+    },
+    "origDestPickerDestinationSemantic": "Destination: {destination}",
+    "@origDestPickerDestinationSemantic": {
+        "placeholders": {
+            "destination": {
+                "type": "String"
+            }
+        }
+    },
+    "journeyOptionSemantic": "Journey option: {duration}, from {startTime} until {endTime}, consisting of {segmentsDescription}.",
+    "@journeyOptionSemantic": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            },
+            "startTime": {
+                "type": "String"
+            },
+            "endTime": {
+                "type": "String"
+            },
+            "segmentsDescription": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationDescriptionSemantic": "Navigating to: {address}. You will arrive in {time}.",
+    "@routeNavigationDescriptionSemantic": {
+        "placeholders": {
+            "address": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationTitle": "Navigating to",
+    "routeNavigationTimeToArrival": "you will arrive in {time}",
+    "@routeNavigationTimeToArrival": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationStepContinueStraight": "Continue straight",
+    "routeNavigationStepTurnLeft": "Turn left",
+    "routeNavigationStepTurnRight": "Turn right",
+    "routeNavigationStepOntoLocation": "onto {location}",
+    "@routeNavigationStepOntoLocation": {
+        "placeholders": {
+            "location": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationStepAwaitMode": "Wait for the {mode}",
+    "@routeNavigationStepAwaitMode": {
+        "placeholders": {
+            "mode": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationStepModeDescription": "line {line}, towards {direction}",
+    "@routeNavigationStepModeDescription": {
+        "placeholders": {
+            "line": {
+                "type": "String"
+            },
+            "direction": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationStepTimeToAction": "in {timeToAction}",
+    "@routeNavigationStepTimeToAction": {
+        "placeholders": {
+            "timeToAction": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationStepSemantic": "Navigation step {index}: {action} {description} {timeToStep}.",
+    "@routeNavigationStepSemantic": {
+        "placeholders": {
+            "index": {
+                "type": "int"
+            },
+            "action": {
+                "type": "String"
+            },
+            "description": {
+                "type": "String"
+            },
+            "timeToStep": {
+                "type": "String"
+            }
+        }
+    },
+    "routeNavigationMuteButtonMuteText": "Mute Audio",
+    "routeNavigationMuteButtonUnmuteText": "Unmute Audio",
+    "routeNavigationPauseButtonPauseText": "Pause",
+    "routeNavigationPauseButtonResumeText": "Resume",
+    "routeNavigationStopButton": "Stop"
+}

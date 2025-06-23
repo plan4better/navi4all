@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:navi4all/util/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:navi4all/view/splash.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,16 +12,16 @@ void main() {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) => runApp(const LotsenApp()));
+  ]).then((_) => runApp(const Navi4AllApp()));
 }
 
-class LotsenApp extends StatelessWidget {
-  const LotsenApp({super.key});
+class Navi4AllApp extends StatelessWidget {
+  const Navi4AllApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LotsenApp',
+      title: 'Navi4All',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Navi4AllColors.klRed,
@@ -29,57 +30,9 @@ class LotsenApp extends StatelessWidget {
         ),
         textTheme: GoogleFonts.robotoTextTheme(),
       ),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const Splash(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }

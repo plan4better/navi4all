@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/util/theme/colors.dart';
 import 'package:navi4all/util/theme/geometry.dart';
 
@@ -43,7 +44,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                   Expanded(
                     child: Text(
                       widget.origin,
-                      semanticsLabel: 'Startort: ${widget.origin}',
+                      semanticsLabel: AppLocalizations.of(
+                        context,
+                      )!.origDestPickerOriginSemantic(widget.origin),
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 16.0),
                     ),
@@ -71,7 +74,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                   Expanded(
                     child: Text(
                       widget.destination,
-                      semanticsLabel: 'Zielort: ${widget.destination}',
+                      semanticsLabel: AppLocalizations.of(
+                        context,
+                      )!.origDestPickerOriginSemantic(widget.origin),
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 16.0),
                     ),
@@ -83,16 +88,19 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
         ),
       ),
       SizedBox(width: 12.0),
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Navi4AllColors.klPink,
-          iconSize: Navi4AllGeometry.iconSizeMedium,
-          padding: EdgeInsets.zero,
-        ),
-        onPressed: () {},
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 48.0),
-          child: Icon(Icons.swap_vert),
+      Semantics(
+        label: AppLocalizations.of(context)!.origDestPickerSwapButtonSemantic,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Navi4AllColors.klPink,
+            iconSize: Navi4AllGeometry.iconSizeMedium,
+            padding: EdgeInsets.zero,
+          ),
+          onPressed: () {},
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 48.0),
+            child: Icon(Icons.swap_vert),
+          ),
         ),
       ),
     ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/view/routing/journey_option.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'orig_dest_picker.dart';
@@ -22,7 +23,12 @@ class RouteOptionsScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 50),
-              OrigDestPicker(origin: 'Aktuelle Position', destination: address),
+              OrigDestPicker(
+                origin: AppLocalizations.of(
+                  context,
+                )!.routeOptionsCurrentLocationText,
+                destination: address,
+              ),
               const SizedBox(height: 20),
               Expanded(
                 child: Column(
@@ -37,17 +43,23 @@ class RouteOptionsScreen extends StatelessWidget {
                             segments: [
                               {
                                 'icon': Icons.directions_walk,
-                                'mode': 'Zu Fuß',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeWalking,
                                 'duration': '3 min',
                               },
                               {
                                 'icon': Icons.directions_bus,
-                                'mode': 'Bus',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeBus,
                                 'duration': '20 min',
                               },
                               {
                                 'icon': Icons.directions_walk,
-                                'mode': 'Zu Fuß',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeWalking,
                                 'duration': '2 min',
                               },
                             ],
@@ -61,17 +73,23 @@ class RouteOptionsScreen extends StatelessWidget {
                             segments: [
                               {
                                 'icon': Icons.directions_walk,
-                                'mode': 'Zu Fuß',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeWalking,
                                 'duration': '3 min',
                               },
                               {
                                 'icon': Icons.directions_bus,
-                                'mode': 'Bus',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeBus,
                                 'duration': '25 min',
                               },
                               {
                                 'icon': Icons.directions_walk,
-                                'mode': 'Zu Fuß',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeWalking,
                                 'duration': '4 min',
                               },
                             ],
@@ -85,17 +103,23 @@ class RouteOptionsScreen extends StatelessWidget {
                             segments: [
                               {
                                 'icon': Icons.directions_train,
-                                'mode': 'S-Bahn',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeSBahn,
                                 'duration': '10 min',
                               },
                               {
                                 'icon': Icons.directions_bus,
-                                'mode': 'Bus',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeBus,
                                 'duration': '15 min',
                               },
                               {
                                 'icon': Icons.directions_walk,
-                                'mode': 'Zu Fuß',
+                                'mode': AppLocalizations.of(
+                                  context,
+                                )!.commonModeWalking,
                                 'duration': '15 min',
                               },
                             ],
@@ -111,19 +135,23 @@ class RouteOptionsScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               AccessibleButton(
-                label: 'Routeneinstellungen',
+                label: AppLocalizations.of(
+                  context,
+                )!.routeOptionsRouteSettingsButton,
                 style: AccessibleButtonStyle.pink,
-                onTap: () {},
+                onTap: null,
               ),
               SizedBox(height: 20),
               AccessibleButton(
-                label: 'Route Speichern',
+                label: AppLocalizations.of(
+                  context,
+                )!.routeOptionsSaveRouteButton,
                 style: AccessibleButtonStyle.pink,
-                onTap: () {},
+                onTap: null,
               ),
               SizedBox(height: 20),
               AccessibleButton(
-                label: 'Startbildschirm',
+                label: AppLocalizations.of(context)!.commonHomeScreenButton,
                 style: AccessibleButtonStyle.pink,
                 onTap: () =>
                     Navigator.of(context).popUntil((route) => route.isFirst),

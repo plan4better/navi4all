@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
 import 'routing/route_options.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/util/theme/colors.dart';
@@ -33,17 +34,17 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset:
-          false, // Prevents button from moving up when keyboard opens
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 50),
-            // Search bar (styled exactly like the search page, but static text)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Semantics(
-                label: "Zurück zu Suchergebnissen",
+                label: AppLocalizations.of(
+                  context,
+                )!.addressInfoBackToSearchButtonSemantic,
                 child: Material(
                   elevation: 2,
                   borderRadius: BorderRadius.circular(28),
@@ -83,10 +84,12 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.mic,
                               color: Color(0xFFD82028),
-                              semanticLabel: "Spracheingabe",
+                              semanticLabel: AppLocalizations.of(
+                                context,
+                              )!.commonMicButtonSemantic,
                             ),
                             onPressed: () {},
                           ),
@@ -131,7 +134,9 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
               child: Column(
                 children: [
                   AccessibleButton(
-                    label: 'zu Fuß',
+                    label: AppLocalizations.of(
+                      context,
+                    )!.addressInfoWalkingRoutesButton,
                     style: AccessibleButtonStyle.red,
                     onTap: () {
                       Navigator.of(context).push(
@@ -144,7 +149,9 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   ),
                   const SizedBox(height: 20),
                   AccessibleButton(
-                    label: 'mit ÖV',
+                    label: AppLocalizations.of(
+                      context,
+                    )!.addressInfoPublicTransportRoutesButton,
                     style: AccessibleButtonStyle.red,
                     onTap: () {
                       Navigator.of(context).push(
@@ -157,13 +164,15 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   ),
                   const SizedBox(height: 20),
                   AccessibleButton(
-                    label: 'Speichern Adresse',
+                    label: AppLocalizations.of(
+                      context,
+                    )!.addressInfoSaveAddressButton,
                     style: AccessibleButtonStyle.pink,
-                    onTap: () {},
+                    onTap: null,
                   ),
                   const SizedBox(height: 20),
                   AccessibleButton(
-                    label: 'Startbildschirm',
+                    label: AppLocalizations.of(context)!.commonHomeScreenButton,
                     style: AccessibleButtonStyle.pink,
                     onTap: () => Navigator.of(
                       context,
