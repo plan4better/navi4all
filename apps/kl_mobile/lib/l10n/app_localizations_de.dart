@@ -27,7 +27,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commonModeSBahn => 'S-Bahn';
 
   @override
-  String get commonModeTrain => 'Zug';
+  String get commonModeTrain => 'Bahn';
 
   @override
   String get commonHomeScreenButton => 'Startbildschirm';
@@ -51,13 +51,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingProfileSelectionTitle => 'Wählen Sie Ihr Profil';
 
   @override
-  String get onboardingProfileSelectionBlindUserTitle => 'Blinde Benutzer';
+  String get onboardingProfileSelectionBlindUserTitle => 'Blind';
 
   @override
-  String get onboardingProfileSelectionVisionImpairedUserTitle => 'Sehbehinderunge Benutzer';
+  String get onboardingProfileSelectionVisionImpairedUserTitle => 'Sehbehindert';
 
   @override
-  String get onboardingProfileSelectionGeneralUserTitle => 'Allgemeine Benutzer';
+  String get onboardingProfileSelectionGeneralUserTitle => 'Andere';
 
   @override
   String get onboardingFinishTitle => 'Sie sind fertig!';
@@ -69,7 +69,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingFinishAppTutorialButton => 'Zum App-Tutorial';
 
   @override
-  String get onboardingFinishHomeScreenButton => 'Startbildschirm gehen';
+  String get onboardingFinishHomeScreenButton => 'Zum Startbildschirm';
 
   @override
   String get homeSearchButton => 'Suchen';
@@ -93,7 +93,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addressInfoWalkingRoutesButton => 'zu Fuß';
 
   @override
-  String get addressInfoPublicTransportRoutesButton => 'mit ÖV';
+  String get addressInfoPublicTransportRoutesButton => 'ÖPNV';
 
   @override
   String get addressInfoSaveAddressButton => 'Speichern Adresse';
@@ -176,7 +176,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get routeNavigationMuteButtonMuteText => 'Stummschalten';
 
   @override
-  String get routeNavigationMuteButtonUnmuteText => 'Lautschtellen';
+  String get routeNavigationMuteButtonUnmuteText => 'Ton an';
 
   @override
   String get routeNavigationPauseButtonPauseText => 'Pause';

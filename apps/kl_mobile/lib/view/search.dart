@@ -41,13 +41,13 @@ class _SearchScreenState extends State<SearchScreen> {
     backgroundColor: Colors.white,
     resizeToAvoidBottomInset: false,
     body: SafeArea(
-      child: Column(
-        children: [
-          const SizedBox(height: 50),
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Material(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Column(
+          children: [
+            const SizedBox(height: 32),
+            // Search bar
+            Material(
               elevation: 2,
               borderRadius: BorderRadius.circular(28),
               child: Container(
@@ -122,42 +122,44 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-          ),
-          // Suggestions/results
-          if (_showResults)
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFEDEB),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(28),
-                  bottomRight: Radius.circular(28),
+            // Suggestions/results
+            if (_showResults)
+              Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFEDEB),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(28),
+                    bottomRight: Radius.circular(28),
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: Column(
+                  children: _sampleResults
+                      .map(
+                        (place) => Column(
+                          children: [
+                            _SearchSuggestion(text: place),
+                            if (place != _sampleResults.last)
+                              const Divider(
+                                height: 1,
+                                color: Color(0xFFD82028),
+                              ),
+                          ],
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                children: _sampleResults
-                    .map(
-                      (place) => Column(
-                        children: [
-                          _SearchSuggestion(text: place),
-                          if (place != _sampleResults.last)
-                            const Divider(height: 1, color: Color(0xFFD82028)),
-                        ],
-                      ),
-                    )
-                    .toList(),
-              ),
+            const Spacer(),
+            AccessibleButton(
+              label: AppLocalizations.of(context)!.commonHomeScreenButton,
+              style: AccessibleButtonStyle.pink,
+              onTap: () =>
+                  Navigator.of(context).popUntil((route) => route.isFirst),
             ),
-          const Spacer(),
-          AccessibleButton(
-            label: AppLocalizations.of(context)!.commonHomeScreenButton,
-            style: AccessibleButtonStyle.pink,
-            onTap: () =>
-                Navigator.of(context).popUntil((route) => route.isFirst),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );

@@ -56,7 +56,7 @@ class JourneyOption extends StatelessWidget {
         child: Semantics(
           excludeSemantics: true,
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

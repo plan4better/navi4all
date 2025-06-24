@@ -36,12 +36,12 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Semantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 32),
+              Semantics(
                 label: AppLocalizations.of(
                   context,
                 )!.addressInfoBackToSearchButtonSemantic,
@@ -69,18 +69,15 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                             ),
                           ),
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0),
-                              child: Text(
-                                widget.address,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                  color: Color(0xFF535353),
-                                  letterSpacing: 0.5,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                            child: Text(
+                              widget.address,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Color(0xFF535353),
+                                letterSpacing: 0.5,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           IconButton(
@@ -99,11 +96,8 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   ),
                 ),
               ),
-            ),
-            // Large address and zipcode below search bar
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Column(
+              SizedBox(height: 32),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
@@ -127,11 +121,9 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   ),
                 ],
               ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 40),
-              child: Column(
+              const Spacer(),
+              SizedBox(height: 16),
+              Column(
                 children: [
                   AccessibleButton(
                     label: AppLocalizations.of(
@@ -180,8 +172,8 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
