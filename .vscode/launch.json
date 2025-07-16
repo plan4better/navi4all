@@ -23,6 +23,26 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+        },
+        {
+            "name": "ma_mobile",
+            "cwd": "apps/ma_mobile",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ma_mobile (profile mode)",
+            "cwd": "apps/ma_mobile",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ma_mobile (release mode)",
+            "cwd": "apps/ma_mobile",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
         }
     ]
 }
