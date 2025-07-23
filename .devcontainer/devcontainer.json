@@ -1,0 +1,22 @@
+{
+    "name": "Navi4All",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "docker-compose.extend.yml"
+    ],
+    "workspaceFolder": "/app",
+    "shutdownAction": "stopCompose",
+    "service": "navi4all-dev",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.debugpy",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    }
+}

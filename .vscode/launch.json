@@ -11,38 +11,24 @@
             "type": "dart"
         },
         {
-            "name": "kl_mobile (profile mode)",
-            "cwd": "apps/kl_mobile",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "kl_mobile (release mode)",
-            "cwd": "apps/kl_mobile",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
-        {
             "name": "ma_mobile",
             "cwd": "apps/ma_mobile",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "ma_mobile (profile mode)",
-            "cwd": "apps/ma_mobile",
+            "name": "core_backend",
+            "cwd": "/app/apps/core_backend",
             "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "ma_mobile (release mode)",
-            "cwd": "apps/ma_mobile",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
+            "type": "debugpy",
+            "module": "fastapi",
+            "args": [
+                "dev",
+                "main.py",
+                "--reload",
+                "--port",
+                "8000"
+            ]
         }
     ]
 }

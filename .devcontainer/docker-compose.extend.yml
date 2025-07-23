@@ -1,0 +1,14 @@
+networks:
+  proxy:
+    name: navi4all-proxy
+
+services:
+  navi4all-dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: navi4all-dev
+    volumes:
+      - .:/app
+    networks:
+      proxy:

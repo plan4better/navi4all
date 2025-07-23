@@ -1,4 +1,4 @@
-package com.example.navi4all
+package de.plan4better.navi4all
 
 import io.flutter.embedding.android.FlutterActivity
 
