@@ -1,0 +1,106 @@
+query RoutingPlan(
+    $date: String!,
+    $time: String!,
+    $from: InputCoordinates!,
+    $to: InputCoordinates!,
+    $wheelchair: Boolean!,
+    $numItineraries: Int!,
+    $arriveBy: Boolean!,
+    $transportModes: [TransportMode!]
+) {
+    plan(
+        date: $date,
+        time: $time,
+        from: $from,
+        to: $to,
+        wheelchair: $wheelchair,
+        numItineraries: $numItineraries,
+        arriveBy: $arriveBy,
+        transportModes: $transportModes
+    ) {
+        date
+        from {
+            lat
+            lon
+        }
+        to {
+            lat
+            lon
+        }
+        itineraries {
+            startTime
+            endTime
+            duration
+            legs {
+                startTime
+                endTime
+                departureDelay
+                arrivalDelay
+                mode
+                duration
+                legGeometry {
+                    length
+                    points
+                }
+                realTime
+                realtimeState
+                distance
+                transitLeg
+                from {
+                    name
+                    vertexType
+                    lat
+                    lon
+                    arrivalTime
+                    departureTime
+                    stop {
+                        id
+                        name
+                        lat
+                        lon
+                    }
+                }
+                to {
+                    name
+                    vertexType
+                    lat
+                    lon
+                    arrivalTime
+                    departureTime
+                    stop {
+                        id
+                        name
+                        lat
+                        lon
+                    }
+                }
+                route {
+                    id
+                    shortName
+                    mode
+                }
+                trip {
+                    id
+                    route {
+                        id
+                        shortName
+                        mode
+                    }
+                    tripShortName
+                    tripHeadsign
+                }
+                intermediateStops {
+                    id
+                    name
+                    lat
+                    lon
+                }
+                headsign
+                pickupType
+                dropoffType
+                accessibilityScore
+            }
+            accessibilityScore
+        }
+    }
+}
