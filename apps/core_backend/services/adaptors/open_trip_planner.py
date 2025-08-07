@@ -4,9 +4,9 @@ from httpx import AsyncClient
 import os
 from core.utils import to_camel_case
 from redis import Redis
-from schemas.plan import (
-    PlanRequestModel,
-    PlanResponseModel,
+from schemas.routing import (
+    RoutingPlanRequestModel,
+    RoutingPlanResponseModel,
     Itinerary,
     LegSummary,
     Coordinates,
@@ -40,8 +40,8 @@ class OpenTripPlannerAdaptor:
         return path.read_text()
 
     async def make_plan_request(
-        self, async_client: AsyncClient, request: PlanRequestModel
-    ) -> PlanResponseModel:
+        self, async_client: AsyncClient, request: RoutingPlanRequestModel
+    ) -> RoutingPlanResponseModel:
         """Make a plan request to the OpenTripPlanner routing engine."""
 
         # Load GraphQL query template from file
@@ -80,7 +80,7 @@ class OpenTripPlannerAdaptor:
         )
 
         # Build response
-        response = PlanResponseModel(itineraries=[])
+        response = RoutingPlanResponseModel(itineraries=[])
 
         # Write itineraries to cache
         for itinerary in router_response.itineraries:
