@@ -12,3 +12,9 @@ services:
       - .:/app
     networks:
       proxy:
+
+  navi4all-redis:
+    image: redis:latest
+    container_name: navi4all-redis
+    networks:
+      proxy:

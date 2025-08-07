@@ -1,12 +1,11 @@
 from pydantic import BaseModel, field_validator, model_validator
 from datetime import datetime
 from enum import Enum
-from core.utils import to_snake_case
+from uuid import UUID
 
-class InputCoordinates(BaseModel):
+class Coordinates(BaseModel):
     lat: float
     lon: float
-    address: str | None = None
 
 class Mode(str, Enum):
     airplane = "AIRPLANE"
@@ -30,147 +29,39 @@ class Mode(str, Enum):
     trolleybus = "TROLLEYBUS"
     monorail = "MONORAIL"
 
-class Geometry(BaseModel):
-    length: int
-    points: str
-
-class RealtimeState(Enum):
-    scheduled = "SCHEDULED"
-    updated = "UPDATED"
-    cancelled = "CANCELLED"
-    added = "ADDED"
-    modified = "MODIFIED"
-
-class VertexType(Enum):
-    normal = "NORMAL"
-    transit = "TRANSIT"
-    bike_park = "BIKEPARK"
-    bike_share = "BIKESHARE"
-    park_and_ride = "PARKANDRIDE"
-
-class Stop(BaseModel):
-    id: str
-    name: str
-    lat: float
-    lon: float
-
-class Place(BaseModel):
-    name: str | None = None
-    vertex_type: VertexType | None = None
-    lat: float
-    lon: float
-    arrival_time: datetime | None = None
-    departure_time: datetime | None = None
-    stop: Stop | None = None
-    
-    @field_validator("arrival_time", "departure_time", mode="before")
-    @classmethod
-    def validate_times(cls, value: int | None):
-        # Convert UNIX timestamp in milliseconds to datetime
-        if isinstance(value, int):
-            return datetime.fromtimestamp(value / 1000)
-        elif value is None:
-            return None
-        else:
-            raise ValueError("Time must be a timestamp in milliseconds since epoch.")
-
-class Route(BaseModel):
-    id: str
-    short_name: str | None = None
+class LegSummary(BaseModel):
     mode: Mode
-
-class Trip(BaseModel):
-    id: str
-    route: Route
-    trip_short_name: str | None = None
-    trip_headsign: str | None = None
-
-class Step(BaseModel):
-    pass
-
-class PickupDropoffType(Enum):
-    scheduled = "SCHEDULED"
-    none = "NONE"
-    call_agency = "CALL_AGENCY"
-    coordinate_with_driver = "COORDINATE_WITH_DRIVER"
-
-class Leg(BaseModel):
-    start_time: datetime
-    end_time: datetime
-    departure_delay: int
-    arrival_delay: int
-    mode: Mode
-    duration: float
-    leg_geometry: Geometry
-    real_time: bool
-    realtime_state: RealtimeState | None
-    distance: float
-    transit_leg: bool
-    from_: Place
-    to: Place
-    route: Route | None = None
-    trip: Trip | None = None
-    intermediate_stops: list[Stop] | None = None
-    # steps: list["Step"]
-    headsign: str | None = None
-    pickup_type: PickupDropoffType | None = None
-    dropoff_type: PickupDropoffType | None = None
-    accessibility_score: float | None
-    
-    @model_validator(mode="before")
-    @classmethod
-    def remap_model_fields(cls, values: dict[str, any]):
-        for key in list(values.keys()):
-            if key == "from":
-                values["from_"] = values.pop("from")
-            else:
-                values[to_snake_case(key)] = values.pop(key)
-        return values
-    
-    @field_validator("start_time", "end_time", mode="before")
-    @classmethod
-    def validate_timestamp(cls, value: int | datetime):
-        if isinstance(value, datetime):
-            return value
-        if isinstance(value, int):
-            return datetime.fromtimestamp(value / 1000)
-        raise ValueError("Invalid value for start_time or end_time field.")
+    duration: int
+    ratio: float | None = None
 
 class Itinerary(BaseModel):
+    journey_id: UUID
+    duration: int
     start_time: datetime
     end_time: datetime
-    duration: int
-    legs: list[Leg]
-    accessibility_score: float | None
+    origin: Coordinates
+    destination: Coordinates
+    legs: list[LegSummary]
     
     @model_validator(mode="before")
-    @classmethod
-    def remap_model_fields(cls, values):
-        for key in list(values.keys()):
-            values[to_snake_case(key)] = values.pop(key)
-        return values
-    
-    @field_validator("start_time", "end_time", mode="before")
-    @classmethod
-    def validate_timestamp(cls, value: int | datetime):
-        if isinstance(value, datetime):
-            return value
-        if isinstance(value, int):
-            return datetime.fromtimestamp(value / 1000)
-        raise ValueError("Invalid value for start_time or end_time field.")
-    
-class TransportMode(BaseModel):
-    mode: Mode
+    def compute_leg_ratios(cls, itinerary: dict[str, any]) -> dict[str, any]:
+        total_duration = itinerary["duration"]
+        for leg in itinerary["legs"]:
+            leg.ratio = round(leg.duration / total_duration, 2) if total_duration > 0 else 0
+        return itinerary
+
+
+"""Request and response models exposed via the API"""
 
 class PlanRequestModel(BaseModel):
+    origin: Coordinates
+    destination: Coordinates
     date: str
     time: str
-    from_: InputCoordinates
-    to: InputCoordinates
-    wheelchair: bool = False
+    time_is_arrival: bool = False
+    transport_modes: list[Mode]
+    accessible: bool = False
     num_itineraries: int = 3
-    arrive_by: bool = False
-    transport_modes: list[TransportMode]
 
     @field_validator("date", mode="before")
     @classmethod
@@ -191,26 +82,4 @@ class PlanRequestModel(BaseModel):
             raise ValueError("Time must be in the format 'HH:MM:SS'.")
 
 class PlanResponseModel(BaseModel):
-    date: datetime
-    from_: Place
-    to: Place
     itineraries: list[Itinerary]
-    
-    @field_validator("date", mode="before")
-    @classmethod
-    def validate_date(cls, value: int):
-        # Convert UNIX timestamp in milliseconds to datetime
-        if isinstance(value, int):
-            return datetime.fromtimestamp(value / 1000)
-        else:
-            raise ValueError("Date must be a timestamp in milliseconds since epoch.")
-
-    @model_validator(mode="before")
-    @classmethod
-    def remap_model_fields(cls, values: dict[str, any]):
-        for key in list(values.keys()):
-            if key == "from":
-                values["from_"] = values.pop("from")
-            else:
-                values[to_snake_case(key)] = values.pop(key)
-        return values
