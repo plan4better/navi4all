@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/util/theme/colors.dart';
-import 'package:navi4all/util/preference_helper.dart';
-import 'onboarding.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/core/persistence/preference_helper.dart';
+import '../onboarding/onboarding.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});

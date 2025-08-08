@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Welcome to\nNavi4All.';
 
   @override
-  String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserlautern.';
+  String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserslautern.';
 
   @override
   String get onboardingWelcomeHint => 'Swipe left to continue with setup.';

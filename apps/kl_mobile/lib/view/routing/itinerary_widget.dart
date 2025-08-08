@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'package:navi4all/util/theme/colors.dart';
-import 'package:navi4all/view/routing/route_navigation.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/schemas/routing/itinerary.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:navi4all/core/theme/icons.dart' show ModeIcons;
 
-class JourneyOption extends StatelessWidget {
-  final String duration;
-  final String startTime;
-  final String endTime;
-  final List<Map<String, dynamic>> segments;
-  final String address;
-  final String zipcode;
+class ItineraryWidget extends StatelessWidget {
+  final Itinerary itinerary;
+  final Function onTap;
 
-  const JourneyOption({
+  const ItineraryWidget({
     super.key,
-    required this.duration,
-    required this.startTime,
-    required this.endTime,
-    required this.segments,
-    required this.address,
-    required this.zipcode,
+    required this.itinerary,
+    required this.onTap,
   });
 
-  String get _segmentsDescription {
-    return segments
-        .map((segment) {
-          return '${segment['mode']} (${segment['duration']})';
+  String get _duration => '${(itinerary.duration / 60).round()} min';
+
+  String get _startTime => DateFormat.Hm().format(itinerary.startTime);
+
+  String get _endTime => DateFormat.Hm().format(itinerary.endTime);
+
+  String get _legSummaryDescription {
+    return itinerary.legs
+        .map((legSummary) {
+          return '${legSummary.mode.name} (${(legSummary.duration / 60).round()} min)';
         })
         .join(', ');
   }
@@ -32,26 +32,13 @@ class JourneyOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => RouteNavigationScreen(
-              address: address,
-              zipcode: zipcode,
-              duration: duration,
-              startTime: startTime,
-              endTime: endTime,
-              segments: segments,
-            ),
-          ),
-        );
-      },
+      onTap: () => onTap(),
       child: Semantics(
         label: AppLocalizations.of(context)!.journeyOptionSemantic(
-          duration,
-          startTime,
-          endTime,
-          _segmentsDescription,
+          _duration,
+          _startTime,
+          _endTime,
+          _legSummaryDescription,
         ),
         child: Semantics(
           excludeSemantics: true,
@@ -61,7 +48,7 @@ class JourneyOption extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  duration,
+                  _duration,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 20,
@@ -69,7 +56,7 @@ class JourneyOption extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '$startTime - $endTime',
+                  '$_startTime - $_endTime',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Navi4AllColors.klRed,
@@ -77,7 +64,7 @@ class JourneyOption extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Row(
-                  children: segments.map((segment) {
+                  children: itinerary.legs.map((legSummary) {
                     return Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -88,20 +75,20 @@ class JourneyOption extends StatelessWidget {
                           vertical: 4,
                           horizontal: 4,
                         ),
-                        margin: segment != segments.last
+                        margin: legSummary != itinerary.legs.last
                             ? EdgeInsets.only(right: 4)
                             : EdgeInsets.zero,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(
-                              segment['icon'],
+                              ModeIcons.get(legSummary.mode),
                               color: Color(0xFFD82028),
                               size: 20,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              segment['duration'],
+                              '${(legSummary.duration / 60).round()} min',
                               style: const TextStyle(
                                 color: Navi4AllColors.klRed,
                               ),

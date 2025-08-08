@@ -1,35 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'routing/route_options.dart';
+import 'package:navi4all/schemas/routing/mode.dart';
+import '../routing/route_options.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
-import 'package:navi4all/util/theme/colors.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/schemas/routing/place.dart';
 
-class AddressInfoScreen extends StatefulWidget {
-  final String address;
-  const AddressInfoScreen({required this.address, super.key});
+class PlaceScreen extends StatefulWidget {
+  final Place place;
+  const PlaceScreen({required this.place, super.key});
 
   @override
-  State<AddressInfoScreen> createState() => _AddressInfoScreenState();
+  State<PlaceScreen> createState() => _PlaceScreenState();
 }
 
-class _AddressInfoScreenState extends State<AddressInfoScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final List<IconData> _icons = [Icons.directions_walk, Icons.directions_bus];
-  final String zipcode = '67655 Kaiserslautern';
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: _icons.length, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
+class _PlaceScreenState extends State<PlaceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +25,6 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             children: [
-              const SizedBox(height: 32),
               Semantics(
                 label: AppLocalizations.of(
                   context,
@@ -70,7 +54,7 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                           ),
                           Expanded(
                             child: Text(
-                              widget.address,
+                              widget.place.name,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
@@ -103,7 +87,7 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      widget.address,
+                      widget.place.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
@@ -113,7 +97,7 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    zipcode,
+                    widget.place.description,
                     style: const TextStyle(
                       fontSize: 18,
                       color: Navi4AllColors.klRed,
@@ -133,8 +117,10 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>
-                              RouteOptionsScreen(address: widget.address),
+                          builder: (context) => RouteOptionsScreen(
+                            mode: Mode.WALK,
+                            place: widget.place,
+                          ),
                         ),
                       );
                     },
@@ -148,8 +134,10 @@ class _AddressInfoScreenState extends State<AddressInfoScreen>
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>
-                              RouteOptionsScreen(address: widget.address),
+                          builder: (context) => RouteOptionsScreen(
+                            mode: Mode.TRANSIT,
+                            place: widget.place,
+                          ),
                         ),
                       );
                     },

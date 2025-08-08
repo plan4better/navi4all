@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'package:navi4all/util/theme/colors.dart';
-import 'home.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import '../home/home.dart';
 import 'package:navi4all/view/common/accessible_selector.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 

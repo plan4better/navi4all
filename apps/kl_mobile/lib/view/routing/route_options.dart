@@ -1,20 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'package:navi4all/view/routing/journey_option.dart';
+import 'package:navi4all/view/routing/itinerary_widget.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'orig_dest_picker.dart';
+import 'package:navi4all/services/routing.dart';
+import 'package:navi4all/schemas/routing/itinerary.dart';
+import 'package:navi4all/schemas/routing/mode.dart';
+import 'package:navi4all/schemas/routing/place.dart';
 
-class RouteOptionsScreen extends StatelessWidget {
-  final String address;
-  final String zipcode;
+class RouteOptionsScreen extends StatefulWidget {
+  final Mode mode;
+  final Place place;
   const RouteOptionsScreen({
-    required this.address,
-    this.zipcode = '67655 Kaiserslautern',
+    required this.mode,
+    required this.place,
     super.key,
   });
 
   @override
+  State<RouteOptionsScreen> createState() => _RouteOptionsScreenState();
+}
+
+class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
+  List<Itinerary> _itineraries = [];
+
+  Future<void> _fetchItineraries() async {
+    List<Itinerary> itineraries = [];
+    RoutingService routingService = RoutingService();
+    try {
+      final response = await routingService.getItineraries(
+        originLat: 49.43578102534064,
+        originLon: 7.768523468558005,
+        destinationLat: widget.place.coordinates.lat,
+        destinationLon: widget.place.coordinates.lon,
+        date: '2024-12-05',
+        time: '09:00:00',
+        timeIsArrival: false,
+        transportModes: [widget.mode.name],
+      );
+      if (response.statusCode == 200) {
+        final data = response.data["itineraries"] as List;
+        itineraries = data.map((item) => Itinerary.fromJson(item)).toList();
+        setState(() {
+          _itineraries = itineraries;
+        });
+      } else {
+        throw Exception('Failed to load itineraries');
+      }
+    } catch (e) {
+      print('Error fetching itineraries: $e');
+      // Handle error appropriately, e.g., show a snackbar or dialog
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // TODO: Handle cases where itineraries are not available
+    if (_itineraries.isEmpty) {
+      _fetchItineraries();
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -22,113 +67,30 @@ class RouteOptionsScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             children: [
-              SizedBox(height: 50),
+              // SizedBox(height: 50),
               OrigDestPicker(
                 origin: AppLocalizations.of(
                   context,
                 )!.routeOptionsCurrentLocationText,
-                destination: address,
+                destination: widget.place.name,
               ),
               const SizedBox(height: 20),
               Expanded(
                 child: Column(
                   children: [
                     Expanded(
-                      child: ListView(
-                        children: [
-                          JourneyOption(
-                            duration: '25 min',
-                            startTime: '10:49',
-                            endTime: '12:14',
-                            segments: [
-                              {
-                                'icon': Icons.directions_walk,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeWalking,
-                                'duration': '3 min',
+                      child: _itineraries.isNotEmpty
+                          ? ListView.builder(
+                              itemCount: _itineraries.length,
+                              itemBuilder: (context, index) {
+                                final itinerary = _itineraries[index];
+                                return ItineraryWidget(
+                                  itinerary: itinerary,
+                                  onTap: () {},
+                                );
                               },
-                              {
-                                'icon': Icons.directions_bus,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeBus,
-                                'duration': '20 min',
-                              },
-                              {
-                                'icon': Icons.directions_walk,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeWalking,
-                                'duration': '2 min',
-                              },
-                            ],
-                            address: address,
-                            zipcode: zipcode,
-                          ),
-                          JourneyOption(
-                            duration: '32 min',
-                            startTime: '10:50',
-                            endTime: '11:22',
-                            segments: [
-                              {
-                                'icon': Icons.directions_walk,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeWalking,
-                                'duration': '3 min',
-                              },
-                              {
-                                'icon': Icons.directions_bus,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeBus,
-                                'duration': '25 min',
-                              },
-                              {
-                                'icon': Icons.directions_walk,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeWalking,
-                                'duration': '4 min',
-                              },
-                            ],
-                            address: address,
-                            zipcode: zipcode,
-                          ),
-                          JourneyOption(
-                            duration: '40 min',
-                            startTime: '10:50',
-                            endTime: '11:30',
-                            segments: [
-                              {
-                                'icon': Icons.directions_train,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeSBahn,
-                                'duration': '10 min',
-                              },
-                              {
-                                'icon': Icons.directions_bus,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeBus,
-                                'duration': '15 min',
-                              },
-                              {
-                                'icon': Icons.directions_walk,
-                                'mode': AppLocalizations.of(
-                                  context,
-                                )!.commonModeWalking,
-                                'duration': '15 min',
-                              },
-                            ],
-                            address: address,
-                            zipcode: zipcode,
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
+                            )
+                          : Center(child: CircularProgressIndicator()),
                     ),
                   ],
                 ),

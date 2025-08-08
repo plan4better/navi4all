@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:navi4all/util/theme/colors.dart';
+import 'package:navi4all/core/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:navi4all/view/splash.dart';
+import 'package:navi4all/view/splash/splash.dart';
 import 'l10n/app_localizations.dart';
 
 void main() {

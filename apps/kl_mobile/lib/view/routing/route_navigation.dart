@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'package:navi4all/util/theme/colors.dart';
+import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
-import 'package:navi4all/util/theme/geometry.dart';
+import 'package:navi4all/core/theme/geometry.dart';
 
 class RouteNavigationScreen extends StatefulWidget {
   final String address;

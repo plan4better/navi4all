@@ -164,7 +164,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'The app that guides you\nthrough Kaiserlautern.'**
+  /// **'The app that guides you\nthrough Kaiserslautern.'**
   String get onboardingWelcomeSubtitle;
 
   /// No description provided for @onboardingWelcomeHint.
