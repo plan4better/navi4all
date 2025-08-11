@@ -1,6 +1,7 @@
 from schemas.geocoding import (
     SupportedGeocodingProviders,
     GeocodingAutocompleteRequestModel,
+    GeocodingAutocompleteResponseModel,
 )
 from httpx import AsyncClient, Response
 from urllib.parse import urljoin
@@ -27,7 +28,7 @@ class GeocodingAdaptor:
             "api_key": self.api_key,
             "text": request.query,
             # TODO: Make layer exclution dynamic
-            "layers": "-continent,-empire,-country,-dependency,-disputed,-region,-county,-localadmin,-locality,-borough,-neighbourhood"
+            "layers": "-continent,-empire,-country,-dependency,-disputed,-region,-county,-localadmin,-locality,-borough,-neighbourhood",
         }
         if request.focus_point:
             request_params["focus.point.lat"] = request.focus_point.lat
@@ -73,7 +74,7 @@ class GeocodingAdaptor:
 
     async def autocomplete(
         self, async_client: AsyncClient, request: GeocodingAutocompleteRequestModel
-    ):
+    ) -> list[Place]:
         """Make an autocomplete geocoding request."""
 
         # Build request URL and params
@@ -112,4 +113,7 @@ class GeocodingAdaptor:
         if request.limit and len(places) > request.limit:
             places = places[: request.limit]
 
-        return places
+        return GeocodingAutocompleteResponseModel(
+            timestamp=request.timestamp,
+            results=places,
+        )

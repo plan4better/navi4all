@@ -1,8 +1,7 @@
 import httpx
 from fastapi import APIRouter
-from schemas.place import Place
 from schemas.coordinates import Coordinates
-from schemas.geocoding import GeocodingAutocompleteRequestModel
+from schemas.geocoding import GeocodingAutocompleteRequestModel, GeocodingAutocompleteResponseModel
 from services.adaptors.geocoding import GeocodingAdaptor
 from core.config import settings
 
@@ -14,8 +13,9 @@ adaptor = GeocodingAdaptor(
 )
 
 
-@router.get("/autocomplete", response_model=list[Place])
+@router.get("/autocomplete", response_model=GeocodingAutocompleteResponseModel)
 async def autocomplete(
+    timestamp: str,
     query: str,
     focus_point_lat: float | None = None,
     focus_point_lon: float | None = None,
@@ -25,6 +25,7 @@ async def autocomplete(
         response = await adaptor.autocomplete(
             client,
             GeocodingAutocompleteRequestModel(
+                timestamp=timestamp,
                 query=query,
                 focus_point=Coordinates(lat=focus_point_lat, lon=focus_point_lon)
                 if focus_point_lat is not None and focus_point_lon is not None

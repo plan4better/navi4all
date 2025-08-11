@@ -6,9 +6,10 @@ from schemas.geocoding import SupportedGeocodingProviders
 class Settings(BaseSettings):
     # API settings
     API_VERSION: str = "/v1"
+    DEBUG: bool = False
 
     # Directory and path settings
-    TEMPLATES_DIR: str = "/app/apps/core_backend/templates"
+    TEMPLATES_DIR: str = "./templates"
 
     # Redis settings
     REDIS_HOST: str = "navi4all-redis"
