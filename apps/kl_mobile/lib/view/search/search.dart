@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
-import '../place/place.dart';
+import 'package:navi4all/view/place/place.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/services/geocoding.dart';
@@ -18,6 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final FocusNode _focusNode = FocusNode(); // Added FocusNode
   bool _showResults = false;
   String _searchQuery = "";
+  DateTime? _searchTimestamp;
 
   List<Place> _autocompleteResults = [];
 
@@ -36,10 +37,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _fetchAutocompleteResults() async {
     _searchQuery = _controller.text;
+    _searchTimestamp = DateTime.now();
     List<Place> places = [];
     GeocodingService geocodingService = GeocodingService();
     try {
       final response = await geocodingService.autocomplete(
+        timestamp: _searchTimestamp!.toIso8601String(),
         query: _controller.text,
         // Example coordinates from Kaiserslautern
         // TODO: Replace with coarse user location
@@ -47,8 +50,12 @@ class _SearchScreenState extends State<SearchScreen> {
         focusPointLon: 7.768523468558005,
       );
       if (response.statusCode == 200) {
-        final data = response.data as List;
-        places = data.map((item) => Place.fromJson(item)).toList();
+        final DateTime timestamp = DateTime.parse(response.data['timestamp']);
+        if (_searchTimestamp != null && timestamp.isBefore(_searchTimestamp!)) {
+          return;
+        }
+        final results = response.data['results'] as List;
+        places = results.map((item) => Place.fromJson(item)).toList();
         setState(() {
           _autocompleteResults = places;
         });

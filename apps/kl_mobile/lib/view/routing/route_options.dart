@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/view/routing/itinerary_widget.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
@@ -33,8 +34,8 @@ class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
         originLon: 7.768523468558005,
         destinationLat: widget.place.coordinates.lat,
         destinationLon: widget.place.coordinates.lon,
-        date: '2024-12-05',
-        time: '09:00:00',
+        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        time: DateFormat('HH:mm:ss').format(DateTime.now()),
         timeIsArrival: false,
         transportModes: [widget.mode.name],
       );
