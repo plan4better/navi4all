@@ -12,5 +12,5 @@ class Navi4AllGeometry {
   static const double fontSizeLarge = 20.0;
 
   // Icon size
-  static const double iconSizeMedium = 24.0;
+  static const double iconSizeMedium = 20.0;
 }

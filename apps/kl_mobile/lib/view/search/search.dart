@@ -7,7 +7,14 @@ import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/services/geocoding.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final bool isSecondarySearch;
+  final bool isOriginPlaceSearch;
+
+  const SearchScreen({
+    super.key,
+    this.isSecondarySearch = false,
+    this.isOriginPlaceSearch = false,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -15,7 +22,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
-  final FocusNode _focusNode = FocusNode(); // Added FocusNode
+  final FocusNode _focusNode = FocusNode();
   bool _showResults = false;
   String _searchQuery = "";
   DateTime? _searchTimestamp;
@@ -48,6 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
         // TODO: Replace with coarse user location
         focusPointLat: 49.43578102534064,
         focusPointLon: 7.768523468558005,
+        limit: 4,
       );
       if (response.statusCode == 200) {
         final DateTime timestamp = DateTime.parse(response.data['timestamp']);
@@ -79,48 +87,53 @@ class _SearchScreenState extends State<SearchScreen> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           child: Column(
             children: [
-              // Search bar
-              Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(28),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEDEB),
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(28),
-                      topRight: const Radius.circular(28),
-                      bottomLeft: _showResults
-                          ? const Radius.circular(0)
-                          : const Radius.circular(28),
-                      bottomRight: _showResults
-                          ? const Radius.circular(0)
-                          : const Radius.circular(28),
-                    ),
-                    border: _showResults
-                        ? const Border(
-                            bottom: BorderSide(
-                              color: Navi4AllColors.klRed,
-                              width: 2,
-                            ),
-                          )
-                        : null,
+              Container(
+                decoration: BoxDecoration(
+                  color: Navi4AllColors.klLightRed,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(28),
+                    topRight: const Radius.circular(28),
+                    bottomLeft: _showResults
+                        ? const Radius.circular(0)
+                        : const Radius.circular(28),
+                    bottomRight: _showResults
+                        ? const Radius.circular(0)
+                        : const Radius.circular(28),
                   ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Color(0xFFD82028),
-                          semanticLabel: AppLocalizations.of(
-                            context,
-                          )!.commonBackButtonSemantic,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
+                  border: _showResults
+                      ? const Border(
+                          bottom: BorderSide(
+                            color: Navi4AllColors.klRed,
+                            width: 1.5,
+                          ),
+                        )
+                      : null,
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Navi4AllColors.klRed,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.commonBackButtonSemantic,
                       ),
-                      Expanded(
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    Expanded(
+                      child: Semantics(
+                        label: widget.isOriginPlaceSearch
+                            ? AppLocalizations.of(
+                                context,
+                              )!.searchTextFieldOriginHintSemantic
+                            : AppLocalizations.of(
+                                context,
+                              )!.searchTextFieldDestinationHintSemantic,
+                        excludeSemantics: true,
                         child: TextField(
                           controller: _controller,
                           focusNode: _focusNode,
@@ -131,12 +144,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(vertical: 16),
                           ),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                            color: Color(0xFF535353),
-                            letterSpacing: 0.5,
-                          ),
+                          style: const TextStyle(fontSize: 16),
                           onChanged: (value) {
                             setState(() {
                               _showResults = value.trim().isNotEmpty;
@@ -144,52 +152,85 @@ class _SearchScreenState extends State<SearchScreen> {
                           },
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.mic,
-                          color: Color(0xFFD82028),
-                          semanticLabel: AppLocalizations.of(
-                            context,
-                          )!.commonMicButtonSemantic,
-                        ),
-                        onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.mic,
+                        color: Navi4AllColors.klRed,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.commonMicButtonSemantic,
                       ),
-                    ],
-                  ),
+                      onPressed: null,
+                    ),
+                  ],
                 ),
               ),
-              // Suggestions/results
-              if (_showResults)
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFEDEB),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(28),
-                      bottomRight: Radius.circular(28),
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 8,
-                  ),
-                  child: Column(
-                    children: _autocompleteResults
-                        .map(
-                          (place) => Column(
-                            children: [
-                              _SearchSuggestion(place: place),
-                              if (place != _autocompleteResults.last)
-                                const Divider(
-                                  height: 1,
-                                  color: Color(0xFFD82028),
-                                ),
-                            ],
+              !_showResults ? SizedBox(height: 64) : SizedBox.shrink(),
+              _showResults
+                  ? Container(
+                      decoration: const BoxDecoration(
+                        color: Navi4AllColors.klLightRed,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(28),
+                          bottomRight: Radius.circular(28),
+                        ),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final place = _autocompleteResults[index];
+                          return _SearchSuggestion(
+                            place: place,
+                            onTap: () {
+                              if (widget.isSecondarySearch) {
+                                Navigator.of(context).pop(place);
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PlaceScreen(place: place),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider(
+                            height: 1,
+                            indent: 12,
+                            endIndent: 12,
+                            color: Navi4AllColors.klRed,
+                          );
+                        },
+                        itemCount: _autocompleteResults.length,
+                      ),
+                    )
+                  : Semantics(
+                      excludeSemantics: true,
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.search_rounded,
+                            size: 96,
+                            color: Navi4AllColors.klPink,
                           ),
-                        )
-                        .toList(),
-                  ),
-                ),
+                          SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Text(
+                              AppLocalizations.of(context)!.searchScreenPrompt,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Navi4AllColors.klPink,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
               const Spacer(),
               AccessibleButton(
                 label: AppLocalizations.of(context)!.commonHomeScreenButton,
@@ -207,25 +248,48 @@ class _SearchScreenState extends State<SearchScreen> {
 
 class _SearchSuggestion extends StatelessWidget {
   final Place place;
-  const _SearchSuggestion({required this.place});
+  final Function onTap;
+  const _SearchSuggestion({required this.place, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => PlaceScreen(place: place)),
-        );
-      },
-      child: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-        child: Text(
+      onTap: () => onTap(),
+      child: Semantics(
+        focusable: true,
+        focused: true,
+        label: AppLocalizations.of(context)!.searchResultSemantic(
           place.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Color(0xFFD82028),
+          place.locality != null ? "in ${place.locality}" : "",
+        ),
+        excludeSemantics: true,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                place.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Navi4AllColors.klRed,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              place.locality != null
+                  ? Text(
+                      place.locality!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Navi4AllColors.klRed,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
           ),
         ),
       ),
