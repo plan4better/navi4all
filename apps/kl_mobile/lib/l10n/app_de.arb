@@ -49,7 +49,7 @@
     "routeOptionsRouteSettingsButton": "Routeneinstellungen",
     "routeOptionsSaveRouteButton": "Route speichern",
     "origDestPickerSwapButtonSemantic": "Start- und Zielort tauschen",
-    "origDestPickerOriginSemantic": "Startort: {origin}. Tippen Sie, um zu ändern.",
+    "origDestPickerOriginSemantic": "Startort: {origin}. Tippen Sie, um diesen zu verändern.",
     "@origDestPickerOriginSemantic": {
         "placeholders": {
             "origin": {
@@ -57,7 +57,7 @@
             }
         }
     },
-    "origDestPickerDestinationSemantic": "Zielort: {destination}. Tippen Sie, um zu ändern.",
+    "origDestPickerDestinationSemantic": "Zielort: {destination}. Tippen Sie, um diesen zu verändern.",
     "@origDestPickerDestinationSemantic": {
         "placeholders": {
             "destination": {
