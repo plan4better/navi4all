@@ -26,43 +26,45 @@ class _OnboardingState extends State<Onboarding> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Navi4AllColors.klRed,
-      body: Column(
-        children: [
-          SizedBox(height: 100),
-          Expanded(
-            child: PageView(
-              controller: _controller,
-              onPageChanged: (index) {
-                setState(() => _currentPage = index);
-              },
-              children: const [
-                _WelcomeScreen(),
-                _ProfileSelectionScreen(),
-                _FinishScreen(),
-              ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(height: 100),
+            Expanded(
+              child: PageView(
+                controller: _controller,
+                onPageChanged: (index) {
+                  setState(() => _currentPage = index);
+                },
+                children: const [
+                  _WelcomeScreen(),
+                  _ProfileSelectionScreen(),
+                  _FinishScreen(),
+                ],
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              3,
-              (index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: index == _currentPage
-                      ? Navi4AllColors.klWhite
-                      : Navi4AllColors.klPink,
-                  shape: BoxShape.circle,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: index == _currentPage
+                        ? Navi4AllColors.klWhite
+                        : Navi4AllColors.klPink,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: 80),
-          Image.asset(width: 100, "assets/stadt_kl_white.png"),
-          SizedBox(height: 80),
-        ],
+            SizedBox(height: 80),
+            Image.asset(width: 100, "assets/stadt_kl_white.png"),
+            SizedBox(height: 80),
+          ],
+        ),
       ),
     );
   }
