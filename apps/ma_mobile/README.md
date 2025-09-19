@@ -1,3 +1,3 @@
-# smart_roots
+# Smart Roots
 
-A new Flutter project.
+![Mannheim](./mannheim.png)
