@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Navi4All';
+  String get appTitle => 'SmartRoots';
 
   @override
   String get commonModeWalking => 'Walking';
@@ -39,13 +39,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonMicButtonSemantic => 'Voice input';
 
   @override
+  String get commonContinueButtonSemantic => 'Continue';
+
+  @override
   String get onboardingWelcomeTitle => 'Welcome to\nNavi4All.';
 
   @override
-  String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserlautern.';
+  String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserslautern.';
 
   @override
-  String get onboardingWelcomeHint => 'Swipe left to continue with setup.';
+  String get onboardingWelcomeHint => 'Press the button to continue.';
 
   @override
   String get onboardingProfileSelectionTitle => 'Select your profile';
@@ -60,10 +63,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingProfileSelectionGeneralUserTitle => 'General User';
 
   @override
+  String get onboardingUserLocationTitle => 'We need access to your location';
+
+  @override
+  String get onboardingUserLocationSubtitle => 'This is necessary for search and navigation to work correctly.';
+
+  @override
   String get onboardingFinishTitle => 'All done!';
 
   @override
-  String get onboardingFinishSubtitle => 'Your profile has been selected.\nWhat would you like to do next?';
+  String get onboardingFinishSubtitle => 'Your profile has been selected.\nWelcome to Navi4All.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'View App Tutorial';
@@ -87,19 +96,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchTextFieldHint => 'Search here';
 
   @override
-  String get addressInfoBackToSearchButtonSemantic => 'Back to search results';
+  String get searchTextFieldOriginHintSemantic => 'Text input. Type to search for an origin location.';
+
+  @override
+  String get searchTextFieldDestinationHintSemantic => 'Text input. Type to search for a destination location.';
+
+  @override
+  String get searchScreenPrompt => 'Start typing to search for places, addresses or transit stations.';
+
+  @override
+  String get searchScreenNoResults => 'No results found.';
+
+  @override
+  String addressInfoBackToSearchButtonSemantic(String name) {
+    return 'Selected destination: $name, tap to return to search results.';
+  }
 
   @override
   String get addressInfoWalkingRoutesButton => 'Walking';
 
   @override
+  String get addressInfoWalkingRoutesButtonSemantic => 'Find walking route options.';
+
+  @override
   String get addressInfoPublicTransportRoutesButton => 'Public Transport';
 
   @override
-  String get addressInfoSaveAddressButton => 'Save Address';
+  String get addressInfoPublicTransportRoutesButtonSemantic => 'Find public transport route options.';
 
   @override
-  String get routeOptionsCurrentLocationText => 'Current location';
+  String get addressInfoSaveAddressButton => 'Save Address';
 
   @override
   String get routeOptionsRouteSettingsButton => 'Route Settings';
@@ -108,16 +134,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routeOptionsSaveRouteButton => 'Save Route';
 
   @override
-  String get origDestPickerSwapButtonSemantic => 'Start- und Zielort tauschen';
+  String get origDestPickerSwapButtonSemantic => 'Swap origin and destination.';
 
   @override
   String origDestPickerOriginSemantic(String origin) {
-    return 'Origin: $origin';
+    return 'Origin: $origin. Tap to change.';
   }
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Destination: $destination';
+    return 'Destination: $destination. Tap to change.';
   }
 
   @override
@@ -186,4 +212,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routeNavigationStopButton => 'Stop';
+
+  @override
+  String get errorUnableToFetchItineraries => 'Unable to fetch itineraries.';
+
+  @override
+  String get errorNoItinerariesFound => 'No itineraries found for the selected origin and destination.';
+
+  @override
+  String searchResultSemantic(String name, String locality) {
+    return 'Search result: $name, $locality.';
+  }
+
+  @override
+  String get origDestCurrentLocation => 'Current location';
+
+  @override
+  String get homeNavigationMapTitle => 'Map';
+
+  @override
+  String get homeNavigationFavouritesTitle => 'Favourites';
+
+  @override
+  String get homeNavigationSettingsTitle => 'Settings';
+
+  @override
+  String get homeSearchButtonHint => 'Search here';
+
+  @override
+  String get favouritesTitle => 'Favourites';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsOptionFeedback => 'Feedback';
+
+  @override
+  String get settingsOptionSupport => 'Support';
+
+  @override
+  String get settingsOptionLegalAndPrivacy => 'Legal & Privacy';
 }

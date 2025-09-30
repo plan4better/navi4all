@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:smart_roots/util/theme/colors.dart';
+import 'package:smartroots/core/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_roots/view/splash.dart';
+import 'package:smartroots/view/splash/splash.dart';
 import 'l10n/app_localizations.dart';
 
 void main() {
@@ -24,9 +24,9 @@ class SmartRootsApp extends StatelessWidget {
       title: 'SmartRoots',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Navi4AllColors.klRed,
-          primary: Navi4AllColors.klRed,
-          secondary: Navi4AllColors.klPink,
+          seedColor: SmartRootsColors.maBlueExtraDark,
+          primary: SmartRootsColors.maBlueExtraDark,
+          secondary: SmartRootsColors.maBackground,
         ),
         textTheme: GoogleFonts.robotoTextTheme(),
       ),

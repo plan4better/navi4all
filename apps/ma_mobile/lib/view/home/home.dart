@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/core/theme/colors.dart';
+import 'package:smartroots/view/home/map.dart';
+import 'package:smartroots/view/favourites/favourites.dart';
+import 'package:smartroots/view/settings/settings.dart';
+import 'package:smartroots/view/search/search.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _pageIndex = 0;
+  List<Widget> get _pages => [HomeMap(), FavouritesScreen(), SettingsScreen()];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          _pages[_pageIndex],
+          _pageIndex <= 1
+              ? SafeArea(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 32,
+                        left: 16,
+                        right: 16,
+                      ),
+                      child: Material(
+                        elevation: _pageIndex == 0 ? 4 : 0,
+                        borderRadius: BorderRadius.circular(28),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const SearchScreen(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            height: 56,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(28),
+                              color: _pageIndex == 0
+                                  ? SmartRootsColors.maWhite
+                                  : SmartRootsColors.maBlueLight,
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 24),
+                                const Icon(
+                                  Icons.search,
+                                  color: SmartRootsColors.maBlueExtraExtraDark,
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.homeSearchButtonHint,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                child: Material(
+                  elevation: _pageIndex == 0 ? 4 : 0,
+                  borderRadius: BorderRadius.circular(64),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(64)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(64)),
+                      child: NavigationBar(
+                        labelTextStyle:
+                            WidgetStateProperty.resolveWith<TextStyle>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return const TextStyle(
+                                  color: SmartRootsColors.maBlueExtraExtraDark,
+                                  fontWeight: FontWeight.bold,
+                                );
+                              }
+                              return const TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                              );
+                            }),
+                        backgroundColor: _pageIndex == 0
+                            ? SmartRootsColors.maWhite
+                            : SmartRootsColors.maBlueLight,
+                        selectedIndex: _pageIndex,
+                        onDestinationSelected: (index) => setState(() {
+                          _pageIndex = index;
+                        }),
+                        labelPadding: EdgeInsets.all(4),
+                        height: 72,
+                        destinations: [
+                          NavigationDestination(
+                            icon: Icon(
+                              Icons.place_outlined,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            selectedIcon: Icon(
+                              Icons.place,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            label: AppLocalizations.of(
+                              context,
+                            )!.homeNavigationMapTitle,
+                          ),
+                          NavigationDestination(
+                            icon: Icon(
+                              Icons.star_border,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            selectedIcon: Icon(
+                              Icons.star,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            label: AppLocalizations.of(
+                              context,
+                            )!.homeNavigationFavouritesTitle,
+                          ),
+                          NavigationDestination(
+                            icon: Icon(
+                              Icons.settings_outlined,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            selectedIcon: Icon(
+                              Icons.settings,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            label: AppLocalizations.of(
+                              context,
+                            )!.homeNavigationSettingsTitle,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

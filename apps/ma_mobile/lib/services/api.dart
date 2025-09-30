@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:navi4all/core/config.dart' show Settings;
+import 'package:smartroots/core/config.dart' show Settings;
 import 'dart:convert';
 
 class APIService {

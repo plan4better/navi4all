@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_roots/util/theme/colors.dart';
-import 'package:smart_roots/util/preference_helper.dart';
-import 'onboarding.dart';
+import 'package:smartroots/core/theme/colors.dart';
+import 'package:smartroots/core/persistence/preference_helper.dart';
+import 'package:smartroots/view/home/home.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -17,11 +17,11 @@ class _SplashState extends State<Splash> {
       PreferenceHelper.incrementLaunchCount().then((launchCount) {
         if (launchCount == 1) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Onboarding()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
         } else {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Onboarding()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
         }
       });
@@ -32,7 +32,10 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Navi4AllColors.klRed,
-    body: Center(child: Image.asset("assets/stadt_kl_white.png", width: 100)),
+    backgroundColor: SmartRootsColors.maBlueExtraDark,
+    body: Align(
+      alignment: Alignment.bottomCenter,
+      child: Image.asset("assets/p_reserviert.png", width: 250),
+    ),
   );
 }

@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "appTitle": "Navi4All",
+    "appTitle": "SmartRoots",
     "commonModeWalking": "Walking",
     "commonModeBus": "Bus",
     "commonModeTram": "Tram",
@@ -10,15 +10,18 @@
     "commonHomeScreenButton": "Home Screen",
     "commonBackButtonSemantic": "Back",
     "commonMicButtonSemantic": "Voice input",
+    "commonContinueButtonSemantic": "Continue",
     "onboardingWelcomeTitle": "Welcome to\nNavi4All.",
-    "onboardingWelcomeSubtitle": "The app that guides you\nthrough Kaiserlautern.",
-    "onboardingWelcomeHint": "Swipe left to continue with setup.",
+    "onboardingWelcomeSubtitle": "The app that guides you\nthrough Kaiserslautern.",
+    "onboardingWelcomeHint": "Press the button to continue.",
     "onboardingProfileSelectionTitle": "Select your profile",
     "onboardingProfileSelectionBlindUserTitle": "Blind User",
     "onboardingProfileSelectionVisionImpairedUserTitle": "Vision Impaired User",
     "onboardingProfileSelectionGeneralUserTitle": "General User",
+    "onboardingUserLocationTitle": "We need access to your location",
+    "onboardingUserLocationSubtitle": "This is necessary for search and navigation to work correctly.",
     "onboardingFinishTitle": "All done!",
-    "onboardingFinishSubtitle": "Your profile has been selected.\nWhat would you like to do next?",
+    "onboardingFinishSubtitle": "Your profile has been selected.\nWelcome to Navi4All.",
     "onboardingFinishAppTutorialButton": "View App Tutorial",
     "onboardingFinishHomeScreenButton": "Get Started",
     "homeSearchButton": "Search",
@@ -26,15 +29,27 @@
     "homeRouteButton": "Route",
     "homeSettingsButton": "Settings",
     "searchTextFieldHint": "Search here",
-    "addressInfoBackToSearchButtonSemantic": "Back to search results",
+    "searchTextFieldOriginHintSemantic": "Text input. Type to search for an origin location.",
+    "searchTextFieldDestinationHintSemantic": "Text input. Type to search for a destination location.",
+    "searchScreenPrompt": "Start typing to search for places, addresses or transit stations.",
+    "searchScreenNoResults": "No results found.",
+    "addressInfoBackToSearchButtonSemantic": "Selected destination: {name}, tap to return to search results.",
+    "@addressInfoBackToSearchButtonSemantic": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "addressInfoWalkingRoutesButton": "Walking",
+    "addressInfoWalkingRoutesButtonSemantic": "Find walking route options.",
     "addressInfoPublicTransportRoutesButton": "Public Transport",
+    "addressInfoPublicTransportRoutesButtonSemantic": "Find public transport route options.",
     "addressInfoSaveAddressButton": "Save Address",
-    "routeOptionsCurrentLocationText": "Current location",
     "routeOptionsRouteSettingsButton": "Route Settings",
     "routeOptionsSaveRouteButton": "Save Route",
-    "origDestPickerSwapButtonSemantic": "Start- und Zielort tauschen",
-    "origDestPickerOriginSemantic": "Origin: {origin}",
+    "origDestPickerSwapButtonSemantic": "Swap origin and destination.",
+    "origDestPickerOriginSemantic": "Origin: {origin}. Tap to change.",
     "@origDestPickerOriginSemantic": {
         "placeholders": {
             "origin": {
@@ -42,7 +57,7 @@
             }
         }
     },
-    "origDestPickerDestinationSemantic": "Destination: {destination}",
+    "origDestPickerDestinationSemantic": "Destination: {destination}. Tap to change.",
     "@origDestPickerDestinationSemantic": {
         "placeholders": {
             "destination": {
@@ -146,5 +161,28 @@
     "routeNavigationMuteButtonUnmuteText": "Unmute Audio",
     "routeNavigationPauseButtonPauseText": "Pause",
     "routeNavigationPauseButtonResumeText": "Resume",
-    "routeNavigationStopButton": "Stop"
+    "routeNavigationStopButton": "Stop",
+    "errorUnableToFetchItineraries": "Unable to fetch itineraries.",
+    "errorNoItinerariesFound": "No itineraries found for the selected origin and destination.",
+    "searchResultSemantic": "Search result: {name}, {locality}.",
+    "@searchResultSemantic": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "locality": {
+                "type": "String"
+            }
+        }
+    },
+    "origDestCurrentLocation": "Current location",
+    "homeNavigationMapTitle": "Map",
+    "homeNavigationFavouritesTitle": "Favourites",
+    "homeNavigationSettingsTitle": "Settings",
+    "homeSearchButtonHint": "Search here",
+    "favouritesTitle": "Favourites",
+    "settingsTitle": "Settings",
+    "settingsOptionFeedback": "Feedback",
+    "settingsOptionSupport": "Support",
+    "settingsOptionLegalAndPrivacy": "Legal & Privacy"
 }
