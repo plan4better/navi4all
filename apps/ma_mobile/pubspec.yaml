@@ -1,5 +1,5 @@
-name: smart_roots
-description: "A new Flutter project."
+name: smartroots
+description: ""
 publish_to: 'none'
 version: 0.0.1+1
 
@@ -7,12 +7,15 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
+  dio: ^5.9.0
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  freezed: ^3.2.3
   google_fonts: ^6.2.1
   intl: any
+  maplibre_gl: ^0.22.0
   shared_preferences: ^2.5.3
 
 dev_dependencies:
@@ -27,3 +30,8 @@ flutter:
   assets:
     - assets/stadt_kl_red.png
     - assets/stadt_kl_white.png
+    - assets/p_reserviert.png
+    - assets/parking_avbl_yes.png
+    - assets/parking_avbl_no.png
+    - assets/parking_avbl_unknown.png
+    - assets/place.png

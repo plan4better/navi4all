@@ -1,7 +1,7 @@
 name: navi4all
-description: "Multi-modal navigation for everyone"
+description: ""
 publish_to: 'none'
-version: 0.0.2+3
+version: 0.0.2+4
 
 environment:
   sdk: ^3.8.1

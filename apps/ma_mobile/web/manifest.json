@@ -1,6 +1,6 @@
 {
-    "name": "smart_roots",
-    "short_name": "smart_roots",
+    "name": "smartroots",
+    "short_name": "smartroots",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

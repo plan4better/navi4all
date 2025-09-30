@@ -1,4 +1,4 @@
-package de.plan4better.smart_roots
+package de.plan4better.smartroots
 
 import io.flutter.embedding.android.FlutterActivity
 
