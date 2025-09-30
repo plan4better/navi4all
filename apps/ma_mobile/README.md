@@ -1,5 +1,7 @@
 # SmartRoots - Mannheim
 
+![Mannheim](./mannheim.png)
+
 ## Translation Guide
 This app currently supports the following locales:
 - `en` - English
