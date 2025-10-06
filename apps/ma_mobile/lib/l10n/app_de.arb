@@ -184,5 +184,17 @@
     "settingsTitle": "Einstellungen",
     "settingsOptionFeedback": "Feedback",
     "settingsOptionSupport": "Support",
-    "settingsOptionLegalAndPrivacy": "Rechtliches & Datenschutz"
+    "settingsOptionLegalAndPrivacy": "Rechtliches & Datenschutz",
+    "userLocationDeniedSnackbarText": "Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.",
+    "placeScreenChangeRadiusButton": "Radius wählen",
+    "placeScreenChangeRadiusCancel": "Abbrechen",
+    "placeScreenChangeRadiusConfirm": "Ändern",
+    "errorUnableToFetchParkingSites": "Parkplätze konnten nicht abgerufen werden, bitte versuchen Sie es später erneut.",
+    "errorUnableToFetchDrivingTime": "Fahrzeit konnte nicht abgerufen werden, bitte versuchen Sie es später erneut.",
+    "availabilityUnknown": "Unbekannt",
+    "parkingLocationButtonStart": "Start",
+    "parkingLocationButtonFavourite": "Favorit",
+    "parkingLocationButtonRouteExternal": "Route extern",
+    "errorUnableToLaunchRouteExternal": "Externe Karten-App konnte nicht gestartet werden.",
+    "featureComingSoonMessage": "Diese Funktion kommt bald."
 }

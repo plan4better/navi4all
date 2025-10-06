@@ -61,7 +61,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                             ? Icons.help_outline
                             : widget.origin!.id == Navi4AllValues.userLocation
                             ? Icons.my_location
-                            : Icons.place,
+                            : Icons.place_rounded,
                         color: Navi4AllColors.klRed,
                         size: Navi4AllGeometry.iconSizeMedium,
                       ),
@@ -117,7 +117,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                             : widget.destination!.id ==
                                   Navi4AllValues.userLocation
                             ? Icons.my_location
-                            : Icons.place,
+                            : Icons.place_rounded,
                         color: Navi4AllColors.klRed,
                         size: Navi4AllGeometry.iconSizeMedium,
                       ),

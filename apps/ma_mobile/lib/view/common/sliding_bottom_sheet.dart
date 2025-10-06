@@ -2,23 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
 
 class SlidingBottomSheet extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final List<dynamic> _listItems;
+  final Widget stickyHeader;
+  final List<Widget>? listItems;
+  final Widget? body;
+  final double minSize;
+  final double initSize;
+  final double maxSize;
 
-  const SlidingBottomSheet(
-    this.title,
-    this.subtitle,
-    this._listItems, {
+  SlidingBottomSheet(
+    this.stickyHeader, {
     super.key,
-  });
+    this.listItems,
+    this.body,
+    this.minSize = 0.3,
+    this.initSize = 0.45,
+    this.maxSize = 0.75,
+  }) {
+    assert(listItems != null || body != null);
+  }
 
   @override
   Widget build(BuildContext context) => SizedBox.expand(
     child: DraggableScrollableSheet(
-      minChildSize: 0.3,
-      initialChildSize: 0.45,
-      maxChildSize: 0.75,
+      minChildSize: minSize,
+      initialChildSize: initSize,
+      maxChildSize: maxSize,
       builder: ((BuildContext context, ScrollController controller) => Material(
         elevation: 4.0,
         borderRadius: BorderRadius.only(
@@ -35,75 +43,41 @@ class SlidingBottomSheet extends StatelessWidget {
           ),
           child: Column(
             children: <Widget>[
+              SizedBox(height: 16.0),
+              Container(
+                width: 32.0,
+                height: 4.0,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
               SingleChildScrollView(
                 controller: controller,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16.0,
-                          horizontal: 24.0,
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              width: 32.0,
-                              height: 4.0,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            SizedBox(height: 24.0),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: SmartRootsColors.maBlueExtraExtraDark,
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                subtitle,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: SmartRootsColors.maBlueExtraExtraDark,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: stickyHeader,
               ),
-              Expanded(
-                child: ListView.separated(
-                  padding: EdgeInsets.zero,
-                  controller: controller,
-                  shrinkWrap: true,
-                  itemCount: _listItems.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      _listItems[index],
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(
-                        height: 1,
-                        color: SmartRootsColors.maBlue,
-                        indent: 16,
-                        endIndent: 16,
+              listItems != null
+                  ? Expanded(
+                      child: ListView.separated(
+                        padding: EdgeInsets.zero,
+                        controller: controller,
+                        shrinkWrap: true,
+                        itemCount: listItems!.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            listItems![index],
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(
+                              height: 1,
+                              color: SmartRootsColors.maBlue,
+                              indent: 16,
+                              endIndent: 16,
+                            ),
                       ),
-                ),
-              ),
+                    )
+                  : SizedBox.shrink(),
+              body != null
+                  ? SingleChildScrollView(controller: controller, child: body!)
+                  : SizedBox.shrink(),
             ],
           ),
         ),

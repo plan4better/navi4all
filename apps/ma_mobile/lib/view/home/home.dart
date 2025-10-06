@@ -5,6 +5,8 @@ import 'package:smartroots/view/home/map.dart';
 import 'package:smartroots/view/favourites/favourites.dart';
 import 'package:smartroots/view/settings/settings.dart';
 import 'package:smartroots/view/search/search.dart';
+import 'package:smartroots/core/persistence/preference_helper.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,11 +20,45 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> get _pages => [HomeMap(), FavouritesScreen(), SettingsScreen()];
 
   @override
+  void initState() {
+    PreferenceHelper.getLaunchCount().then((launchCount) {
+      if (launchCount == 1) {
+        _requestLocationPermission();
+      }
+      PreferenceHelper.incrementLaunchCount();
+    });
+
+    super.initState();
+  }
+
+  Future<void> _requestLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          _pages[_pageIndex],
+          Stack(
+            children: [
+              Offstage(
+                offstage: _pageIndex != 0,
+                child: TickerMode(enabled: _pageIndex == 0, child: _pages[0]),
+              ),
+              Offstage(
+                offstage: _pageIndex != 1,
+                child: TickerMode(enabled: _pageIndex == 1, child: _pages[1]),
+              ),
+              Offstage(
+                offstage: _pageIndex != 2,
+                child: TickerMode(enabled: _pageIndex == 2, child: _pages[2]),
+              ),
+            ],
+          ),
           _pageIndex <= 1
               ? SafeArea(
                   child: Align(
@@ -127,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: SmartRootsColors.maBlueExtraExtraDark,
                             ),
                             selectedIcon: Icon(
-                              Icons.place,
+                              Icons.place_rounded,
                               color: SmartRootsColors.maBlueExtraExtraDark,
                             ),
                             label: AppLocalizations.of(

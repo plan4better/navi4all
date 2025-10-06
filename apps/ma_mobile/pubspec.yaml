@@ -17,6 +17,8 @@ dependencies:
   intl: any
   maplibre_gl: ^0.22.0
   shared_preferences: ^2.5.3
+  geolocator: ^14.0.2
+  maps_launcher: ^3.0.0+1
 
 dev_dependencies:
   flutter_test:

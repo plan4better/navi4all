@@ -253,4 +253,40 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsOptionLegalAndPrivacy => 'Rechtliches & Datenschutz';
+
+  @override
+  String get userLocationDeniedSnackbarText => 'Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.';
+
+  @override
+  String get placeScreenChangeRadiusButton => 'Radius wählen';
+
+  @override
+  String get placeScreenChangeRadiusCancel => 'Abbrechen';
+
+  @override
+  String get placeScreenChangeRadiusConfirm => 'Ändern';
+
+  @override
+  String get errorUnableToFetchParkingSites => 'Parkplätze konnten nicht abgerufen werden, bitte versuchen Sie es später erneut.';
+
+  @override
+  String get errorUnableToFetchDrivingTime => 'Fahrzeit konnte nicht abgerufen werden, bitte versuchen Sie es später erneut.';
+
+  @override
+  String get availabilityUnknown => 'Unbekannt';
+
+  @override
+  String get parkingLocationButtonStart => 'Start';
+
+  @override
+  String get parkingLocationButtonFavourite => 'Favorit';
+
+  @override
+  String get parkingLocationButtonRouteExternal => 'Route extern';
+
+  @override
+  String get errorUnableToLaunchRouteExternal => 'Externe Karten-App konnte nicht gestartet werden.';
+
+  @override
+  String get featureComingSoonMessage => 'Diese Funktion kommt bald.';
 }

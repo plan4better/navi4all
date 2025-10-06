@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
+import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/search/search.dart';
 import 'package:smartroots/schemas/routing/place.dart';
-import 'package:smartroots/view/parking_site/sliding_bottom_sheet.dart';
+import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
+import 'package:smartroots/view/common/sheet_button.dart';
 import 'package:smartroots/view/parking_site/map.dart';
 import 'dart:core';
 
-import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:smartroots/services/poi_parking.dart';
-
 import 'package:intl/intl.dart';
-import 'package:smartroots/schemas/routing/coordinates.dart';
 import 'package:smartroots/services/routing.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
-import 'package:smartroots/schemas/routing/mode.dart';
-import 'package:smartroots/schemas/routing/place.dart';
-import 'package:smartroots/core/theme/values.dart';
 import 'package:smartroots/core/persistence/processing_status.dart';
-import 'package:smartroots/view/search/search.dart';
+import 'package:smartroots/core/utils.dart';
+import 'package:maps_launcher/maps_launcher.dart';
+import 'package:smartroots/core/persistence/preference_helper.dart';
 
 class ParkingSiteScreen extends StatefulWidget {
   final Place? place;
@@ -29,18 +26,35 @@ class ParkingSiteScreen extends StatefulWidget {
 }
 
 class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
-  List<Widget> _getPlaceListItems() {
-    return [for (var site in _parkingSites) PlaceListItem(parkingSite: site)];
-  }
-
-  List<Map<String, dynamic>> _parkingSites = [];
+  bool _isFavorite = false;
   List<Itinerary> _itineraries = [];
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
 
   @override
   void initState() {
     super.initState();
+    _checkIfFavorite();
     _fetchItineraries();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    _isFavorite = await PreferenceHelper.isFavoriteParkingSite(
+      widget.parkingSite["id"],
+    );
+    setState(() {});
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isFavorite) {
+      await PreferenceHelper.removeFavoriteParkingSite(
+        widget.parkingSite["id"],
+      );
+    } else {
+      await PreferenceHelper.addFavoriteParkingSite(widget.parkingSite["id"]);
+    }
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
   }
 
   Future<void> _fetchItineraries() async {
@@ -70,18 +84,22 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
       } else {
         throw Exception('Failed to load itineraries');
       }
+
+      setState(() {
+        _processingStatus = ProcessingStatus.completed;
+      });
     } catch (e) {
-      print('Error fetching itineraries: $e');
-      // TODO: Handle error appropriately, e.g., show a snackbar or dialog
       setState(() {
         _processingStatus = ProcessingStatus.error;
       });
-      return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorUnableToFetchDrivingTime,
+          ),
+        ),
+      );
     }
-
-    setState(() {
-      _processingStatus = ProcessingStatus.completed;
-    });
   }
 
   @override
@@ -91,11 +109,190 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
         children: [
           ParkingSiteMap(parkingSite: widget.parkingSite),
           SlidingBottomSheet(
-            widget.parkingSite["name"],
-            widget.place?.description ?? '',
-            _itineraries.isNotEmpty ? _itineraries.first.duration ~/ 60 : null,
-            _getPlaceListItems(),
-            widget.parkingSite,
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 24.0,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            widget.parkingSite["name"],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            widget.parkingSite["address"],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: SheetButton(
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.parkingLocationButtonStart,
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.featureComingSoonMessage,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                shrinkWrap: false,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Flexible(
+                              flex: 2,
+                              child: SheetButton(
+                                icon: _isFavorite
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.parkingLocationButtonFavourite,
+                                onTap: () => _toggleFavorite(),
+                                shrinkWrap: false,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Flexible(
+                              flex: 2,
+                              child: SheetButton(
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.parkingLocationButtonRouteExternal,
+                                onTap: () {
+                                  MapsLauncher.launchCoordinates(
+                                    widget.parkingSite['coordinates'].latitude,
+                                    widget.parkingSite['coordinates'].longitude,
+                                    widget.parkingSite['name'],
+                                  ).then((value) {
+                                    if (!value) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.errorUnableToLaunchRouteExternal,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
+                                shrinkWrap: false,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8.0,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.directions_car_outlined,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
+                      SizedBox(width: 8.0),
+                      (_itineraries.isNotEmpty
+                                  ? _itineraries.first.duration ~/ 60
+                                  : null) !=
+                              null
+                          ? Text(
+                              '${_itineraries.isNotEmpty ? _itineraries.first.duration ~/ 60 : null} min',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontSize: 16,
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ],
+                  ),
+                  SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: widget.parkingSite['has_realtime_data']
+                              ? widget.parkingSite['occupied_disabled'] !=
+                                            null &&
+                                        widget.parkingSite['occupied_disabled'] <
+                                            widget
+                                                .parkingSite['capacity_disabled']
+                                    ? SmartRootsColors.maGreen
+                                    : SmartRootsColors.maRed
+                              : SmartRootsColors.maBlueExtraDark,
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.local_parking,
+                              size: 16,
+                              color: SmartRootsColors.maWhite,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        getOccupancyText(context, widget.parkingSite),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            initSize: 0.35,
+            maxSize: 0.35,
           ),
           SafeArea(
             child: Align(
@@ -151,102 +348,6 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class PlaceListItem extends StatelessWidget {
-  final Map<String, dynamic> parkingSite;
-  const PlaceListItem({required this.parkingSite, super.key});
-
-  String _getOccupancyText() {
-    if (parkingSite["has_realtime_data"]) {
-      return '${parkingSite["occupied_spaces"] ?? '?'}/${parkingSite["total_spaces"] ?? '?'}';
-    } else {
-      return '?/${parkingSite["total_spaces"] ?? '?'}';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    parkingSite["name"],
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.directions_car_outlined,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                        size: 20,
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: SmartRootsColors.maBlueExtraExtraDark,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16),
-            Text(
-              _getOccupancyText(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: SmartRootsColors.maBlueExtraExtraDark,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: parkingSite['has_realtime_data']
-                    ? SmartRootsColors.maBlueExtraExtraDark
-                    : SmartRootsColors.maBlue,
-                borderRadius: BorderRadius.circular(32),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    parkingSite['has_realtime_data']
-                        ? Icons.local_parking
-                        : Icons.question_mark,
-                    size: 16,
-                    color: SmartRootsColors.maWhite,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

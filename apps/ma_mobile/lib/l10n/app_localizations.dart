@@ -538,6 +538,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Legal & Privacy'**
   String get settingsOptionLegalAndPrivacy;
+
+  /// No description provided for @userLocationDeniedSnackbarText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location access in system settings to use this feature.'**
+  String get userLocationDeniedSnackbarText;
+
+  /// No description provided for @placeScreenChangeRadiusButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change radius'**
+  String get placeScreenChangeRadiusButton;
+
+  /// No description provided for @placeScreenChangeRadiusCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get placeScreenChangeRadiusCancel;
+
+  /// No description provided for @placeScreenChangeRadiusConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get placeScreenChangeRadiusConfirm;
+
+  /// No description provided for @errorUnableToFetchParkingSites.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch parking sites, try again later.'**
+  String get errorUnableToFetchParkingSites;
+
+  /// No description provided for @errorUnableToFetchDrivingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch driving time, try again later.'**
+  String get errorUnableToFetchDrivingTime;
+
+  /// No description provided for @availabilityUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get availabilityUnknown;
+
+  /// No description provided for @parkingLocationButtonStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get parkingLocationButtonStart;
+
+  /// No description provided for @parkingLocationButtonFavourite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourite'**
+  String get parkingLocationButtonFavourite;
+
+  /// No description provided for @parkingLocationButtonRouteExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Route External'**
+  String get parkingLocationButtonRouteExternal;
+
+  /// No description provided for @errorUnableToLaunchRouteExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to launch external maps app.'**
+  String get errorUnableToLaunchRouteExternal;
+
+  /// No description provided for @featureComingSoonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is coming soon.'**
+  String get featureComingSoonMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

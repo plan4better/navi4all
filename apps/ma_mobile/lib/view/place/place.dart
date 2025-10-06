@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
+import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/search/search.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
@@ -7,8 +8,9 @@ import 'package:smartroots/view/place/map.dart';
 import 'dart:core';
 import 'package:smartroots/view/parking_site/parking_site.dart';
 
-import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:smartroots/services/poi_parking.dart';
+import 'package:smartroots/view/common/sheet_button.dart';
+import 'package:smartroots/core/utils.dart';
 
 class PlaceScreen extends StatefulWidget {
   final Place place;
@@ -19,58 +21,9 @@ class PlaceScreen extends StatefulWidget {
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
-  List<Widget> _getPlaceListItems() {
-    return [
-      for (var site in _parkingSites)
-        PlaceListItem(place: widget.place, parkingSite: site),
-    ];
-  }
-
+  int _selectedRadius = 300;
+  int _changedRadius = 300;
   List<Map<String, dynamic>> _parkingSites = [];
-
-  Future<void> _fetchParkingSites() async {
-    List<Map<String, dynamic>> sites = [];
-
-    POIParkingService parkingService = POIParkingService();
-    try {
-      final response = await parkingService.parkingSites(
-        focusPointLat: widget.place.coordinates.lat,
-        focusPointLon: widget.place.coordinates.lon,
-        radius: 300,
-      );
-
-      if (response.statusCode == 200) {
-        final results = response.data['items'] as List;
-        sites = results
-            .map(
-              (item) => {
-                "name": item['name'],
-                "coordinates": LatLng(
-                  double.parse(item['lat']),
-                  double.parse(item['lon']),
-                ),
-                "has_realtime_data": item['has_realtime_data'],
-                "total_spaces": item['has_realtime_data']
-                    ? item['realtime_capacity']
-                    : item['capacity'],
-                "occupied_spaces": item['has_realtime_data']
-                    ? item['realtime_free_capacity']
-                    : 0,
-              },
-            )
-            .toList();
-      } else {
-        throw Exception('Failed to load parking sites.');
-      }
-    } catch (e) {
-      print('Error fetching parking sites: $e');
-      // Handle error appropriately, e.g., show a snackbar or dialog
-    }
-
-    setState(() {
-      _parkingSites = sites;
-    });
-  }
 
   @override
   void initState() {
@@ -78,16 +31,182 @@ class _PlaceScreenState extends State<PlaceScreen> {
     super.initState();
   }
 
+  Future<void> _fetchParkingSites() async {
+    POIParkingService parkingService = POIParkingService();
+    try {
+      List<Map<String, dynamic>> result = await parkingService
+          .getParkingLocations(
+            focusPointLat: widget.place.coordinates.lat,
+            focusPointLon: widget.place.coordinates.lon,
+            radius: _selectedRadius,
+          );
+
+      setState(() {
+        _parkingSites = result;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
+          ),
+        ),
+      );
+    }
+  }
+
+  void _changeRadiusOnTap() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          backgroundColor: SmartRootsColors.maWhite,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    AppLocalizations.of(context)!.placeScreenChangeRadiusButton,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                Slider(
+                  min: 100,
+                  max: 1000,
+                  divisions: 9,
+                  padding: const EdgeInsets.all(0),
+                  label: '${_changedRadius}m',
+                  value: _changedRadius.toDouble(),
+                  onChanged: (value) {
+                    setState(() => _changedRadius = value.toInt());
+                  },
+                ),
+                SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    '${_changedRadius}m',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SheetButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.placeScreenChangeRadiusCancel,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: SheetButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.placeScreenChangeRadiusConfirm,
+                        onTap: () {
+                          setState(() {
+                            _selectedRadius = _changedRadius;
+                            _fetchParkingSites();
+                            Navigator.of(context).pop();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          PlaceMap(place: widget.place, radius: 300),
+          PlaceMap(place: widget.place, radius: _selectedRadius),
           SlidingBottomSheet(
-            widget.place.name,
-            widget.place.description,
-            _getPlaceListItems(),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 24.0,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            widget.place.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            widget.place.description,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: SheetButton(
+                            label: AppLocalizations.of(
+                              context,
+                            )!.placeScreenChangeRadiusButton,
+                            onTap: () => _changeRadiusOnTap(),
+                            shrinkWrap: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            listItems: [
+              for (var site in _parkingSites)
+                PlaceListItem(place: widget.place, parkingSite: site),
+            ],
           ),
           SafeArea(
             child: Align(
@@ -157,14 +276,6 @@ class PlaceListItem extends StatelessWidget {
     super.key,
   });
 
-  String _getOccupancyText() {
-    if (parkingSite["has_realtime_data"]) {
-      return '${parkingSite["occupied_spaces"] ?? '?'}/${parkingSite["total_spaces"] ?? '?'}';
-    } else {
-      return '?/${parkingSite["total_spaces"] ?? '?'}';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -220,7 +331,7 @@ class PlaceListItem extends StatelessWidget {
             ),
             SizedBox(width: 16),
             Text(
-              _getOccupancyText(),
+              getOccupancyText(context, parkingSite),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -233,16 +344,18 @@ class PlaceListItem extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: parkingSite['has_realtime_data']
-                    ? SmartRootsColors.maBlueExtraExtraDark
-                    : SmartRootsColors.maBlue,
+                    ? parkingSite['occupied_disabled'] != null &&
+                              parkingSite['occupied_disabled'] <
+                                  parkingSite['capacity_disabled']
+                          ? SmartRootsColors.maGreen
+                          : SmartRootsColors.maRed
+                    : SmartRootsColors.maBlueExtraDark,
                 borderRadius: BorderRadius.circular(32),
               ),
               child: Row(
                 children: [
                   Icon(
-                    parkingSite['has_realtime_data']
-                        ? Icons.local_parking
-                        : Icons.question_mark,
+                    Icons.local_parking,
                     size: 16,
                     color: SmartRootsColors.maWhite,
                   ),

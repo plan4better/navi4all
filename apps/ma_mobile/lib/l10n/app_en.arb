@@ -184,5 +184,17 @@
     "settingsTitle": "Settings",
     "settingsOptionFeedback": "Feedback",
     "settingsOptionSupport": "Support",
-    "settingsOptionLegalAndPrivacy": "Legal & Privacy"
+    "settingsOptionLegalAndPrivacy": "Legal & Privacy",
+    "userLocationDeniedSnackbarText": "Enable location access in system settings to use this feature.",
+    "placeScreenChangeRadiusButton": "Change radius",
+    "placeScreenChangeRadiusCancel": "Cancel",
+    "placeScreenChangeRadiusConfirm": "Change",
+    "errorUnableToFetchParkingSites": "Unable to fetch parking sites, try again later.",
+    "errorUnableToFetchDrivingTime": "Unable to fetch driving time, try again later.",
+    "availabilityUnknown": "Unknown",
+    "parkingLocationButtonStart": "Start",
+    "parkingLocationButtonFavourite": "Favourite",
+    "parkingLocationButtonRouteExternal": "Route External",
+    "errorUnableToLaunchRouteExternal": "Unable to launch external maps app.",
+    "featureComingSoonMessage": "This feature is coming soon."
 }

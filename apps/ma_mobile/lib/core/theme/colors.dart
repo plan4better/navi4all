@@ -8,7 +8,6 @@ class SmartRootsColors {
   static const Color maBackground = Color(0xFFEAF0F5);
   static const Color maWhite = Color(0xFFFFFFFF);
   static const Color maBlack = Color(0xFF1F262C);
-  static const Color maGreen = Color(0xFF67B95F);
-  static const Color maOrange = Color(0xFFE56B2A);
-  static const Color maYellow = Color(0xFFE5DA48);
+  static const Color maGreen = Color(0xFF089161);
+  static const Color maRed = Color(0xFFF4B1A4);
 }
