@@ -164,13 +164,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to\nNavi4All.'**
+  /// **'Welcome to\nSmartRoots'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'The app that guides you\nthrough Kaiserslautern.'**
+  /// **'The app that guides you to\naccessible parking spots.'**
   String get onboardingWelcomeSubtitle;
 
   /// No description provided for @onboardingWelcomeHint.
@@ -179,29 +179,35 @@ abstract class AppLocalizations {
   /// **'Press the button to continue.'**
   String get onboardingWelcomeHint;
 
-  /// No description provided for @onboardingProfileSelectionTitle.
+  /// No description provided for @onboardingSymbolInformationTitle.
   ///
   /// In en, this message translates to:
-  /// **'Select your profile'**
-  String get onboardingProfileSelectionTitle;
+  /// **'Important symbols'**
+  String get onboardingSymbolInformationTitle;
 
-  /// No description provided for @onboardingProfileSelectionBlindUserTitle.
+  /// No description provided for @onboardingSymbolInformationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Blind User'**
-  String get onboardingProfileSelectionBlindUserTitle;
+  /// **'The following symbols represent real-time availability at parking spots.'**
+  String get onboardingSymbolInformationSubtitle;
 
-  /// No description provided for @onboardingProfileSelectionVisionImpairedUserTitle.
+  /// No description provided for @onboardingSymbolInformationParkingAvailable.
   ///
   /// In en, this message translates to:
-  /// **'Vision Impaired User'**
-  String get onboardingProfileSelectionVisionImpairedUserTitle;
+  /// **'Parking available'**
+  String get onboardingSymbolInformationParkingAvailable;
 
-  /// No description provided for @onboardingProfileSelectionGeneralUserTitle.
+  /// No description provided for @onboardingSymbolInformationParkingUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'General User'**
-  String get onboardingProfileSelectionGeneralUserTitle;
+  /// **'Parking not available'**
+  String get onboardingSymbolInformationParkingUnavailable;
+
+  /// No description provided for @onboardingSymbolInformationParkingUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time data unavailable'**
+  String get onboardingSymbolInformationParkingUnknown;
 
   /// No description provided for @onboardingUserLocationTitle.
   ///
@@ -224,7 +230,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFinishSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Your profile has been selected.\nWelcome to Navi4All.'**
+  /// **'Welcome to SmartRoots.'**
   String get onboardingFinishSubtitle;
 
   /// No description provided for @onboardingFinishAppTutorialButton.

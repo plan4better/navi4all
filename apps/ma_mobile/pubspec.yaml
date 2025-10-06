@@ -30,8 +30,7 @@ flutter:
   generate: true
 
   assets:
-    - assets/stadt_kl_red.png
-    - assets/stadt_kl_white.png
+    - assets/smart_logo.png
     - assets/p_reserviert.png
     - assets/parking_avbl_yes.png
     - assets/parking_avbl_no.png

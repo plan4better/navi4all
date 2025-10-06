@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonContinueButtonSemantic => 'Continue';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to\nNavi4All.';
+  String get onboardingWelcomeTitle => 'Welcome to\nNavi4All';
 
   @override
   String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserslautern.';

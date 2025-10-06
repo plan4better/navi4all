@@ -5,8 +5,6 @@ import 'package:smartroots/view/home/map.dart';
 import 'package:smartroots/view/favourites/favourites.dart';
 import 'package:smartroots/view/settings/settings.dart';
 import 'package:smartroots/view/search/search.dart';
-import 'package:smartroots/core/persistence/preference_helper.dart';
-import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,27 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> get _pages => [HomeMap(), FavouritesScreen(), SettingsScreen()];
 
   @override
-  void initState() {
-    PreferenceHelper.getLaunchCount().then((launchCount) {
-      if (launchCount == 1) {
-        _requestLocationPermission();
-      }
-      PreferenceHelper.incrementLaunchCount();
-    });
-
-    super.initState();
-  }
-
-  Future<void> _requestLocationPermission() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: SmartRootsColors.maWhite,
       body: Stack(
         children: [
           Stack(

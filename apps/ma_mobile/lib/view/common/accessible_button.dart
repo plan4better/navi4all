@@ -32,16 +32,16 @@ class AccessibleButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Navi4AllGeometry.radiusLarge),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
         ),
         child: SizedBox(
-          width: 256.0,
+          width: 160.0,
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: Navi4AllGeometry.fontSizeMedium,
+              fontSize: 16.0,
               color:
                   (style == AccessibleButtonStyle.white) |
                       (style == AccessibleButtonStyle.pink)

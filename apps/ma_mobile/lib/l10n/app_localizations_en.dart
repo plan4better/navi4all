@@ -42,25 +42,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonContinueButtonSemantic => 'Continue';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to\nNavi4All.';
+  String get onboardingWelcomeTitle => 'Welcome to\nSmartRoots';
 
   @override
-  String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserslautern.';
+  String get onboardingWelcomeSubtitle => 'The app that guides you to\naccessible parking spots.';
 
   @override
   String get onboardingWelcomeHint => 'Press the button to continue.';
 
   @override
-  String get onboardingProfileSelectionTitle => 'Select your profile';
+  String get onboardingSymbolInformationTitle => 'Important symbols';
 
   @override
-  String get onboardingProfileSelectionBlindUserTitle => 'Blind User';
+  String get onboardingSymbolInformationSubtitle => 'The following symbols represent real-time availability at parking spots.';
 
   @override
-  String get onboardingProfileSelectionVisionImpairedUserTitle => 'Vision Impaired User';
+  String get onboardingSymbolInformationParkingAvailable => 'Parking available';
 
   @override
-  String get onboardingProfileSelectionGeneralUserTitle => 'General User';
+  String get onboardingSymbolInformationParkingUnavailable => 'Parking not available';
+
+  @override
+  String get onboardingSymbolInformationParkingUnknown => 'Real-time data unavailable';
 
   @override
   String get onboardingUserLocationTitle => 'We need access to your location';
@@ -72,7 +75,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingFinishTitle => 'All done!';
 
   @override
-  String get onboardingFinishSubtitle => 'Your profile has been selected.\nWelcome to Navi4All.';
+  String get onboardingFinishSubtitle => 'Welcome to SmartRoots.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'View App Tutorial';

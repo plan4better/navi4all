@@ -1,16 +1,14 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceHelper {
-  static Future<int> getLaunchCount() async {
+  static Future<bool> isOnboardingComplete() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getInt("launch_count") ?? 0;
+    return preferences.getBool("onboarding_complete") ?? false;
   }
 
-  static Future<int> incrementLaunchCount() async {
+  static Future<void> setOnboardingComplete(bool complete) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    int launchCount = (preferences.getInt("launch_count") ?? 0) + 1;
-    preferences.setInt("launch_count", launchCount);
-    return launchCount;
+    preferences.setBool("onboarding_complete", complete);
   }
 
   static Future<List<String>> getFavoriteParkingSites() async {
