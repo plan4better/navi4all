@@ -24,6 +24,7 @@ class _PlaceMapState extends State<PlaceMap> {
   late MapLibreMapController _mapController;
   List<Map<String, dynamic>> _parkingSites = [];
   Map<String, Map<String, dynamic>> _symbolIdToSite = {};
+  int? _lastRadius;
 
   Future<void> _onStyleLoaded() async {
     // Load custom marker icons
@@ -43,12 +44,42 @@ class _PlaceMapState extends State<PlaceMap> {
     final list4 = bytes4.buffer.asUint8List();
     _mapController.addImage("place.png", list4);
 
-    _drawRadius();
-    await _fetchParkingSites();
-    _drawPlace();
+    await _fetchMapLayers();
 
     // Add symbol tap listener
     _mapController.onSymbolTapped.add(_onSymbolTapped);
+  }
+
+  Future<void> _fetchMapLayers() async {
+    // Clear existing layers
+    _mapController.clearSymbols();
+    _mapController.clearFills();
+
+    // Draw radius circle
+    _lastRadius = widget.radius;
+    _drawRadius();
+
+    // Fetch parking sites and draw markers
+    await _fetchParkingSites();
+
+    // Draw place marker
+    _drawPlace();
+
+    // Compute new camera zoom and position to fit radius
+    double zoomLevel = 14.0 - log(widget.radius / 400) / log(2);
+    zoomLevel = zoomLevel.clamp(9.0, 16.0);
+    _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(
+            widget.place.coordinates.lat - (widget.radius / 125000),
+            widget.place.coordinates.lon,
+          ),
+          zoom: zoomLevel,
+        ),
+      ),
+      duration: const Duration(seconds: 2),
+    );
   }
 
   Future<void> _fetchParkingSites() async {
@@ -90,6 +121,11 @@ class _PlaceMapState extends State<PlaceMap> {
 
   @override
   Widget build(BuildContext context) {
+    if (_lastRadius != null && widget.radius != _lastRadius) {
+      // Radius changed, update map
+      _fetchMapLayers();
+    }
+
     return Stack(
       children: [
         MapLibreMap(
