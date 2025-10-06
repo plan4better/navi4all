@@ -83,29 +83,57 @@ class _PlaceScreenState extends State<PlaceScreen> {
                   ),
                 ),
                 SizedBox(height: 32),
-                Slider(
-                  min: 100,
-                  max: 1000,
-                  divisions: 9,
-                  padding: const EdgeInsets.all(0),
-                  label: '${_changedRadius}m',
-                  value: _changedRadius.toDouble(),
-                  onChanged: (value) {
-                    setState(() => _changedRadius = value.toInt());
-                  },
-                ),
-                SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    '${_changedRadius}m',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
+                DropdownMenu(
+                  inputDecorationTheme: InputDecorationTheme(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
+                  textStyle: TextStyle(
+                    color: SmartRootsColors.maBlueExtraExtraDark,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  dropdownMenuEntries: [
+                    for (var value in [100, 200, 300, 400, 500])
+                      DropdownMenuEntry(
+                        value: value,
+                        label: '${value}m',
+                        leadingIcon: SizedBox(
+                          width: 32,
+                          child: Icon(
+                            Icons.circle_outlined,
+                            color: SmartRootsColors.maBlueExtraExtraDark,
+                            size: value / 100 * 4 + 8,
+                          ),
+                        ),
+                        labelWidget: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                '${value}m',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: SmartRootsColors.maBlueExtraExtraDark,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                  initialSelection: _selectedRadius,
+                  onSelected: (value) {
+                    setState(() {
+                      _changedRadius = value as int;
+                    });
+                  },
                 ),
                 SizedBox(height: 32),
                 Row(
@@ -116,6 +144,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           context,
                         )!.placeScreenChangeRadiusCancel,
                         onTap: () {
+                          _changedRadius = _selectedRadius;
                           Navigator.of(context).pop();
                         },
                       ),
