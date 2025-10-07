@@ -664,6 +664,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This field is required.'**
   String get feedbackFieldErrorRequired;
+
+  /// No description provided for @legalPrivacyScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Privacy'**
+  String get legalPrivacyScreenTitle;
+
+  /// No description provided for @legalPrivacyLocationAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Access'**
+  String get legalPrivacyLocationAccess;
+
+  /// No description provided for @legalPrivacyDataProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection'**
+  String get legalPrivacyDataProtection;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

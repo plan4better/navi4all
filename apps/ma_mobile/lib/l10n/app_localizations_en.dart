@@ -316,4 +316,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedbackFieldErrorRequired => 'This field is required.';
+
+  @override
+  String get legalPrivacyScreenTitle => 'Legal & Privacy';
+
+  @override
+  String get legalPrivacyLocationAccess => 'Location Access';
+
+  @override
+  String get legalPrivacyDataProtection => 'Data Protection';
 }

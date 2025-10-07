@@ -205,5 +205,8 @@
     "feedbackSubjectHint": "Betreff",
     "feedbackMessageHint": "Ihr Nachricht",
     "feedbackSubmitButton": "Absenden",
-    "feedbackFieldErrorRequired": "Dieses Feld ist erforderlich."
+    "feedbackFieldErrorRequired": "Dieses Feld ist erforderlich.",
+    "legalPrivacyScreenTitle": "Rechtliches & Datenschutz",
+    "legalPrivacyLocationAccess": "Standortzugriff",
+    "legalPrivacyDataProtection": "AGB & Datenschutz"
 }

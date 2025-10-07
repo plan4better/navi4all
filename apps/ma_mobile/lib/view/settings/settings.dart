@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/settings/feedback.dart';
+import 'package:smartroots/view/settings/legal_privacy.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:smartroots/core/config.dart';
 
@@ -96,7 +97,11 @@ class SettingsScreen extends StatelessWidget {
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LegalPrivacyScreen(),
+                      ),
+                    ),
                   ),
                 ],
               ),

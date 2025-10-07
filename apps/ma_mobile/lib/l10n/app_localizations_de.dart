@@ -316,4 +316,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get feedbackFieldErrorRequired => 'Dieses Feld ist erforderlich.';
+
+  @override
+  String get legalPrivacyScreenTitle => 'Rechtliches & Datenschutz';
+
+  @override
+  String get legalPrivacyLocationAccess => 'Standortzugriff';
+
+  @override
+  String get legalPrivacyDataProtection => 'AGB & Datenschutz';
 }

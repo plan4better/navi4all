@@ -205,5 +205,8 @@
     "feedbackSubjectHint": "Subject",
     "feedbackMessageHint": "Your feedback",
     "feedbackSubmitButton": "Submit",
-    "feedbackFieldErrorRequired": "This field is required."
+    "feedbackFieldErrorRequired": "This field is required.",
+    "legalPrivacyScreenTitle": "Legal & Privacy",
+    "legalPrivacyLocationAccess": "Location Access",
+    "legalPrivacyDataProtection": "Data Protection"
 }
