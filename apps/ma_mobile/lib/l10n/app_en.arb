@@ -198,5 +198,12 @@
     "parkingLocationButtonFavourite": "Favourite",
     "parkingLocationButtonRouteExternal": "Route External",
     "errorUnableToLaunchRouteExternal": "Unable to launch external maps app.",
-    "featureComingSoonMessage": "This feature is coming soon."
+    "featureComingSoonMessage": "This feature is coming soon.",
+    "feedbackScreenTitle": "Feedback",
+    "feedbackTypeLocalData": "Local Data",
+    "feedbackTypeAppFunctionality": "App Functionality",
+    "feedbackSubjectHint": "Subject",
+    "feedbackMessageHint": "Your feedback",
+    "feedbackSubmitButton": "Submit",
+    "feedbackFieldErrorRequired": "This field is required."
 }

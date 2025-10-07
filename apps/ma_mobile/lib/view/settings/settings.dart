@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/view/settings/feedback.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -45,7 +46,11 @@ class SettingsScreen extends StatelessWidget {
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const FeedbackScreen(),
+                      ),
+                    ),
                   ),
                   Divider(color: SmartRootsColors.maBlue, height: 0),
                   ListTile(

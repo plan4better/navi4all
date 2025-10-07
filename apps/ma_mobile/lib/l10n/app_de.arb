@@ -198,5 +198,12 @@
     "parkingLocationButtonFavourite": "Favorit",
     "parkingLocationButtonRouteExternal": "Route extern",
     "errorUnableToLaunchRouteExternal": "Externe Karten-App konnte nicht gestartet werden.",
-    "featureComingSoonMessage": "Diese Funktion kommt bald."
+    "featureComingSoonMessage": "Diese Funktion kommt bald.",
+    "feedbackScreenTitle": "Feedback",
+    "feedbackTypeLocalData": "Lokale Daten",
+    "feedbackTypeAppFunctionality": "App-Funktionalität",
+    "feedbackSubjectHint": "Betreff",
+    "feedbackMessageHint": "Ihr Nachricht",
+    "feedbackSubmitButton": "Absenden",
+    "feedbackFieldErrorRequired": "Dieses Feld ist erforderlich."
 }

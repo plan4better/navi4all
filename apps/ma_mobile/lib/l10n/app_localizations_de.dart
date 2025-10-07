@@ -295,4 +295,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get featureComingSoonMessage => 'Diese Funktion kommt bald.';
+
+  @override
+  String get feedbackScreenTitle => 'Feedback';
+
+  @override
+  String get feedbackTypeLocalData => 'Lokale Daten';
+
+  @override
+  String get feedbackTypeAppFunctionality => 'App-Funktionalität';
+
+  @override
+  String get feedbackSubjectHint => 'Betreff';
+
+  @override
+  String get feedbackMessageHint => 'Ihr Nachricht';
+
+  @override
+  String get feedbackSubmitButton => 'Absenden';
+
+  @override
+  String get feedbackFieldErrorRequired => 'Dieses Feld ist erforderlich.';
 }

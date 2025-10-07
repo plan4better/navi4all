@@ -622,6 +622,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This feature is coming soon.'**
   String get featureComingSoonMessage;
+
+  /// No description provided for @feedbackScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedbackScreenTitle;
+
+  /// No description provided for @feedbackTypeLocalData.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Data'**
+  String get feedbackTypeLocalData;
+
+  /// No description provided for @feedbackTypeAppFunctionality.
+  ///
+  /// In en, this message translates to:
+  /// **'App Functionality'**
+  String get feedbackTypeAppFunctionality;
+
+  /// No description provided for @feedbackSubjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get feedbackSubjectHint;
+
+  /// No description provided for @feedbackMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback'**
+  String get feedbackMessageHint;
+
+  /// No description provided for @feedbackSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get feedbackSubmitButton;
+
+  /// No description provided for @feedbackFieldErrorRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get feedbackFieldErrorRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

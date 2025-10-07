@@ -295,4 +295,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureComingSoonMessage => 'This feature is coming soon.';
+
+  @override
+  String get feedbackScreenTitle => 'Feedback';
+
+  @override
+  String get feedbackTypeLocalData => 'Local Data';
+
+  @override
+  String get feedbackTypeAppFunctionality => 'App Functionality';
+
+  @override
+  String get feedbackSubjectHint => 'Subject';
+
+  @override
+  String get feedbackMessageHint => 'Your feedback';
+
+  @override
+  String get feedbackSubmitButton => 'Submit';
+
+  @override
+  String get feedbackFieldErrorRequired => 'This field is required.';
 }
