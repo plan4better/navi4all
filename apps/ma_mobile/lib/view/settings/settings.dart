@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/settings/feedback.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:smartroots/core/config.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
+
+  void _launchSupport() async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: Settings.supportEmailUrl,
+      query: 'subject=${Settings.supportEmailSubject}',
+    );
+
+    await launchUrl(emailLaunchUri);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () => _launchSupport(),
                   ),
                   Divider(color: SmartRootsColors.maBlue, height: 0),
                   ListTile(
