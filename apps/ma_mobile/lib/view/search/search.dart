@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/core/theme/colors.dart';
-import 'package:smartroots/view/common/accessible_button.dart';
 import 'package:smartroots/view/place/place.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/services/geocoding.dart';
@@ -214,11 +213,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           Icon(
                             Icons.search_rounded,
                             size: 96,
-                            color: SmartRootsColors.maBlue,
+                            color: SmartRootsColors.maBlueLight,
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 16),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
                             child: Text(
                               AppLocalizations.of(context)!.searchScreenPrompt,
                               textAlign: TextAlign.center,

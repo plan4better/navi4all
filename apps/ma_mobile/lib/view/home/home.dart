@@ -15,7 +15,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _pageIndex = 0;
-  List<Widget> get _pages => [HomeMap(), FavouritesScreen(), SettingsScreen()];
+  List<Widget> get _pages => [
+    HomeMap(),
+    FavouritesScreen(_pageIndex == 1),
+    SettingsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {

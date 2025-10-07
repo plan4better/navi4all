@@ -54,7 +54,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingSymbolInformationTitle => 'Wichtige Symbole';
 
   @override
-  String get onboardingSymbolInformationSubtitle => 'Die folgenden Symbole stehen für die Echtzeitverfügbarkeit von Parkplätzen.';
+  String get onboardingSymbolInformationSubtitle => 'Diese zeigen die Verfügbarkeit an barrierefreien Parkplätzen.';
 
   @override
   String get onboardingSymbolInformationParkingAvailable => 'Parkplatz verfügbar';
@@ -244,6 +244,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get favouritesTitle => 'Favoriten';
+
+  @override
+  String get favouritesScreenPrompt => 'Fügen Sie Favoriten hinzu, um sie hier zu sehen.';
 
   @override
   String get settingsTitle => 'Einstellungen';

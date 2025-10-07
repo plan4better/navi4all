@@ -188,7 +188,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSymbolInformationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'The following symbols represent real-time availability at parking spots.'**
+  /// **'These show availability at accessible parking spots.'**
   String get onboardingSymbolInformationSubtitle;
 
   /// No description provided for @onboardingSymbolInformationParkingAvailable.
@@ -520,6 +520,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Favourites'**
   String get favouritesTitle;
+
+  /// No description provided for @favouritesScreenPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add favourites to see them here.'**
+  String get favouritesScreenPrompt;
 
   /// No description provided for @settingsTitle.
   ///

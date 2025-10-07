@@ -8,6 +8,7 @@ class POIParkingService {
       baseUrl: Settings.parkApiBaseUrl,
       connectTimeout: Duration(seconds: Settings.apiConnectTimeout),
       receiveTimeout: Duration(seconds: Settings.apiReceiveTimeout),
+      validateStatus: (status) => true,
     ),
   );
 
