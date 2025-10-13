@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'SmartRoots'**
+  /// **'ParkStark'**
   String get appTitle;
 
   /// No description provided for @commonModeWalking.
@@ -164,7 +164,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to\nSmartRoots'**
+  /// **'Welcome to\nParkStark'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeSubtitle.
@@ -230,7 +230,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFinishSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to SmartRoots.'**
+  /// **'Welcome to ParkStark.'**
   String get onboardingFinishSubtitle;
 
   /// No description provided for @onboardingFinishAppTutorialButton.

@@ -1,7 +1,7 @@
 name: smartroots
 description: ""
 publish_to: 'none'
-version: 0.0.1+2
+version: 0.0.1+3
 
 environment:
   sdk: ^3.8.1
@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  freezed: ^3.2.3
   google_fonts: ^6.2.1
   intl: any
   maplibre_gl: ^0.22.0
@@ -20,18 +19,24 @@ dependencies:
   geolocator: ^14.0.2
   maps_launcher: ^3.0.0+1
   url_launcher: ^6.3.2
+  provider: ^6.1.5+1
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  freezed: ^3.2.3
+  build_runner: ^2.9.0
+  json_serializable: ^6.11.1
 
 flutter:
   uses-material-design: true
   generate: true
 
   assets:
-    - assets/smart_logo.png
+    - assets/parkstark_foreground.png
     - assets/p_reserviert.png
     - assets/parking_avbl_yes.png
     - assets/parking_avbl_no.png

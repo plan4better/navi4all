@@ -97,8 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onTap: () => _nextPage(),
             ),
           ),
-          Image.asset(width: 64, "assets/smart_logo.png"),
-          SizedBox(height: 48),
+          SizedBox(height: 64),
         ],
       ),
     );

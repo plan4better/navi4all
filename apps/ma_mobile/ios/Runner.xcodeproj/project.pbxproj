@@ -477,7 +477,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PBFA43Y4Z2;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SmartRoots;
+				INFOPLIST_KEY_CFBundleDisplayName = ParkStark;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -673,7 +673,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PBFA43Y4Z2;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SmartRoots;
+				INFOPLIST_KEY_CFBundleDisplayName = ParkStark;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -709,7 +709,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PBFA43Y4Z2;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SmartRoots;
+				INFOPLIST_KEY_CFBundleDisplayName = ParkStark;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

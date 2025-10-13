@@ -9,7 +9,7 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get appTitle => 'SmartRoots';
+  String get appTitle => 'ParkStark';
 
   @override
   String get commonModeWalking => 'Zu Fuß';
@@ -42,7 +42,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commonContinueButtonSemantic => 'Weiter';
 
   @override
-  String get onboardingWelcomeTitle => 'Willkommen bei\nSmartRoots';
+  String get onboardingWelcomeTitle => 'Willkommen bei\nParkStark';
 
   @override
   String get onboardingWelcomeSubtitle => 'Die App, die Sie zu\nbarrierefreien Parkplätzen führt.';
@@ -75,7 +75,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingFinishTitle => 'Alles erledigt!';
 
   @override
-  String get onboardingFinishSubtitle => 'Willkommen bei SmartRoots.';
+  String get onboardingFinishSubtitle => 'Willkommen bei ParkStark.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'Zum App-Tutorial';

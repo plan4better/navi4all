@@ -101,14 +101,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       DropdownMenuEntry(
                         value: value,
                         label: '${value}m',
-                        leadingIcon: SizedBox(
-                          width: 32,
-                          child: Icon(
-                            Icons.circle_outlined,
-                            color: SmartRootsColors.maBlueExtraExtraDark,
-                            size: value / 100 * 4 + 8,
-                          ),
-                        ),
                         labelWidget: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [

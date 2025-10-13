@@ -21,7 +21,7 @@ class SmartRootsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SmartRoots',
+      title: 'ParkStark',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: SmartRootsColors.maBlueExtraDark,

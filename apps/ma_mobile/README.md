@@ -1,4 +1,4 @@
-# SmartRoots - Mannheim
+# ParkStark - Mannheim
 
 ![Mannheim](./mannheim.png)
 

@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'SmartRoots';
+  String get appTitle => 'ParkStark';
 
   @override
   String get commonModeWalking => 'Walking';
@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonContinueButtonSemantic => 'Continue';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to\nSmartRoots';
+  String get onboardingWelcomeTitle => 'Welcome to\nParkStark';
 
   @override
   String get onboardingWelcomeSubtitle => 'The app that guides you to\naccessible parking spots.';
@@ -75,7 +75,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingFinishTitle => 'All done!';
 
   @override
-  String get onboardingFinishSubtitle => 'Welcome to SmartRoots.';
+  String get onboardingFinishSubtitle => 'Welcome to ParkStark.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'View App Tutorial';
