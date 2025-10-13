@@ -13,7 +13,7 @@ from schemas.routing import (
 )
 from services.schemas.open_trip_planner import *
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 
@@ -50,9 +50,10 @@ class OpenTripPlannerAdaptor:
         )
 
         # Reformat request payload
+        # Temporarily add 2 hrs to the request to work with UTC
         request_dict = OTPPlanRequestModel(
             date=request.date,
-            time=request.time,
+            time=(datetime.strptime(request.time, "%H:%M:%S") + timedelta(hours=2)).strftime("%H:%M:%S"),
             from_=OTPInputCoordinates(
                 lat=request.origin.lat,
                 lon=request.origin.lon
