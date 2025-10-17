@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 import 'dart:core';
 
@@ -23,7 +22,7 @@ class _HomeMapState extends State<HomeMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
   List<Map<String, dynamic>> _parkingSites = [];
-  Map<String, Map<String, dynamic>> _symbolIdToSite = {};
+  final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
 
   Future<void> _panToUserLocation() async {
     // Check location permission status

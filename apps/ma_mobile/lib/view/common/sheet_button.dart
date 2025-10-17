@@ -3,14 +3,14 @@ import 'package:smartroots/core/theme/colors.dart';
 
 class SheetButton extends StatelessWidget {
   final IconData? icon;
-  final String label;
+  final String? label;
   final String? semanticLabel;
   final VoidCallback? onTap;
   final bool shrinkWrap;
 
   const SheetButton({
     super.key,
-    required this.label,
+    this.label,
     required this.onTap,
     this.semanticLabel,
     this.icon,
@@ -42,18 +42,20 @@ class SheetButton extends StatelessWidget {
                     )
                   : const SizedBox.shrink(),
               icon != null ? const SizedBox(width: 4) : const SizedBox.shrink(),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: SmartRootsColors.maBlueExtraExtraDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              label != null
+                  ? Flexible(
+                      child: Text(
+                        label!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
         ),

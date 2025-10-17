@@ -15,6 +15,8 @@ import 'package:smartroots/core/persistence/processing_status.dart';
 import 'package:smartroots/core/utils.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:smartroots/core/persistence/preference_helper.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:smartroots/view/routing/routing.dart';
 
 class ParkingSiteScreen extends StatefulWidget {
   final Place? place;
@@ -27,7 +29,7 @@ class ParkingSiteScreen extends StatefulWidget {
 
 class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
   bool _isFavorite = false;
-  List<Itinerary> _itineraries = [];
+  List<ItinerarySummary> _itineraries = [];
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
 
   @override
@@ -62,12 +64,22 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
       _processingStatus = ProcessingStatus.processing;
     });
 
-    List<Itinerary> itineraries = [];
+    // Check location permission status
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.whileInUse &&
+        permission != LocationPermission.always) {
+      return;
+    }
+
+    // Fetch user location
+    final userLatLng = await Geolocator.getCurrentPosition();
+
+    List<ItinerarySummary> itineraries = [];
     RoutingService routingService = RoutingService();
     try {
       final response = await routingService.getItineraries(
-        originLat: 49.48874453098431,
-        originLon: 8.466156569942742,
+        originLat: userLatLng.latitude,
+        originLon: userLatLng.longitude,
         destinationLat: widget.parkingSite['coordinates'].latitude,
         destinationLon: widget.parkingSite['coordinates'].longitude,
         date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -77,7 +89,9 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
       );
       if (response.statusCode == 200) {
         final data = response.data["itineraries"] as List;
-        itineraries = data.map((item) => Itinerary.fromJson(item)).toList();
+        itineraries = data
+            .map((item) => ItinerarySummary.fromJson(item))
+            .toList();
         setState(() {
           _itineraries = itineraries;
         });
@@ -153,12 +167,10 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                                   context,
                                 )!.parkingLocationButtonStart,
                                 onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.featureComingSoonMessage,
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => RoutingScreen(
+                                        parkingSite: widget.parkingSite,
                                       ),
                                     ),
                                   );
@@ -226,29 +238,42 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
               ),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.directions_car_outlined,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                      ),
-                      SizedBox(width: 8.0),
-                      (_itineraries.isNotEmpty
-                                  ? _itineraries.first.duration ~/ 60
-                                  : null) !=
-                              null
-                          ? Text(
-                              '${_itineraries.isNotEmpty ? _itineraries.first.duration ~/ 60 : null} min',
+                  _itineraries.isNotEmpty
+                      ? Row(
+                          children: [
+                            Icon(
+                              Icons.directions_car_outlined,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              '${_itineraries.first.duration ~/ 60} min',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: SmartRootsColors.maBlueExtraExtraDark,
                                 fontSize: 16,
                               ),
-                            )
-                          : SizedBox.shrink(),
-                    ],
-                  ),
+                            ),
+                            SizedBox(width: 6.0),
+                            Icon(
+                              Icons.circle,
+                              size: 6,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                            SizedBox(width: 6.0),
+                            Text(
+                              getItineraryDistanceText(_itineraries.first),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox.shrink(),
                   SizedBox(height: 8.0),
                   Row(
                     children: [

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 import 'dart:core';
 
@@ -23,7 +22,7 @@ class PlaceMap extends StatefulWidget {
 class _PlaceMapState extends State<PlaceMap> {
   late MapLibreMapController _mapController;
   List<Map<String, dynamic>> _parkingSites = [];
-  Map<String, Map<String, dynamic>> _symbolIdToSite = {};
+  final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
   int? _lastRadius;
 
   Future<void> _onStyleLoaded() async {

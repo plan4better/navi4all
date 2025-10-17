@@ -26,4 +26,7 @@ class RoutingService extends APIService {
       'num_itineraries': numItineraries,
     },
   );
+
+  Future<Response> getItineraryDetails({required String itineraryId}) async =>
+      apiClient.get('/routing/itinerary/$itineraryId');
 }

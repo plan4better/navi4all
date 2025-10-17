@@ -325,4 +325,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get legalPrivacyDataProtection => 'Data Protection';
+
+  @override
+  String get routingScreenNavigationStartButton => 'Start';
+
+  @override
+  String get routingScreenNavigationPauseButton => 'Pause';
+
+  @override
+  String get routingScreenNavigationResumeButton => 'Resume';
+
+  @override
+  String get routingScreenNavigationDoneButton => 'Done';
+
+  @override
+  String get navigationRelativeDirectionDepart => 'Depart';
+
+  @override
+  String get navigationRelativeDirectionHardLeft => 'Sharp left';
+
+  @override
+  String get navigationRelativeDirectionLeft => 'Turn left';
+
+  @override
+  String get navigationRelativeDirectionSlightlyLeft => 'Slight left';
+
+  @override
+  String get navigationRelativeDirectionContinue => 'Continue';
+
+  @override
+  String get navigationRelativeDirectionSlightlyRight => 'Slight right';
+
+  @override
+  String get navigationRelativeDirectionRight => 'Turn right';
+
+  @override
+  String get navigationRelativeDirectionHardRight => 'Sharp right';
+
+  @override
+  String get navigationRelativeDirectionCircleClockwise => 'Enter roundabout';
+
+  @override
+  String get navigationRelativeDirectionCircleCounterclockwise => 'Enter roundabout';
+
+  @override
+  String get navigationRelativeDirectionElevator => 'Take the lift';
+
+  @override
+  String get navigationRelativeDirectionUturnLeft => 'Make a U-turn';
+
+  @override
+  String get navigationRelativeDirectionUturnRight => 'Make a U-turn';
+
+  @override
+  String get navigationRelativeDirectionEnterStation => 'Enter station';
+
+  @override
+  String get navigationRelativeDirectionExitStation => 'Exit station';
+
+  @override
+  String get navigationRelativeDirectionFollowSigns => 'Follow signs';
 }
