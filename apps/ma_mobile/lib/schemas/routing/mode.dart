@@ -41,6 +41,7 @@ enum RelativeDirection {
   ENTER_STATION,
   EXIT_STATION,
   FOLLOW_SIGNS,
+  ARRIVE,
 }
 
 IconData getRelativeDirectionIconMapping(RelativeDirection relativeDirection) {
@@ -77,6 +78,8 @@ IconData getRelativeDirectionIconMapping(RelativeDirection relativeDirection) {
       return Icons.rotate_right;
     case RelativeDirection.CIRCLE_COUNTERCLOCKWISE:
       return Icons.rotate_left;
+    case RelativeDirection.ARRIVE:
+      return Icons.place_rounded;
   }
 }
 
@@ -133,6 +136,8 @@ String getRelativeDirectionTextMapping(
       return AppLocalizations.of(
         context,
       )!.navigationRelativeDirectionFollowSigns;
+    case RelativeDirection.ARRIVE:
+      return AppLocalizations.of(context)!.navigationRelativeDirectionArrive;
   }
 }
 
@@ -145,4 +150,5 @@ enum AbsoluteDirection {
   SOUTHWEST,
   WEST,
   NORTHWEST,
+  UNKNOWN,
 }

@@ -593,6 +593,18 @@ abstract class AppLocalizations {
   /// **'Unknown'**
   String get availabilityUnknown;
 
+  /// No description provided for @availabilityOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupied'**
+  String get availabilityOccupied;
+
+  /// No description provided for @availabilityAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get availabilityAvailable;
+
   /// No description provided for @parkingLocationButtonStart.
   ///
   /// In en, this message translates to:
@@ -802,6 +814,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Follow signs'**
   String get navigationRelativeDirectionFollowSigns;
+
+  /// No description provided for @navigationRelativeDirectionArrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive'**
+  String get navigationRelativeDirectionArrive;
+
+  /// No description provided for @navigationStepDistanceToActionMetres.
+  ///
+  /// In en, this message translates to:
+  /// **'in {distance} metres'**
+  String navigationStepDistanceToActionMetres(String distance);
+
+  /// No description provided for @navigationStepDistanceToActionKilometres.
+  ///
+  /// In en, this message translates to:
+  /// **'in {distance} kilometres'**
+  String navigationStepDistanceToActionKilometres(String distance);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

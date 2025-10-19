@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smartroots/core/theme/colors.dart';
@@ -16,6 +18,8 @@ import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
 import 'package:smartroots/schemas/routing/mode.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/core/utils.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 class RoutingScreen extends StatefulWidget {
   final Map<String, dynamic> parkingSite;
@@ -27,6 +31,7 @@ class RoutingScreen extends StatefulWidget {
 }
 
 class RoutingState extends State<RoutingScreen> {
+  final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
   late Place _destination;
   List<ItinerarySummary> _itineraries = [];
@@ -34,11 +39,18 @@ class RoutingState extends State<RoutingScreen> {
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
   NavigationStatus _navigationStatus = NavigationStatus.idle;
   AudioStatus _audioStatus = AudioStatus.unmuted;
+  Stream<Position>? _positionStream;
+  StreamSubscription<Position>? _positionStreamSubscription;
+  Position? _userPosition;
+  leg_schema.Step? _activeStep;
 
   @override
   void initState() {
     super.initState();
 
+    // flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
+
+    // Initialise origin and destination places
     _origin = Place(
       id: SmartRootsValues.userLocation,
       name: '',
@@ -58,6 +70,8 @@ class RoutingState extends State<RoutingScreen> {
         lon: widget.parkingSite['coordinates'].longitude,
       ),
     );
+
+    // Fetch itineraries
     _fetchItineraries();
   }
 
@@ -212,18 +226,28 @@ class RoutingState extends State<RoutingScreen> {
   }
 
   void _toggleNavigationState() {
-    setState(() {
-      _navigationStatus = _navigationStatus == NavigationStatus.navigating
-          ? NavigationStatus.paused
-          : NavigationStatus.navigating;
-    });
-
     if (_navigationStatus == NavigationStatus.navigating) {
-      // Resume navigation logic here
-    } else if (_navigationStatus == NavigationStatus.paused) {
-      // Pause navigation logic here
-    } else if (_navigationStatus == NavigationStatus.arrived) {
-      // Arrival logic here
+      setState(() {
+        _navigationStatus = NavigationStatus.paused;
+      });
+
+      // Unsubscribe from location stream
+      _positionStream?.drain();
+      _positionStreamSubscription?.cancel();
+      _positionStream = null;
+      _positionStreamSubscription = null;
+    } else if (_navigationStatus == NavigationStatus.idle ||
+        _navigationStatus == NavigationStatus.paused) {
+      setState(() {
+        _navigationStatus = NavigationStatus.navigating;
+      });
+
+      // Subscribe to location stream
+      _positionStream = Geolocator.getPositionStream();
+      _positionStreamSubscription = _positionStream!.listen(
+        (Position position) => _onPositionChange(position),
+      );
+      _getUserLocation();
     }
   }
 
@@ -233,15 +257,138 @@ class RoutingState extends State<RoutingScreen> {
           ? AudioStatus.unmuted
           : AudioStatus.muted;
     });
+  }
 
-    // Mute/unmute audio logic here
+  void _onPositionChange(Position position) {
+    if (_navigationStatus != NavigationStatus.navigating ||
+        _itineraryDetails == null) {
+      return;
+    }
+
+    // Update user position
+    setState(() {
+      _userPosition = position;
+    });
+
+    // All points of leg geometry
+    leg_schema.LegDetailed leg = _itineraryDetails!.legs.first;
+    List<LatLng> legPoints = PolygonUtil.decode(leg.geometry);
+
+    // Remaining steps
+    List<leg_schema.Step> remainingSteps = _activeStep != null
+        ? leg.steps.sublist(leg.steps.indexOf(_activeStep!))
+        : leg.steps;
+    List<double?> remainingStepDistanceToAction = [];
+    for (int i = 0; i < remainingSteps.length; i++) {
+      remainingStepDistanceToAction.add(
+        i > 0 ? remainingSteps[i - 1].distance : null,
+      );
+    }
+
+    // Update active step based on user location
+    for (int i = 0; i < remainingSteps.length; i++) {
+      leg_schema.Step step = remainingSteps[i];
+      int stepStartIndex = PolygonUtil.locationIndexOnPath(
+        LatLng(step.lat, step.lon),
+        legPoints,
+        true,
+        tolerance: 2,
+      );
+      int stepEndIndex = PolygonUtil.locationIndexOnPath(
+        i < remainingSteps.length - 1
+            ? LatLng(remainingSteps[i + 1].lat, remainingSteps[i + 1].lon)
+            : LatLng(legPoints.last.latitude, legPoints.last.longitude),
+        legPoints,
+        true,
+        tolerance: 2,
+      );
+
+      if (stepStartIndex == -1 ||
+          stepEndIndex == -1 ||
+          stepEndIndex < stepStartIndex) {
+        continue;
+      }
+
+      List<LatLng> stepPoints = legPoints.sublist(stepStartIndex, stepEndIndex);
+
+      int positionIndex = PolygonUtil.locationIndexOnPath(
+        LatLng(position.latitude, position.longitude),
+        stepPoints,
+        true,
+        tolerance: 10,
+      );
+
+      if (positionIndex > -1) {
+        if (remainingSteps[i + 1] != _activeStep) {
+          setState(() {
+            _activeStep = remainingSteps[i + 1];
+          });
+
+          // Make text-to-speech announcement for new active step
+          int indexOfActiveStep = remainingSteps.indexOf(_activeStep!);
+          if (_audioStatus == AudioStatus.unmuted) {
+            String stepAnnouncement = "";
+            if (remainingStepDistanceToAction[indexOfActiveStep]! >= 1000) {
+              stepAnnouncement += AppLocalizations.of(context)!
+                  .navigationStepDistanceToActionKilometres(
+                    (remainingStepDistanceToAction[indexOfActiveStep]! / 1000)
+                        .toStringAsFixed(1),
+                  );
+            } else {
+              stepAnnouncement += AppLocalizations.of(context)!
+                  .navigationStepDistanceToActionMetres(
+                    remainingStepDistanceToAction[indexOfActiveStep]!
+                        .round()
+                        .toString(),
+                  );
+            }
+            stepAnnouncement +=
+                ". ${getRelativeDirectionTextMapping(_activeStep!.relativeDirection, context)}";
+
+            flutterTts.speak(stepAnnouncement);
+          }
+        }
+        break;
+      }
+    }
   }
 
   List<ItineraryLegStepTile> get _legSteps {
     if (_itineraryDetails == null || _itineraryDetails!.legs.isEmpty) return [];
-    return _itineraryDetails!.legs.first.steps
-        .map((step) => ItineraryLegStepTile(step: step))
-        .toList();
+
+    List<leg_schema.Step> steps = _itineraryDetails!.legs.first.steps;
+    List<ItineraryLegStepTile> stepTiles = [];
+    for (int i = 0; i < steps.length; i++) {
+      stepTiles.add(
+        ItineraryLegStepTile(
+          step: steps[i],
+          distanceToStep: i > 0 ? steps[i - 1].distance : null,
+          isActive: steps[i] == _activeStep,
+        ),
+      );
+    }
+    stepTiles.add(
+      ItineraryLegStepTile(
+        step: leg_schema.Step(
+          distance: 0,
+          lat: _destination.coordinates.lat,
+          lon: _destination.coordinates.lon,
+          relativeDirection: RelativeDirection.ARRIVE,
+          absoluteDirection: AbsoluteDirection.UNKNOWN,
+          streetName: '',
+          bogusName: true,
+        ),
+        distanceToStep: steps.isNotEmpty ? steps.last.distance : null,
+        isActive: false,
+      ),
+    );
+
+    if (_activeStep == null) {
+      return stepTiles;
+    }
+    return stepTiles.sublist(
+      _itineraryDetails!.legs.first.steps.indexOf(_activeStep!),
+    );
   }
 
   @override
@@ -250,9 +397,11 @@ class RoutingState extends State<RoutingScreen> {
       body: Stack(
         children: [
           RoutingMap(
+            origin: _origin,
             parkingSite: widget.parkingSite,
-            itineraries: _itineraries,
+            itineraryDetails: _itineraryDetails,
             navigationStatus: _navigationStatus,
+            userPosition: _userPosition,
           ),
           SlidingBottomSheet(
             Row(
@@ -299,6 +448,13 @@ class RoutingState extends State<RoutingScreen> {
                                 color: SmartRootsColors.maBlueExtraExtraDark,
                               ),
                               onPressed: () {
+                                _positionStream?.drain();
+                                _positionStreamSubscription?.cancel();
+                                _positionStream = null;
+                                _positionStreamSubscription = null;
+                                setState(() {
+                                  _navigationStatus = NavigationStatus.idle;
+                                });
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -397,7 +553,7 @@ class RoutingState extends State<RoutingScreen> {
                                 ],
                               )
                             : SizedBox.shrink(),
-                        SizedBox(height: 8.0),
+                        SizedBox(height: 16.0),
                       ],
                     ),
                   ),
@@ -578,24 +734,42 @@ class ItinerarySummaryTile extends StatelessWidget {
 
 class ItineraryLegStepTile extends StatelessWidget {
   final leg_schema.Step step;
+  final double? distanceToStep;
+  final bool isActive;
 
-  const ItineraryLegStepTile({required this.step, super.key});
+  const ItineraryLegStepTile({
+    required this.step,
+    required this.distanceToStep,
+    required this.isActive,
+    super.key,
+  });
 
   String? get _streetName {
     return step.bogusName ? null : step.streetName;
   }
 
-  String get _distance {
-    if (step.distance >= 1000) {
-      return '${(step.distance / 1000).toStringAsFixed(1)} km';
+  String? _distance(BuildContext context) {
+    if (distanceToStep == null) {
+      return null;
+    }
+
+    if (distanceToStep! >= 1000) {
+      return AppLocalizations.of(
+        context,
+      )!.navigationStepDistanceToActionKilometres(
+        (distanceToStep! / 1000).toStringAsFixed(1),
+      );
     } else {
-      return '${step.distance.toStringAsFixed(0)} m';
+      return AppLocalizations.of(context)!.navigationStepDistanceToActionMetres(
+        distanceToStep!.round().toString(),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+    color: isActive ? SmartRootsColors.maBlueLight : SmartRootsColors.maWhite,
     child: Row(
       children: [
         Icon(
@@ -632,17 +806,18 @@ class ItineraryLegStepTile extends StatelessWidget {
                       ),
                     )
                   : SizedBox.shrink(),
+              _distance(context) != null
+                  ? Text(
+                      _distance(context)!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
-          ),
-        ),
-        SizedBox(width: 8),
-        Text(
-          _distance,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 16,
-            color: SmartRootsColors.maBlueExtraExtraDark,
           ),
         ),
       ],

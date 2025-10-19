@@ -282,6 +282,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get availabilityUnknown => 'Unbekannt';
 
   @override
+  String get availabilityOccupied => 'Belegt';
+
+  @override
+  String get availabilityAvailable => 'Verfügbar';
+
+  @override
   String get parkingLocationButtonStart => 'Start';
 
   @override
@@ -385,4 +391,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get navigationRelativeDirectionFollowSigns => 'Folgen Sie den Schildern';
+
+  @override
+  String get navigationRelativeDirectionArrive => 'Ankommen';
+
+  @override
+  String navigationStepDistanceToActionMetres(String distance) {
+    return 'in $distance Metern';
+  }
+
+  @override
+  String navigationStepDistanceToActionKilometres(String distance) {
+    return 'in $distance Kilometern';
+  }
 }

@@ -194,6 +194,8 @@
     "errorUnableToFetchParkingSites": "Parkplätze konnten nicht abgerufen werden, bitte versuchen Sie es später erneut.",
     "errorUnableToFetchDrivingTime": "Fahrzeit konnte nicht abgerufen werden, bitte versuchen Sie es später erneut.",
     "availabilityUnknown": "Unbekannt",
+    "availabilityOccupied": "Belegt",
+    "availabilityAvailable": "Verfügbar",
     "parkingLocationButtonStart": "Start",
     "parkingLocationButtonFavourite": "Favorit",
     "parkingLocationButtonRouteExternal": "Route extern",
@@ -228,5 +230,22 @@
     "navigationRelativeDirectionUturnRight": "U-Turn nach rechts",
     "navigationRelativeDirectionEnterStation": "Bahnhof betreten",
     "navigationRelativeDirectionExitStation": "Bahnhof verlassen",
-    "navigationRelativeDirectionFollowSigns": "Folgen Sie den Schildern"
+    "navigationRelativeDirectionFollowSigns": "Folgen Sie den Schildern",
+    "navigationRelativeDirectionArrive": "Ankommen",
+    "navigationStepDistanceToActionMetres": "in {distance} Metern",
+    "@navigationStepDistanceToActionMetres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "navigationStepDistanceToActionKilometres": "in {distance} Kilometern",
+    "@navigationStepDistanceToActionKilometres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    }
 }

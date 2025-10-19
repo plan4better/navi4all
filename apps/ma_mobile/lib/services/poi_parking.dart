@@ -53,6 +53,18 @@ class POIParkingService {
       throw Exception(parkingSpotsResponse.statusMessage);
     }
 
+    // TODO: ONLY FOR TESTING
+    parkingLocations.add({
+      "id": "test1",
+      "name": "München Test Parking 1",
+      "address": "Schellingstraße 84, 80798 München",
+      "coordinates": LatLng(48.152458623658056, 11.568498141412222),
+      "has_realtime_data": true,
+      "capacity_disabled": 1,
+      "free_capacity_disabled": 1,
+      "occupied_disabled": 0,
+    });
+
     // Process parking sites
     if (parkingSitesResponse.statusCode == 200) {
       parkingLocations.addAll(

@@ -152,7 +152,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                     ),
-                    IconButton(
+                    /* IconButton(
                       icon: Icon(
                         Icons.mic,
                         color: SmartRootsColors.maBlueExtraExtraDark,
@@ -161,7 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         )!.commonMicButtonSemantic,
                       ),
                       onPressed: null,
-                    ),
+                    ), */
                   ],
                 ),
               ),

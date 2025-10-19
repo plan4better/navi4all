@@ -194,6 +194,8 @@
     "errorUnableToFetchParkingSites": "Unable to fetch parking sites, try again later.",
     "errorUnableToFetchDrivingTime": "Unable to fetch driving time, try again later.",
     "availabilityUnknown": "Unknown",
+    "availabilityOccupied": "Occupied",
+    "availabilityAvailable": "Available",
     "parkingLocationButtonStart": "Start",
     "parkingLocationButtonFavourite": "Favourite",
     "parkingLocationButtonRouteExternal": "Route External",
@@ -228,5 +230,22 @@
     "navigationRelativeDirectionUturnRight": "Make a U-turn",
     "navigationRelativeDirectionEnterStation": "Enter station",
     "navigationRelativeDirectionExitStation": "Exit station",
-    "navigationRelativeDirectionFollowSigns": "Follow signs"
+    "navigationRelativeDirectionFollowSigns": "Follow signs",
+    "navigationRelativeDirectionArrive": "Arrive",
+    "navigationStepDistanceToActionMetres": "in {distance} metres",
+    "@navigationStepDistanceToActionMetres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "navigationStepDistanceToActionKilometres": "in {distance} kilometres",
+    "@navigationStepDistanceToActionKilometres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    }
 }

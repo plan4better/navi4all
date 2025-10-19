@@ -9,15 +9,20 @@ import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/persistence/processing_status.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 
 class RoutingMap extends StatefulWidget {
+  final Place origin;
   final Map<String, dynamic> parkingSite;
-  final List<ItinerarySummary> itineraries;
+  final ItineraryDetails? itineraryDetails;
   final NavigationStatus navigationStatus;
+  final Position? userPosition;
   const RoutingMap({
+    required this.origin,
     required this.parkingSite,
-    required this.itineraries,
+    required this.itineraryDetails,
     required this.navigationStatus,
+    required this.userPosition,
     super.key,
   });
 
@@ -82,12 +87,12 @@ class _RoutingMapState extends State<RoutingMap> {
     // Clear existing lines
     _mapController.clearLines();
 
-    if (widget.itineraries.isEmpty) {
+    if (widget.itineraryDetails == null) {
       return;
     }
 
     List<PointLatLng> polylinePoints = PolylinePoints.decodePolyline(
-      widget.itineraries.first.legs.first.geometry,
+      widget.itineraryDetails!.legs.first.geometry,
     );
 
     _mapController.addLine(
@@ -130,21 +135,18 @@ class _RoutingMapState extends State<RoutingMap> {
         );
       }
     } else {
-      // Focus on the user's current location during navigation
-      // Check location permission status
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
+      if (widget.userPosition == null) {
         return;
       }
 
-      // Fetch user location
-      final userLatLng = await Geolocator.getCurrentPosition();
-
+      // Focus on the user's current location during navigation
       _mapController.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: LatLng(userLatLng.latitude - 0.0003, userLatLng.longitude),
+            target: LatLng(
+              widget.userPosition!.latitude - 0.0003,
+              widget.userPosition!.longitude,
+            ),
             zoom: 17.0,
           ),
         ),
@@ -153,9 +155,40 @@ class _RoutingMapState extends State<RoutingMap> {
     }
   }
 
+  void _drawStepActionPoints() {
+    if (!_isMapInitialized) {
+      return;
+    }
+
+    // Clear existing circles
+    _mapController.clearCircles();
+
+    // Ensure action points should be drawn
+    if (!_isMapInitialized ||
+        widget.itineraryDetails == null ||
+        widget.navigationStatus != NavigationStatus.navigating) {
+      return;
+    }
+
+    // Draw a circle for each step action point
+    for (var step in widget.itineraryDetails!.legs.first.steps) {
+      _mapController.addCircle(
+        CircleOptions(
+          geometry: LatLng(step.lat, step.lon),
+          circleRadius: 2.0,
+          circleColor: "#FFFFFF",
+          circleStrokeColor: "#000000",
+          circleStrokeWidth: 1.0,
+          circleStrokeOpacity: 0.8,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _drawJourney();
+    _drawStepActionPoints();
 
     return Stack(
       children: [
