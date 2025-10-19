@@ -7,11 +7,20 @@ from redis import Redis
 from schemas.routing import (
     RoutingPlanRequestModel,
     RoutingPlanResponseModel,
-    Itinerary,
+    ItinerarySummary,
     LegSummary,
+    LegDetailed,
+    Step,
     Coordinates,
+    ItineraryResponseModel,
+    ItineraryDetailed,
 )
-from services.schemas.open_trip_planner import *
+from services.schemas.open_trip_planner import (
+    OTPInputCoordinates,
+    OTPPlanRequestModel,
+    OTPPlanResponseModel,
+    OTPTransportMode,
+)
 from uuid import uuid4
 from datetime import datetime
 import json
@@ -53,18 +62,16 @@ class OpenTripPlannerAdaptor:
         request_dict = OTPPlanRequestModel(
             date=request.date,
             time=request.time,
-            from_=OTPInputCoordinates(
-                lat=request.origin.lat,
-                lon=request.origin.lon
-            ),
+            from_=OTPInputCoordinates(lat=request.origin.lat, lon=request.origin.lon),
             to=OTPInputCoordinates(
-                lat=request.destination.lat,
-                lon=request.destination.lon
+                lat=request.destination.lat, lon=request.destination.lon
             ),
             wheelchair=request.accessible,
             num_itineraries=request.num_itineraries,
             arrive_by=request.time_is_arrival,
-            transport_modes=[OTPTransportMode(mode=mode) for mode in request.transport_modes]
+            transport_modes=[
+                OTPTransportMode(mode=mode) for mode in request.transport_modes
+            ],
         ).model_dump()
         request_dict = {to_camel_case(k): v for k, v in request_dict.items()}
 
@@ -85,20 +92,57 @@ class OpenTripPlannerAdaptor:
         # Write itineraries to cache
         for itinerary in router_response.itineraries:
             # Produce a unique ID for this itinerary and the journey it represents
-            journey_id = str(uuid4())
+            itinerary_id = str(uuid4())
+
+            # Produce ItineraryDetailed model for full itinerary response
+            itinerary_detailed = ItineraryDetailed(
+                itinerary_id=itinerary_id,
+                duration=itinerary.duration,
+                start_time=itinerary.start_time,
+                end_time=itinerary.end_time,
+                origin=Coordinates(
+                    lat=router_response.from_.lat, lon=router_response.from_.lon
+                ),
+                destination=Coordinates(
+                    lat=router_response.to.lat, lon=router_response.to.lon
+                ),
+                legs=[
+                    LegDetailed(
+                        mode=leg.mode,
+                        duration=int(leg.duration),
+                        distance=round(leg.distance),
+                        geometry=leg.leg_geometry.points,
+                        steps=[
+                            Step(
+                                distance=step.distance,
+                                lon=step.lon,
+                                lat=step.lat,
+                                relative_direction=step.relative_direction.value,
+                                absolute_direction=step.absolute_direction.value,
+                                street_name=step.street_name,
+                                bogus_name=step.bogus_name,
+                            )
+                            for step in leg.steps
+                        ],
+                    )
+                    for leg in itinerary.legs
+                ],
+            )
 
             # Write the full journey to cache
             serialized_mapping = {
                 k: json.dumps(v) if isinstance(v, (list, dict)) else v
-                for k, v in itinerary.model_dump(mode="json", exclude_none=True).items()
+                for k, v in itinerary_detailed.model_dump(
+                    mode="json", exclude_none=True
+                ).items()
             }
-            self.redis_client.hset(name=journey_id, mapping=serialized_mapping)
+            self.redis_client.hset(name=itinerary_id, mapping=serialized_mapping)
 
-            # Consider the journey to be invalid past its start time
+            # Consider the itinerary to be invalid past its start time
             current_time = datetime.now()
-            if current_time < itinerary.start_time:
+            if current_time < itinerary.end_time:
                 self.redis_client.expire(
-                    journey_id, (itinerary.start_time - current_time).seconds
+                    itinerary_id, (itinerary.end_time - current_time).seconds
                 )
             else:
                 # TODO: Throw an exception & return an appropriate error response
@@ -106,22 +150,41 @@ class OpenTripPlannerAdaptor:
 
             # Write an itinerary summary to the response
             response.itineraries.append(
-                Itinerary(
-                    journey_id=journey_id,
-                    duration=itinerary.duration,
-                    start_time=itinerary.start_time,
-                    end_time=itinerary.end_time,
-                    origin=Coordinates(
-                        lat=router_response.from_.lat, lon=router_response.from_.lon
-                    ),
-                    destination=Coordinates(
-                        lat=router_response.to.lat, lon=router_response.to.lon
-                    ),
+                ItinerarySummary(
+                    itinerary_id=itinerary_detailed.itinerary_id,
+                    duration=itinerary_detailed.duration,
+                    start_time=itinerary_detailed.start_time,
+                    end_time=itinerary_detailed.end_time,
+                    origin=itinerary_detailed.origin,
+                    destination=itinerary_detailed.destination,
                     legs=[
-                        LegSummary(mode=leg.mode, duration=int(leg.duration))
-                        for leg in itinerary.legs
+                        LegSummary(
+                            mode=leg.mode,
+                            duration=int(leg.duration),
+                            distance=leg.distance,
+                            geometry=leg.geometry,
+                        )
+                        for leg in itinerary_detailed.legs
                     ],
                 )
             )
 
         return response
+
+    async def get_itinerary(self, itinerary_id: str) -> ItineraryResponseModel:
+        """Retrieve a full itinerary from the cache by its journey ID."""
+
+        # Fetch itinerary from cache
+        data = self.redis_client.hgetall(itinerary_id)
+
+        # Decode
+        decoded_data = {k.decode(): v.decode() for k, v in data.items()}
+
+        # Deserialize
+        deserialized_data = {
+            k: json.loads(v) if v.startswith("[") or v.startswith("{") else v
+            for k, v in decoded_data.items()
+        }
+
+        # Validate and return the full itinerary
+        return ItineraryResponseModel.model_validate(deserialized_data)

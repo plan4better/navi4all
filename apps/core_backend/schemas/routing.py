@@ -28,21 +28,69 @@ class Mode(str, Enum):
     monorail = "MONORAIL"
 
 
+class RelativeDirection(Enum):
+    depart = "DEPART"
+    hard_left = "HARD_LEFT"
+    left = "LEFT"
+    slightly_left = "SLIGHTLY_LEFT"
+    continue_ = "CONTINUE"
+    slightly_right = "SLIGHTLY_RIGHT"
+    right = "RIGHT"
+    hard_right = "HARD_RIGHT"
+    circle_clockwise = "CIRCLE_CLOCKWISE"
+    circle_counterclockwise = "CIRCLE_COUNTERCLOCKWISE"
+    elevator = "ELEVATOR"
+    uturn_left = "UTURN_LEFT"
+    uturn_right = "UTURN_RIGHT"
+    enter_station = "ENTER_STATION"
+    exit_station = "EXIT_STATION"
+    follow_signs = "FOLLOW_SIGNS"
+
+class AbsoluteDirection(Enum):
+    north = "NORTH"
+    northeast = "NORTHEAST"
+    east = "EAST"
+    southeast = "SOUTHEAST"
+    south = "SOUTH"
+    southwest = "SOUTHWEST"
+    west = "WEST"
+    northwest = "NORTHWEST"
+
+
+class Step(BaseModel):
+    distance: float
+    lon: float
+    lat: float
+    relative_direction: RelativeDirection
+    absolute_direction: AbsoluteDirection
+    street_name: str
+    bogus_name: bool
+
+
 class LegSummary(BaseModel):
     mode: Mode
     duration: int
+    distance: int
     ratio: float | None = None
+    geometry: str
 
 
-class Itinerary(BaseModel):
-    journey_id: UUID
+class LegDetailed(LegSummary):
+    steps: list[Step]
+
+
+class ItineraryBase(BaseModel):
+    itinerary_id: UUID
     duration: int
     start_time: datetime
     end_time: datetime
     origin: Coordinates
     destination: Coordinates
-    legs: list[LegSummary]
 
+
+class ItinerarySummary(ItineraryBase):
+    legs: list[LegSummary]
+    
     @model_validator(mode="before")
     def compute_leg_ratios(cls, itinerary: dict[str, any]) -> dict[str, any]:
         total_duration = itinerary["duration"]
@@ -51,6 +99,10 @@ class Itinerary(BaseModel):
                 round(leg.duration / total_duration, 2) if total_duration > 0 else 0
             )
         return itinerary
+
+
+class ItineraryDetailed(ItineraryBase):
+    legs: list[LegDetailed]
 
 
 """Request and response models exposed via the API"""
@@ -87,4 +139,7 @@ class RoutingPlanRequestModel(BaseModel):
 
 class RoutingPlanResponseModel(BaseModel):
     # TODO: Include additional info about the plan
-    itineraries: list[Itinerary]
+    itineraries: list[ItinerarySummary]
+    
+class ItineraryResponseModel(ItineraryDetailed):
+    pass

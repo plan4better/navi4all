@@ -47,6 +47,34 @@ class OTPVertexType(Enum):
     bike_park = "BIKEPARK"
     bike_share = "BIKESHARE"
     park_and_ride = "PARKANDRIDE"
+    
+class OTPRelativeDirection(Enum):
+    depart = "DEPART"
+    hard_left = "HARD_LEFT"
+    left = "LEFT"
+    slightly_left = "SLIGHTLY_LEFT"
+    continue_ = "CONTINUE"
+    slightly_right = "SLIGHTLY_RIGHT"
+    right = "RIGHT"
+    hard_right = "HARD_RIGHT"
+    circle_clockwise = "CIRCLE_CLOCKWISE"
+    circle_counterclockwise = "CIRCLE_COUNTERCLOCKWISE"
+    elevator = "ELEVATOR"
+    uturn_left = "UTURN_LEFT"
+    uturn_right = "UTURN_RIGHT"
+    enter_station = "ENTER_STATION"
+    exit_station = "EXIT_STATION"
+    follow_signs = "FOLLOW_SIGNS"
+
+class OTPAbsoluteDirection(Enum):
+    north = "NORTH"
+    northeast = "NORTHEAST"
+    east = "EAST"
+    southeast = "SOUTHEAST"
+    south = "SOUTH"
+    southwest = "SOUTHWEST"
+    west = "WEST"
+    northwest = "NORTHWEST"
 
 class OTPStop(BaseModel):
     id: str
@@ -86,7 +114,20 @@ class OTPTrip(BaseModel):
     trip_headsign: str | None = None
 
 class OTPStep(BaseModel):
-    pass
+    distance: float
+    lon: float
+    lat: float
+    relative_direction: OTPRelativeDirection
+    absolute_direction: OTPAbsoluteDirection
+    street_name: str
+    bogus_name: bool
+    
+    @model_validator(mode="before")
+    @classmethod
+    def remap_model_fields(cls, values: dict[str, any]):
+        for key in list(values.keys()):
+            values[to_snake_case(key)] = values.pop(key)
+        return values
 
 class OTPPickupDropoffType(Enum):
     scheduled = "SCHEDULED"
@@ -108,10 +149,10 @@ class OTPLeg(BaseModel):
     transit_leg: bool
     from_: OTPPlace
     to: OTPPlace
+    steps: list[OTPStep]
     route: OTPRoute | None = None
     trip: OTPTrip | None = None
     intermediate_stops: list[OTPStop] | None = None
-    # steps: list["Step"]
     headsign: str | None = None
     pickup_type: OTPPickupDropoffType | None = None
     dropoff_type: OTPPickupDropoffType | None = None
