@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import '../search/search.dart';
+import 'package:navi4all/view/search/search.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 
 class HomeScreen extends StatelessWidget {

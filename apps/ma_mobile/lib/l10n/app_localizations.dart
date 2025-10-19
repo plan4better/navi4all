@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Navi4All'**
+  /// **'ParkStark'**
   String get appTitle;
 
   /// No description provided for @commonModeWalking.
@@ -155,47 +155,71 @@ abstract class AppLocalizations {
   /// **'Voice input'**
   String get commonMicButtonSemantic;
 
+  /// No description provided for @commonContinueButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinueButtonSemantic;
+
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to\nNavi4All.'**
+  /// **'Welcome to\nParkStark'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'The app that guides you\nthrough Kaiserlautern.'**
+  /// **'The app that guides you to\naccessible parking spots.'**
   String get onboardingWelcomeSubtitle;
 
   /// No description provided for @onboardingWelcomeHint.
   ///
   /// In en, this message translates to:
-  /// **'Swipe left to continue with setup.'**
+  /// **'Press the button to continue.'**
   String get onboardingWelcomeHint;
 
-  /// No description provided for @onboardingProfileSelectionTitle.
+  /// No description provided for @onboardingSymbolInformationTitle.
   ///
   /// In en, this message translates to:
-  /// **'Select your profile'**
-  String get onboardingProfileSelectionTitle;
+  /// **'Important symbols'**
+  String get onboardingSymbolInformationTitle;
 
-  /// No description provided for @onboardingProfileSelectionBlindUserTitle.
+  /// No description provided for @onboardingSymbolInformationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Blind User'**
-  String get onboardingProfileSelectionBlindUserTitle;
+  /// **'These show availability at accessible parking spots.'**
+  String get onboardingSymbolInformationSubtitle;
 
-  /// No description provided for @onboardingProfileSelectionVisionImpairedUserTitle.
+  /// No description provided for @onboardingSymbolInformationParkingAvailable.
   ///
   /// In en, this message translates to:
-  /// **'Vision Impaired User'**
-  String get onboardingProfileSelectionVisionImpairedUserTitle;
+  /// **'Parking available'**
+  String get onboardingSymbolInformationParkingAvailable;
 
-  /// No description provided for @onboardingProfileSelectionGeneralUserTitle.
+  /// No description provided for @onboardingSymbolInformationParkingUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'General User'**
-  String get onboardingProfileSelectionGeneralUserTitle;
+  /// **'Parking not available'**
+  String get onboardingSymbolInformationParkingUnavailable;
+
+  /// No description provided for @onboardingSymbolInformationParkingUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time data unavailable'**
+  String get onboardingSymbolInformationParkingUnknown;
+
+  /// No description provided for @onboardingUserLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We need access to your location'**
+  String get onboardingUserLocationTitle;
+
+  /// No description provided for @onboardingUserLocationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This is necessary for search and navigation to work correctly.'**
+  String get onboardingUserLocationSubtitle;
 
   /// No description provided for @onboardingFinishTitle.
   ///
@@ -206,7 +230,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFinishSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Your profile has been selected.\nWhat would you like to do next?'**
+  /// **'Welcome to ParkStark.'**
   String get onboardingFinishSubtitle;
 
   /// No description provided for @onboardingFinishAppTutorialButton.
@@ -251,11 +275,35 @@ abstract class AppLocalizations {
   /// **'Search here'**
   String get searchTextFieldHint;
 
+  /// No description provided for @searchTextFieldOriginHintSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Text input. Type to search for an origin location.'**
+  String get searchTextFieldOriginHintSemantic;
+
+  /// No description provided for @searchTextFieldDestinationHintSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Text input. Type to search for a destination location.'**
+  String get searchTextFieldDestinationHintSemantic;
+
+  /// No description provided for @searchScreenPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Start typing to search for places, addresses or transit stations.'**
+  String get searchScreenPrompt;
+
+  /// No description provided for @searchScreenNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found.'**
+  String get searchScreenNoResults;
+
   /// No description provided for @addressInfoBackToSearchButtonSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Back to search results'**
-  String get addressInfoBackToSearchButtonSemantic;
+  /// **'Selected destination: {name}, tap to return to search results.'**
+  String addressInfoBackToSearchButtonSemantic(String name);
 
   /// No description provided for @addressInfoWalkingRoutesButton.
   ///
@@ -263,23 +311,29 @@ abstract class AppLocalizations {
   /// **'Walking'**
   String get addressInfoWalkingRoutesButton;
 
+  /// No description provided for @addressInfoWalkingRoutesButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Find walking route options.'**
+  String get addressInfoWalkingRoutesButtonSemantic;
+
   /// No description provided for @addressInfoPublicTransportRoutesButton.
   ///
   /// In en, this message translates to:
   /// **'Public Transport'**
   String get addressInfoPublicTransportRoutesButton;
 
+  /// No description provided for @addressInfoPublicTransportRoutesButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Find public transport route options.'**
+  String get addressInfoPublicTransportRoutesButtonSemantic;
+
   /// No description provided for @addressInfoSaveAddressButton.
   ///
   /// In en, this message translates to:
   /// **'Save Address'**
   String get addressInfoSaveAddressButton;
-
-  /// No description provided for @routeOptionsCurrentLocationText.
-  ///
-  /// In en, this message translates to:
-  /// **'Current location'**
-  String get routeOptionsCurrentLocationText;
 
   /// No description provided for @routeOptionsRouteSettingsButton.
   ///
@@ -296,19 +350,19 @@ abstract class AppLocalizations {
   /// No description provided for @origDestPickerSwapButtonSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Start- und Zielort tauschen'**
+  /// **'Swap origin and destination.'**
   String get origDestPickerSwapButtonSemantic;
 
   /// No description provided for @origDestPickerOriginSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Origin: {origin}'**
+  /// **'Origin: {origin}. Tap to change.'**
   String origDestPickerOriginSemantic(String origin);
 
   /// No description provided for @origDestPickerDestinationSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Destination: {destination}'**
+  /// **'Destination: {destination}. Tap to change.'**
   String origDestPickerDestinationSemantic(String destination);
 
   /// No description provided for @journeyOptionSemantic.
@@ -412,6 +466,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stop'**
   String get routeNavigationStopButton;
+
+  /// No description provided for @errorUnableToFetchItineraries.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch itineraries.'**
+  String get errorUnableToFetchItineraries;
+
+  /// No description provided for @errorNoItinerariesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No itineraries found for the selected origin and destination.'**
+  String get errorNoItinerariesFound;
+
+  /// No description provided for @searchResultSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Search result: {name}, {locality}.'**
+  String searchResultSemantic(String name, String locality);
+
+  /// No description provided for @origDestCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current location'**
+  String get origDestCurrentLocation;
+
+  /// No description provided for @homeNavigationMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get homeNavigationMapTitle;
+
+  /// No description provided for @homeNavigationFavouritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get homeNavigationFavouritesTitle;
+
+  /// No description provided for @homeNavigationSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get homeNavigationSettingsTitle;
+
+  /// No description provided for @homeSearchButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search here'**
+  String get homeSearchButtonHint;
+
+  /// No description provided for @favouritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get favouritesTitle;
+
+  /// No description provided for @favouritesScreenPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add favourites to see them here.'**
+  String get favouritesScreenPrompt;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsOptionFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get settingsOptionFeedback;
+
+  /// No description provided for @settingsOptionSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsOptionSupport;
+
+  /// No description provided for @settingsOptionLegalAndPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Privacy'**
+  String get settingsOptionLegalAndPrivacy;
+
+  /// No description provided for @userLocationDeniedSnackbarText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location access in system settings to use this feature.'**
+  String get userLocationDeniedSnackbarText;
+
+  /// No description provided for @placeScreenChangeRadiusButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change radius'**
+  String get placeScreenChangeRadiusButton;
+
+  /// No description provided for @placeScreenChangeRadiusCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get placeScreenChangeRadiusCancel;
+
+  /// No description provided for @placeScreenChangeRadiusConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get placeScreenChangeRadiusConfirm;
+
+  /// No description provided for @errorUnableToFetchParkingSites.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch parking sites, try again later.'**
+  String get errorUnableToFetchParkingSites;
+
+  /// No description provided for @errorUnableToFetchDrivingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch driving time, try again later.'**
+  String get errorUnableToFetchDrivingTime;
+
+  /// No description provided for @availabilityUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get availabilityUnknown;
+
+  /// No description provided for @parkingLocationButtonStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get parkingLocationButtonStart;
+
+  /// No description provided for @parkingLocationButtonFavourite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourite'**
+  String get parkingLocationButtonFavourite;
+
+  /// No description provided for @parkingLocationButtonRouteExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Route External'**
+  String get parkingLocationButtonRouteExternal;
+
+  /// No description provided for @errorUnableToLaunchRouteExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to launch external maps app.'**
+  String get errorUnableToLaunchRouteExternal;
+
+  /// No description provided for @featureComingSoonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is coming soon.'**
+  String get featureComingSoonMessage;
+
+  /// No description provided for @feedbackScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedbackScreenTitle;
+
+  /// No description provided for @feedbackTypeLocalData.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Data'**
+  String get feedbackTypeLocalData;
+
+  /// No description provided for @feedbackTypeAppFunctionality.
+  ///
+  /// In en, this message translates to:
+  /// **'App Functionality'**
+  String get feedbackTypeAppFunctionality;
+
+  /// No description provided for @feedbackSubjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get feedbackSubjectHint;
+
+  /// No description provided for @feedbackMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback'**
+  String get feedbackMessageHint;
+
+  /// No description provided for @feedbackSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get feedbackSubmitButton;
+
+  /// No description provided for @feedbackFieldErrorRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get feedbackFieldErrorRequired;
+
+  /// No description provided for @legalPrivacyScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Privacy'**
+  String get legalPrivacyScreenTitle;
+
+  /// No description provided for @legalPrivacyLocationAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Access'**
+  String get legalPrivacyLocationAccess;
+
+  /// No description provided for @legalPrivacyDataProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection'**
+  String get legalPrivacyDataProtection;
+
+  /// No description provided for @routingScreenNavigationStartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get routingScreenNavigationStartButton;
+
+  /// No description provided for @routingScreenNavigationPauseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get routingScreenNavigationPauseButton;
+
+  /// No description provided for @routingScreenNavigationResumeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get routingScreenNavigationResumeButton;
+
+  /// No description provided for @routingScreenNavigationDoneButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get routingScreenNavigationDoneButton;
+
+  /// No description provided for @navigationRelativeDirectionDepart.
+  ///
+  /// In en, this message translates to:
+  /// **'Depart'**
+  String get navigationRelativeDirectionDepart;
+
+  /// No description provided for @navigationRelativeDirectionHardLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp left'**
+  String get navigationRelativeDirectionHardLeft;
+
+  /// No description provided for @navigationRelativeDirectionLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn left'**
+  String get navigationRelativeDirectionLeft;
+
+  /// No description provided for @navigationRelativeDirectionSlightlyLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Slight left'**
+  String get navigationRelativeDirectionSlightlyLeft;
+
+  /// No description provided for @navigationRelativeDirectionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get navigationRelativeDirectionContinue;
+
+  /// No description provided for @navigationRelativeDirectionSlightlyRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Slight right'**
+  String get navigationRelativeDirectionSlightlyRight;
+
+  /// No description provided for @navigationRelativeDirectionRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn right'**
+  String get navigationRelativeDirectionRight;
+
+  /// No description provided for @navigationRelativeDirectionHardRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp right'**
+  String get navigationRelativeDirectionHardRight;
+
+  /// No description provided for @navigationRelativeDirectionCircleClockwise.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter roundabout'**
+  String get navigationRelativeDirectionCircleClockwise;
+
+  /// No description provided for @navigationRelativeDirectionCircleCounterclockwise.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter roundabout'**
+  String get navigationRelativeDirectionCircleCounterclockwise;
+
+  /// No description provided for @navigationRelativeDirectionElevator.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the lift'**
+  String get navigationRelativeDirectionElevator;
+
+  /// No description provided for @navigationRelativeDirectionUturnLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a U-turn'**
+  String get navigationRelativeDirectionUturnLeft;
+
+  /// No description provided for @navigationRelativeDirectionUturnRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a U-turn'**
+  String get navigationRelativeDirectionUturnRight;
+
+  /// No description provided for @navigationRelativeDirectionEnterStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter station'**
+  String get navigationRelativeDirectionEnterStation;
+
+  /// No description provided for @navigationRelativeDirectionExitStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit station'**
+  String get navigationRelativeDirectionExitStation;
+
+  /// No description provided for @navigationRelativeDirectionFollowSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow signs'**
+  String get navigationRelativeDirectionFollowSigns;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

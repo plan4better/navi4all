@@ -4,7 +4,7 @@
 
 Navi4All is an open-source, multi-modal navigation app designed to provide accessible navigation solutions for everyone, including those with disabilities.
 
-![Navi4All Screenshots](./navi4all_screenshots.png)
+![Kaiserslautern](./kaiserslautern.png)
 
 *Note: Screenshots are illustrative and may not represent the final version of the app.*
 

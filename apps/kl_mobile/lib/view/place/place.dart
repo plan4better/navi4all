@@ -22,88 +22,80 @@ class _PlaceScreenState extends State<PlaceScreen> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           child: Column(
             children: [
               Semantics(
                 label: AppLocalizations.of(
                   context,
-                )!.addressInfoBackToSearchButtonSemantic,
-                child: Material(
-                  elevation: 2,
-                  borderRadius: BorderRadius.circular(28),
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFEDEB),
-                        borderRadius: BorderRadius.circular(28),
-                      ),
-                      child: Row(
-                        children: [
-                          Semantics(
-                            excludeSemantics: true,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back,
-                                color: Color(0xFFD82028),
-                              ),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
+                )!.addressInfoBackToSearchButtonSemantic(widget.place.name),
+                excludeSemantics: true,
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFEDEB),
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Navi4AllColors.klRed,
                           ),
-                          Expanded(
-                            child: Text(
-                              widget.place.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                                color: Color(0xFF535353),
-                                letterSpacing: 0.5,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        Expanded(
+                          child: Text(
+                            widget.place.name,
+                            style: const TextStyle(fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.mic,
-                              color: Color(0xFFD82028),
-                              semanticLabel: AppLocalizations.of(
-                                context,
-                              )!.commonMicButtonSemantic,
-                            ),
-                            onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.mic,
+                            color: Navi4AllColors.klRed,
+                            semanticLabel: AppLocalizations.of(
+                              context,
+                            )!.commonMicButtonSemantic,
                           ),
-                        ],
-                      ),
+                          onPressed: null,
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
               SizedBox(height: 32),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.place.name,
+              Semantics(
+                excludeSemantics: true,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.place.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28,
+                          color: Navi4AllColors.klRed,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.place.description,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28,
+                        fontSize: 18,
                         color: Navi4AllColors.klRed,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    widget.place.description,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Navi4AllColors.klRed,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const Spacer(),
               SizedBox(height: 16),
@@ -113,6 +105,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     label: AppLocalizations.of(
                       context,
                     )!.addressInfoWalkingRoutesButton,
+                    semanticLabel: AppLocalizations.of(
+                      context,
+                    )!.addressInfoWalkingRoutesButtonSemantic,
                     style: AccessibleButtonStyle.red,
                     onTap: () {
                       Navigator.of(context).push(
@@ -125,11 +120,14 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       );
                     },
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   AccessibleButton(
                     label: AppLocalizations.of(
                       context,
                     )!.addressInfoPublicTransportRoutesButton,
+                    semanticLabel: AppLocalizations.of(
+                      context,
+                    )!.addressInfoPublicTransportRoutesButtonSemantic,
                     style: AccessibleButtonStyle.red,
                     onTap: () {
                       Navigator.of(context).push(
@@ -142,7 +140,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       );
                     },
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   AccessibleButton(
                     label: AppLocalizations.of(
                       context,
@@ -150,7 +148,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     style: AccessibleButtonStyle.pink,
                     onTap: null,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   AccessibleButton(
                     label: AppLocalizations.of(context)!.commonHomeScreenButton,
                     style: AccessibleButtonStyle.pink,

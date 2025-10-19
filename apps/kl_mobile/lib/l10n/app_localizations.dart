@@ -155,10 +155,16 @@ abstract class AppLocalizations {
   /// **'Voice input'**
   String get commonMicButtonSemantic;
 
+  /// No description provided for @commonContinueButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinueButtonSemantic;
+
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to\nNavi4All.'**
+  /// **'Welcome to\nNavi4All'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeSubtitle.
@@ -170,7 +176,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeHint.
   ///
   /// In en, this message translates to:
-  /// **'Swipe left to continue with setup.'**
+  /// **'Press the button to continue.'**
   String get onboardingWelcomeHint;
 
   /// No description provided for @onboardingProfileSelectionTitle.
@@ -197,6 +203,18 @@ abstract class AppLocalizations {
   /// **'General User'**
   String get onboardingProfileSelectionGeneralUserTitle;
 
+  /// No description provided for @onboardingUserLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We need access to your location'**
+  String get onboardingUserLocationTitle;
+
+  /// No description provided for @onboardingUserLocationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This is necessary for search and navigation to work correctly.'**
+  String get onboardingUserLocationSubtitle;
+
   /// No description provided for @onboardingFinishTitle.
   ///
   /// In en, this message translates to:
@@ -206,7 +224,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFinishSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Your profile has been selected.\nWhat would you like to do next?'**
+  /// **'Your profile has been selected.\nWelcome to Navi4All.'**
   String get onboardingFinishSubtitle;
 
   /// No description provided for @onboardingFinishAppTutorialButton.
@@ -251,11 +269,35 @@ abstract class AppLocalizations {
   /// **'Search here'**
   String get searchTextFieldHint;
 
+  /// No description provided for @searchTextFieldOriginHintSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Text input. Type to search for an origin location.'**
+  String get searchTextFieldOriginHintSemantic;
+
+  /// No description provided for @searchTextFieldDestinationHintSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Text input. Type to search for a destination location.'**
+  String get searchTextFieldDestinationHintSemantic;
+
+  /// No description provided for @searchScreenPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Start typing to search for places, addresses or transit stations.'**
+  String get searchScreenPrompt;
+
+  /// No description provided for @searchScreenNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found.'**
+  String get searchScreenNoResults;
+
   /// No description provided for @addressInfoBackToSearchButtonSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Back to search results'**
-  String get addressInfoBackToSearchButtonSemantic;
+  /// **'Selected destination: {name}, tap to return to search results.'**
+  String addressInfoBackToSearchButtonSemantic(String name);
 
   /// No description provided for @addressInfoWalkingRoutesButton.
   ///
@@ -263,23 +305,29 @@ abstract class AppLocalizations {
   /// **'Walking'**
   String get addressInfoWalkingRoutesButton;
 
+  /// No description provided for @addressInfoWalkingRoutesButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Find walking route options.'**
+  String get addressInfoWalkingRoutesButtonSemantic;
+
   /// No description provided for @addressInfoPublicTransportRoutesButton.
   ///
   /// In en, this message translates to:
   /// **'Public Transport'**
   String get addressInfoPublicTransportRoutesButton;
 
+  /// No description provided for @addressInfoPublicTransportRoutesButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Find public transport route options.'**
+  String get addressInfoPublicTransportRoutesButtonSemantic;
+
   /// No description provided for @addressInfoSaveAddressButton.
   ///
   /// In en, this message translates to:
   /// **'Save Address'**
   String get addressInfoSaveAddressButton;
-
-  /// No description provided for @routeOptionsCurrentLocationText.
-  ///
-  /// In en, this message translates to:
-  /// **'Current location'**
-  String get routeOptionsCurrentLocationText;
 
   /// No description provided for @routeOptionsRouteSettingsButton.
   ///
@@ -296,19 +344,19 @@ abstract class AppLocalizations {
   /// No description provided for @origDestPickerSwapButtonSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Start- und Zielort tauschen'**
+  /// **'Swap origin and destination.'**
   String get origDestPickerSwapButtonSemantic;
 
   /// No description provided for @origDestPickerOriginSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Origin: {origin}'**
+  /// **'Origin: {origin}. Tap to change.'**
   String origDestPickerOriginSemantic(String origin);
 
   /// No description provided for @origDestPickerDestinationSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Destination: {destination}'**
+  /// **'Destination: {destination}. Tap to change.'**
   String origDestPickerDestinationSemantic(String destination);
 
   /// No description provided for @journeyOptionSemantic.
@@ -412,6 +460,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stop'**
   String get routeNavigationStopButton;
+
+  /// No description provided for @errorUnableToFetchItineraries.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch itineraries.'**
+  String get errorUnableToFetchItineraries;
+
+  /// No description provided for @errorNoItinerariesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No itineraries found for the selected origin and destination.'**
+  String get errorNoItinerariesFound;
+
+  /// No description provided for @searchResultSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Search result: {name}, {locality}.'**
+  String searchResultSemantic(String name, String locality);
+
+  /// No description provided for @origDestCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current location'**
+  String get origDestCurrentLocation;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

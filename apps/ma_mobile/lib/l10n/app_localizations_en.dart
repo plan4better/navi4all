@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Navi4All';
+  String get appTitle => 'ParkStark';
 
   @override
   String get commonModeWalking => 'Walking';
@@ -39,31 +39,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonMicButtonSemantic => 'Voice input';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to\nNavi4All.';
+  String get commonContinueButtonSemantic => 'Continue';
 
   @override
-  String get onboardingWelcomeSubtitle => 'The app that guides you\nthrough Kaiserlautern.';
+  String get onboardingWelcomeTitle => 'Welcome to\nParkStark';
 
   @override
-  String get onboardingWelcomeHint => 'Swipe left to continue with setup.';
+  String get onboardingWelcomeSubtitle => 'The app that guides you to\naccessible parking spots.';
 
   @override
-  String get onboardingProfileSelectionTitle => 'Select your profile';
+  String get onboardingWelcomeHint => 'Press the button to continue.';
 
   @override
-  String get onboardingProfileSelectionBlindUserTitle => 'Blind User';
+  String get onboardingSymbolInformationTitle => 'Important symbols';
 
   @override
-  String get onboardingProfileSelectionVisionImpairedUserTitle => 'Vision Impaired User';
+  String get onboardingSymbolInformationSubtitle => 'These show availability at accessible parking spots.';
 
   @override
-  String get onboardingProfileSelectionGeneralUserTitle => 'General User';
+  String get onboardingSymbolInformationParkingAvailable => 'Parking available';
+
+  @override
+  String get onboardingSymbolInformationParkingUnavailable => 'Parking not available';
+
+  @override
+  String get onboardingSymbolInformationParkingUnknown => 'Real-time data unavailable';
+
+  @override
+  String get onboardingUserLocationTitle => 'We need access to your location';
+
+  @override
+  String get onboardingUserLocationSubtitle => 'This is necessary for search and navigation to work correctly.';
 
   @override
   String get onboardingFinishTitle => 'All done!';
 
   @override
-  String get onboardingFinishSubtitle => 'Your profile has been selected.\nWhat would you like to do next?';
+  String get onboardingFinishSubtitle => 'Welcome to ParkStark.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'View App Tutorial';
@@ -87,19 +99,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchTextFieldHint => 'Search here';
 
   @override
-  String get addressInfoBackToSearchButtonSemantic => 'Back to search results';
+  String get searchTextFieldOriginHintSemantic => 'Text input. Type to search for an origin location.';
+
+  @override
+  String get searchTextFieldDestinationHintSemantic => 'Text input. Type to search for a destination location.';
+
+  @override
+  String get searchScreenPrompt => 'Start typing to search for places, addresses or transit stations.';
+
+  @override
+  String get searchScreenNoResults => 'No results found.';
+
+  @override
+  String addressInfoBackToSearchButtonSemantic(String name) {
+    return 'Selected destination: $name, tap to return to search results.';
+  }
 
   @override
   String get addressInfoWalkingRoutesButton => 'Walking';
 
   @override
+  String get addressInfoWalkingRoutesButtonSemantic => 'Find walking route options.';
+
+  @override
   String get addressInfoPublicTransportRoutesButton => 'Public Transport';
 
   @override
-  String get addressInfoSaveAddressButton => 'Save Address';
+  String get addressInfoPublicTransportRoutesButtonSemantic => 'Find public transport route options.';
 
   @override
-  String get routeOptionsCurrentLocationText => 'Current location';
+  String get addressInfoSaveAddressButton => 'Save Address';
 
   @override
   String get routeOptionsRouteSettingsButton => 'Route Settings';
@@ -108,16 +137,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routeOptionsSaveRouteButton => 'Save Route';
 
   @override
-  String get origDestPickerSwapButtonSemantic => 'Start- und Zielort tauschen';
+  String get origDestPickerSwapButtonSemantic => 'Swap origin and destination.';
 
   @override
   String origDestPickerOriginSemantic(String origin) {
-    return 'Origin: $origin';
+    return 'Origin: $origin. Tap to change.';
   }
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Destination: $destination';
+    return 'Destination: $destination. Tap to change.';
   }
 
   @override
@@ -186,4 +215,174 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routeNavigationStopButton => 'Stop';
+
+  @override
+  String get errorUnableToFetchItineraries => 'Unable to fetch itineraries.';
+
+  @override
+  String get errorNoItinerariesFound => 'No itineraries found for the selected origin and destination.';
+
+  @override
+  String searchResultSemantic(String name, String locality) {
+    return 'Search result: $name, $locality.';
+  }
+
+  @override
+  String get origDestCurrentLocation => 'Current location';
+
+  @override
+  String get homeNavigationMapTitle => 'Map';
+
+  @override
+  String get homeNavigationFavouritesTitle => 'Favourites';
+
+  @override
+  String get homeNavigationSettingsTitle => 'Settings';
+
+  @override
+  String get homeSearchButtonHint => 'Search here';
+
+  @override
+  String get favouritesTitle => 'Favourites';
+
+  @override
+  String get favouritesScreenPrompt => 'Add favourites to see them here.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsOptionFeedback => 'Feedback';
+
+  @override
+  String get settingsOptionSupport => 'Support';
+
+  @override
+  String get settingsOptionLegalAndPrivacy => 'Legal & Privacy';
+
+  @override
+  String get userLocationDeniedSnackbarText => 'Enable location access in system settings to use this feature.';
+
+  @override
+  String get placeScreenChangeRadiusButton => 'Change radius';
+
+  @override
+  String get placeScreenChangeRadiusCancel => 'Cancel';
+
+  @override
+  String get placeScreenChangeRadiusConfirm => 'Change';
+
+  @override
+  String get errorUnableToFetchParkingSites => 'Unable to fetch parking sites, try again later.';
+
+  @override
+  String get errorUnableToFetchDrivingTime => 'Unable to fetch driving time, try again later.';
+
+  @override
+  String get availabilityUnknown => 'Unknown';
+
+  @override
+  String get parkingLocationButtonStart => 'Start';
+
+  @override
+  String get parkingLocationButtonFavourite => 'Favourite';
+
+  @override
+  String get parkingLocationButtonRouteExternal => 'Route External';
+
+  @override
+  String get errorUnableToLaunchRouteExternal => 'Unable to launch external maps app.';
+
+  @override
+  String get featureComingSoonMessage => 'This feature is coming soon.';
+
+  @override
+  String get feedbackScreenTitle => 'Feedback';
+
+  @override
+  String get feedbackTypeLocalData => 'Local Data';
+
+  @override
+  String get feedbackTypeAppFunctionality => 'App Functionality';
+
+  @override
+  String get feedbackSubjectHint => 'Subject';
+
+  @override
+  String get feedbackMessageHint => 'Your feedback';
+
+  @override
+  String get feedbackSubmitButton => 'Submit';
+
+  @override
+  String get feedbackFieldErrorRequired => 'This field is required.';
+
+  @override
+  String get legalPrivacyScreenTitle => 'Legal & Privacy';
+
+  @override
+  String get legalPrivacyLocationAccess => 'Location Access';
+
+  @override
+  String get legalPrivacyDataProtection => 'Data Protection';
+
+  @override
+  String get routingScreenNavigationStartButton => 'Start';
+
+  @override
+  String get routingScreenNavigationPauseButton => 'Pause';
+
+  @override
+  String get routingScreenNavigationResumeButton => 'Resume';
+
+  @override
+  String get routingScreenNavigationDoneButton => 'Done';
+
+  @override
+  String get navigationRelativeDirectionDepart => 'Depart';
+
+  @override
+  String get navigationRelativeDirectionHardLeft => 'Sharp left';
+
+  @override
+  String get navigationRelativeDirectionLeft => 'Turn left';
+
+  @override
+  String get navigationRelativeDirectionSlightlyLeft => 'Slight left';
+
+  @override
+  String get navigationRelativeDirectionContinue => 'Continue';
+
+  @override
+  String get navigationRelativeDirectionSlightlyRight => 'Slight right';
+
+  @override
+  String get navigationRelativeDirectionRight => 'Turn right';
+
+  @override
+  String get navigationRelativeDirectionHardRight => 'Sharp right';
+
+  @override
+  String get navigationRelativeDirectionCircleClockwise => 'Enter roundabout';
+
+  @override
+  String get navigationRelativeDirectionCircleCounterclockwise => 'Enter roundabout';
+
+  @override
+  String get navigationRelativeDirectionElevator => 'Take the lift';
+
+  @override
+  String get navigationRelativeDirectionUturnLeft => 'Make a U-turn';
+
+  @override
+  String get navigationRelativeDirectionUturnRight => 'Make a U-turn';
+
+  @override
+  String get navigationRelativeDirectionEnterStation => 'Enter station';
+
+  @override
+  String get navigationRelativeDirectionExitStation => 'Exit station';
+
+  @override
+  String get navigationRelativeDirectionFollowSigns => 'Follow signs';
 }

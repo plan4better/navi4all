@@ -34,7 +34,7 @@ class AccessibleSelector extends StatelessWidget {
           label,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: Navi4AllGeometry.fontSizeMedium,
+            fontSize: Navi4AllGeometry.fontSizeSmall,
             color: selected ? Navi4AllColors.klRed : Navi4AllColors.klWhite,
             // Optionally, you can change color if selected
           ),

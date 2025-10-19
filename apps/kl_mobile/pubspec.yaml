@@ -1,7 +1,7 @@
 name: navi4all
-description: "Multi-modal navigation for everyone"
+description: ""
 publish_to: 'none'
-version: 0.0.2+2
+version: 0.0.2+4
 
 environment:
   sdk: ^3.8.1
@@ -13,6 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   freezed_annotation: ^3.1.0
+  geolocator: ^14.0.2
   google_fonts: ^6.2.1
   intl: ^0.20.2
   json_annotation: ^4.9.0

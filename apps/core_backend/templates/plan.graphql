@@ -99,6 +99,15 @@ query RoutingPlan(
                 pickupType
                 dropoffType
                 accessibilityScore
+                steps {
+                    distance
+                    lon
+                    lat
+                    relativeDirection
+                    absoluteDirection
+                    streetName
+                    bogusName
+                }
             }
             accessibilityScore
         }

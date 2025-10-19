@@ -39,13 +39,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commonMicButtonSemantic => 'Spracheingabe';
 
   @override
-  String get onboardingWelcomeTitle => 'Willkommen bei\nNavi4All.';
+  String get commonContinueButtonSemantic => 'Weiter';
+
+  @override
+  String get onboardingWelcomeTitle => 'Willkommen bei\nNavi4All';
 
   @override
   String get onboardingWelcomeSubtitle => 'Die App, die Sie durch\nKaiserslautern führt.';
 
   @override
-  String get onboardingWelcomeHint => 'Wischen Sie nach links, um fortzufahren.';
+  String get onboardingWelcomeHint => 'Drücken Sie die Taste, um fortzufahren.';
 
   @override
   String get onboardingProfileSelectionTitle => 'Wählen Sie Ihr Profil';
@@ -60,10 +63,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingProfileSelectionGeneralUserTitle => 'Andere';
 
   @override
-  String get onboardingFinishTitle => 'Sie sind fertig!';
+  String get onboardingUserLocationTitle => 'Wir benötigen Zugriff auf Ihren Standort';
 
   @override
-  String get onboardingFinishSubtitle => 'Ihr Profil wurde erfolgreich ausgewählt.\nWas möchten Sie nun tun?';
+  String get onboardingUserLocationSubtitle => 'Dies ist notwendig, damit die Such- und Navigationsfunktionen funktionieren.';
+
+  @override
+  String get onboardingFinishTitle => 'Alles erledigt!';
+
+  @override
+  String get onboardingFinishSubtitle => 'Ihr Profil wurde erfolgreich ausgewählt.\nWillkommen bei Navi4All.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'Zum App-Tutorial';
@@ -87,19 +96,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get searchTextFieldHint => 'Hier suchen';
 
   @override
-  String get addressInfoBackToSearchButtonSemantic => 'Zurück zu Suchergebnissen';
+  String get searchTextFieldOriginHintSemantic => 'Textfeld für die Eingabe. Tippen Sie, um einen Startort zu suchen.';
 
   @override
-  String get addressInfoWalkingRoutesButton => 'zu Fuß';
+  String get searchTextFieldDestinationHintSemantic => 'Textfeld für die Eingabe. Tippen Sie, um einen Zielort zu suchen.';
+
+  @override
+  String get searchScreenPrompt => 'Beginnen Sie mit der Eingabe, um nach Orten, Adressen oder Haltestellen zu suchen.';
+
+  @override
+  String get searchScreenNoResults => 'Keine Ergebnisse gefunden.';
+
+  @override
+  String addressInfoBackToSearchButtonSemantic(String name) {
+    return 'Ausgewähltes Ziel: $name, tippen Sie, um zu den Suchergebnissen zurückzukehren.';
+  }
+
+  @override
+  String get addressInfoWalkingRoutesButton => 'Zu Fuß';
+
+  @override
+  String get addressInfoWalkingRoutesButtonSemantic => 'Finden Sie Fußweg-Optionen.';
 
   @override
   String get addressInfoPublicTransportRoutesButton => 'ÖPNV';
 
   @override
-  String get addressInfoSaveAddressButton => 'Speichern Adresse';
+  String get addressInfoPublicTransportRoutesButtonSemantic => 'Finden Sie ÖPNV-Optionen.';
 
   @override
-  String get routeOptionsCurrentLocationText => 'Aktuell Position';
+  String get addressInfoSaveAddressButton => 'Speichern Adresse';
 
   @override
   String get routeOptionsRouteSettingsButton => 'Routeneinstellungen';
@@ -112,12 +138,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String origDestPickerOriginSemantic(String origin) {
-    return 'Startort: $origin';
+    return 'Startort: $origin. Tippen Sie, um zu ändern.';
   }
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Zielort: $destination';
+    return 'Zielort: $destination. Tippen Sie, um zu ändern.';
   }
 
   @override
@@ -186,4 +212,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get routeNavigationStopButton => 'Ende';
+
+  @override
+  String get errorUnableToFetchItineraries => 'Routen konnten nicht abgerufen werden.';
+
+  @override
+  String get errorNoItinerariesFound => 'Keine Routen für den ausgewählten Start- und Zielort gefunden.';
+
+  @override
+  String searchResultSemantic(String name, String locality) {
+    return 'Suchergebnis: $name, $locality.';
+  }
+
+  @override
+  String get origDestCurrentLocation => 'Aktueller Standort';
 }

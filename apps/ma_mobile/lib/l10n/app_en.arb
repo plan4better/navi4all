@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "appTitle": "Navi4All",
+    "appTitle": "ParkStark",
     "commonModeWalking": "Walking",
     "commonModeBus": "Bus",
     "commonModeTram": "Tram",
@@ -10,15 +10,19 @@
     "commonHomeScreenButton": "Home Screen",
     "commonBackButtonSemantic": "Back",
     "commonMicButtonSemantic": "Voice input",
-    "onboardingWelcomeTitle": "Welcome to\nNavi4All.",
-    "onboardingWelcomeSubtitle": "The app that guides you\nthrough Kaiserlautern.",
-    "onboardingWelcomeHint": "Swipe left to continue with setup.",
-    "onboardingProfileSelectionTitle": "Select your profile",
-    "onboardingProfileSelectionBlindUserTitle": "Blind User",
-    "onboardingProfileSelectionVisionImpairedUserTitle": "Vision Impaired User",
-    "onboardingProfileSelectionGeneralUserTitle": "General User",
+    "commonContinueButtonSemantic": "Continue",
+    "onboardingWelcomeTitle": "Welcome to\nParkStark",
+    "onboardingWelcomeSubtitle": "The app that guides you to\naccessible parking spots.",
+    "onboardingWelcomeHint": "Press the button to continue.",
+    "onboardingSymbolInformationTitle": "Important symbols",
+    "onboardingSymbolInformationSubtitle": "These show availability at accessible parking spots.",
+    "onboardingSymbolInformationParkingAvailable": "Parking available",
+    "onboardingSymbolInformationParkingUnavailable": "Parking not available",
+    "onboardingSymbolInformationParkingUnknown": "Real-time data unavailable",
+    "onboardingUserLocationTitle": "We need access to your location",
+    "onboardingUserLocationSubtitle": "This is necessary for search and navigation to work correctly.",
     "onboardingFinishTitle": "All done!",
-    "onboardingFinishSubtitle": "Your profile has been selected.\nWhat would you like to do next?",
+    "onboardingFinishSubtitle": "Welcome to ParkStark.",
     "onboardingFinishAppTutorialButton": "View App Tutorial",
     "onboardingFinishHomeScreenButton": "Get Started",
     "homeSearchButton": "Search",
@@ -26,15 +30,27 @@
     "homeRouteButton": "Route",
     "homeSettingsButton": "Settings",
     "searchTextFieldHint": "Search here",
-    "addressInfoBackToSearchButtonSemantic": "Back to search results",
+    "searchTextFieldOriginHintSemantic": "Text input. Type to search for an origin location.",
+    "searchTextFieldDestinationHintSemantic": "Text input. Type to search for a destination location.",
+    "searchScreenPrompt": "Start typing to search for places, addresses or transit stations.",
+    "searchScreenNoResults": "No results found.",
+    "addressInfoBackToSearchButtonSemantic": "Selected destination: {name}, tap to return to search results.",
+    "@addressInfoBackToSearchButtonSemantic": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "addressInfoWalkingRoutesButton": "Walking",
+    "addressInfoWalkingRoutesButtonSemantic": "Find walking route options.",
     "addressInfoPublicTransportRoutesButton": "Public Transport",
+    "addressInfoPublicTransportRoutesButtonSemantic": "Find public transport route options.",
     "addressInfoSaveAddressButton": "Save Address",
-    "routeOptionsCurrentLocationText": "Current location",
     "routeOptionsRouteSettingsButton": "Route Settings",
     "routeOptionsSaveRouteButton": "Save Route",
-    "origDestPickerSwapButtonSemantic": "Start- und Zielort tauschen",
-    "origDestPickerOriginSemantic": "Origin: {origin}",
+    "origDestPickerSwapButtonSemantic": "Swap origin and destination.",
+    "origDestPickerOriginSemantic": "Origin: {origin}. Tap to change.",
     "@origDestPickerOriginSemantic": {
         "placeholders": {
             "origin": {
@@ -42,7 +58,7 @@
             }
         }
     },
-    "origDestPickerDestinationSemantic": "Destination: {destination}",
+    "origDestPickerDestinationSemantic": "Destination: {destination}. Tap to change.",
     "@origDestPickerDestinationSemantic": {
         "placeholders": {
             "destination": {
@@ -146,5 +162,71 @@
     "routeNavigationMuteButtonUnmuteText": "Unmute Audio",
     "routeNavigationPauseButtonPauseText": "Pause",
     "routeNavigationPauseButtonResumeText": "Resume",
-    "routeNavigationStopButton": "Stop"
+    "routeNavigationStopButton": "Stop",
+    "errorUnableToFetchItineraries": "Unable to fetch itineraries.",
+    "errorNoItinerariesFound": "No itineraries found for the selected origin and destination.",
+    "searchResultSemantic": "Search result: {name}, {locality}.",
+    "@searchResultSemantic": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "locality": {
+                "type": "String"
+            }
+        }
+    },
+    "origDestCurrentLocation": "Current location",
+    "homeNavigationMapTitle": "Map",
+    "homeNavigationFavouritesTitle": "Favourites",
+    "homeNavigationSettingsTitle": "Settings",
+    "homeSearchButtonHint": "Search here",
+    "favouritesTitle": "Favourites",
+    "favouritesScreenPrompt": "Add favourites to see them here.",
+    "settingsTitle": "Settings",
+    "settingsOptionFeedback": "Feedback",
+    "settingsOptionSupport": "Support",
+    "settingsOptionLegalAndPrivacy": "Legal & Privacy",
+    "userLocationDeniedSnackbarText": "Enable location access in system settings to use this feature.",
+    "placeScreenChangeRadiusButton": "Change radius",
+    "placeScreenChangeRadiusCancel": "Cancel",
+    "placeScreenChangeRadiusConfirm": "Change",
+    "errorUnableToFetchParkingSites": "Unable to fetch parking sites, try again later.",
+    "errorUnableToFetchDrivingTime": "Unable to fetch driving time, try again later.",
+    "availabilityUnknown": "Unknown",
+    "parkingLocationButtonStart": "Start",
+    "parkingLocationButtonFavourite": "Favourite",
+    "parkingLocationButtonRouteExternal": "Route External",
+    "errorUnableToLaunchRouteExternal": "Unable to launch external maps app.",
+    "featureComingSoonMessage": "This feature is coming soon.",
+    "feedbackScreenTitle": "Feedback",
+    "feedbackTypeLocalData": "Local Data",
+    "feedbackTypeAppFunctionality": "App Functionality",
+    "feedbackSubjectHint": "Subject",
+    "feedbackMessageHint": "Your feedback",
+    "feedbackSubmitButton": "Submit",
+    "feedbackFieldErrorRequired": "This field is required.",
+    "legalPrivacyScreenTitle": "Legal & Privacy",
+    "legalPrivacyLocationAccess": "Location Access",
+    "legalPrivacyDataProtection": "Data Protection",
+    "routingScreenNavigationStartButton": "Start",
+    "routingScreenNavigationPauseButton": "Pause",
+    "routingScreenNavigationResumeButton": "Resume",
+    "routingScreenNavigationDoneButton": "Done",
+    "navigationRelativeDirectionDepart": "Depart",
+    "navigationRelativeDirectionHardLeft": "Sharp left",
+    "navigationRelativeDirectionLeft": "Turn left",
+    "navigationRelativeDirectionSlightlyLeft": "Slight left",
+    "navigationRelativeDirectionContinue": "Continue",
+    "navigationRelativeDirectionSlightlyRight": "Slight right",
+    "navigationRelativeDirectionRight": "Turn right",
+    "navigationRelativeDirectionHardRight": "Sharp right",
+    "navigationRelativeDirectionCircleClockwise": "Enter roundabout",
+    "navigationRelativeDirectionCircleCounterclockwise": "Enter roundabout",
+    "navigationRelativeDirectionElevator": "Take the lift",
+    "navigationRelativeDirectionUturnLeft": "Make a U-turn",
+    "navigationRelativeDirectionUturnRight": "Make a U-turn",
+    "navigationRelativeDirectionEnterStation": "Enter station",
+    "navigationRelativeDirectionExitStation": "Exit station",
+    "navigationRelativeDirectionFollowSigns": "Follow signs"
 }
