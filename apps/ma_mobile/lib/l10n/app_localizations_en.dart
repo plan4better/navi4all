@@ -404,4 +404,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String navigationStepDistanceToActionKilometres(String distance) {
     return 'in $distance kilometres';
   }
+
+  @override
+  String get routingDisclaimerTitle => 'Attention';
+
+  @override
+  String get routingDisclaimerMessage => 'Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.';
+
+  @override
+  String get routingDisclaimerCancelButton => 'Cancel';
+
+  @override
+  String get routingDisclaimerAcceptButton => 'Continue';
 }

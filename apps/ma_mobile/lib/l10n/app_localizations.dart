@@ -832,6 +832,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'in {distance} kilometres'**
   String navigationStepDistanceToActionKilometres(String distance);
+
+  /// No description provided for @routingDisclaimerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention'**
+  String get routingDisclaimerTitle;
+
+  /// No description provided for @routingDisclaimerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.'**
+  String get routingDisclaimerMessage;
+
+  /// No description provided for @routingDisclaimerCancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get routingDisclaimerCancelButton;
+
+  /// No description provided for @routingDisclaimerAcceptButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get routingDisclaimerAcceptButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -31,6 +31,7 @@ class RoutingScreen extends StatefulWidget {
 }
 
 class RoutingState extends State<RoutingScreen> {
+  bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
   late Place _destination;
@@ -73,6 +74,82 @@ class RoutingState extends State<RoutingScreen> {
 
     // Fetch itineraries
     _fetchItineraries();
+  }
+
+  void _showDisclaimerDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          backgroundColor: SmartRootsColors.maWhite,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    AppLocalizations.of(context)!.routingDisclaimerTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    AppLocalizations.of(context)!.routingDisclaimerMessage,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SheetButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.routingDisclaimerCancelButton,
+                        onTap: () {
+                          disclaimerAccepted = false;
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: SheetButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.routingDisclaimerAcceptButton,
+                        onTap: () {
+                          disclaimerAccepted = true;
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<Position?> _getUserLocation() async {
@@ -238,6 +315,10 @@ class RoutingState extends State<RoutingScreen> {
       _positionStreamSubscription = null;
     } else if (_navigationStatus == NavigationStatus.idle ||
         _navigationStatus == NavigationStatus.paused) {
+      if (!disclaimerAccepted) {
+        _showDisclaimerDialog();
+      }
+
       setState(() {
         _navigationStatus = NavigationStatus.navigating;
       });
