@@ -78,18 +78,16 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
             Expanded(
               child: _parkingLocations.isNotEmpty
-                  ? ListView.separated(
+                  ? ListView.builder(
                       padding: EdgeInsets.all(16),
                       shrinkWrap: true,
                       itemCount: _parkingLocations.length,
                       itemBuilder: (context, index) => _FavouritesListItem(
                         parkingLocation: _parkingLocations[index],
                       ),
-                      separatorBuilder: (context, index) =>
-                          Divider(color: SmartRootsColors.maBlue, height: 0),
                     )
                   : Expanded(
                       child: Align(
@@ -141,76 +139,100 @@ class _FavouritesListItem extends StatelessWidget {
   const _FavouritesListItem({required this.parkingLocation});
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    child: InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ParkingSiteScreen(parkingSite: parkingLocation),
-        ),
+  Widget build(BuildContext context) => InkWell(
+    onTap: () => Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ParkingSiteScreen(parkingSite: parkingLocation),
       ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.place_outlined,
-            color: SmartRootsColors.maBlueExtraExtraDark,
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              parkingLocation["name"],
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: SmartRootsColors.maBlueExtraExtraDark,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SizedBox(width: 8),
-          Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: SmartRootsColors.maBlue,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(1),
-                  decoration: BoxDecoration(
-                    color: SmartRootsColors.maBlueExtraExtraDark,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
+    ),
+    child: Column(
+      children: [
+        SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: parkingLocation['has_realtime_data']
+                      ? parkingLocation['occupied_disabled'] != null &&
+                                parkingLocation['occupied_disabled'] <
+                                    parkingLocation['capacity_disabled']
+                            ? SmartRootsColors.maGreen
+                            : SmartRootsColors.maRed
+                      : SmartRootsColors.maBlueExtraDark,
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.local_parking,
+                      size: 16,
                       color: SmartRootsColors.maWhite,
-                      width: 1,
                     ),
-                  ),
-                  child: Icon(
-                    Icons.local_parking,
-                    size: 16,
-                    color: SmartRootsColors.maWhite,
-                  ),
+                  ],
                 ),
-                SizedBox(width: 4),
-                Text(
-                  getOccupancyText(context, parkingLocation),
-                  style: TextStyle(
-                    color: SmartRootsColors.maWhite,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      parkingLocation["name"],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      parkingLocation["city"] ??
+                          parkingLocation["address"] ??
+                          '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              SizedBox(width: 12),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: SmartRootsColors.maBlueLight,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      getOccupancyText(context, parkingLocation),
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              /*SizedBox(width: 16),
+                            Icon(
+                              Icons.more_vert,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),*/
+            ],
           ),
-          /*SizedBox(width: 16),
-                        Icon(
-                          Icons.more_vert,
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                        ),*/
-        ],
-      ),
+        ),
+        SizedBox(height: 4),
+        Divider(color: SmartRootsColors.maBlue, height: 0),
+      ],
     ),
   );
 }

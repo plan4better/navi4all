@@ -3,6 +3,34 @@ import 'package:smartroots/core/config.dart' show Settings;
 import 'package:maplibre_gl/maplibre_gl.dart' show LatLng;
 
 class POIParkingService {
+  // TODO: ONLY FOR TESTING
+  final List<Map<String, dynamic>> _testParkingLocations = [
+    {
+      "id": "test1",
+      "name": "München Test Parking 1",
+      "address": "Schellingstraße 84, 80798 München",
+      "lat": "48.152458623658056",
+      "lon": "11.568498141412222",
+      "has_realtime_data": true,
+      "realtime_status": "AVAILABLE",
+      "restricted_to": [
+        {"type": "DISABLED"},
+      ],
+    },
+    {
+      "id": "test2",
+      "name": "Hamburg Test Parking 2",
+      "address": "Bergstraße 28, 20095 Hamburg",
+      "lat": "53.551556570027785",
+      "lon": "9.99480543500771",
+      "has_realtime_data": true,
+      "realtime_status": "AVAILABLE",
+      "restricted_to": [
+        {"type": "DISABLED"},
+      ],
+    },
+  ];
+
   final Dio apiClient = Dio(
     BaseOptions(
       baseUrl: Settings.parkApiBaseUrl,
@@ -41,6 +69,13 @@ class POIParkingService {
       },
     );
 
+    // TODO: ONLY FOR TESTING
+    parkingLocations.addAll(
+      _testParkingLocations
+          .map((item) => _parseParkingSpotLocation(item))
+          .toList(),
+    );
+
     // Process parking spots
     if (parkingSpotsResponse.statusCode == 200) {
       parkingLocations.addAll(
@@ -52,18 +87,6 @@ class POIParkingService {
     } else {
       throw Exception(parkingSpotsResponse.statusMessage);
     }
-
-    // TODO: ONLY FOR TESTING
-    parkingLocations.add({
-      "id": "test1",
-      "name": "München Test Parking 1",
-      "address": "Schellingstraße 84, 80798 München",
-      "coordinates": LatLng(48.152458623658056, 11.568498141412222),
-      "has_realtime_data": true,
-      "capacity_disabled": 1,
-      "free_capacity_disabled": 1,
-      "occupied_disabled": 0,
-    });
 
     // Process parking sites
     if (parkingSitesResponse.statusCode == 200) {
@@ -98,6 +121,13 @@ class POIParkingService {
   Future<Map<String, dynamic>?> getParkingLocationDetails({
     required String parkingId,
   }) async {
+    // TODO: ONLY FOR TESTING
+    for (var testLocation in _testParkingLocations) {
+      if (testLocation['id'] == parkingId) {
+        return _parseParkingSpotLocation(testLocation);
+      }
+    }
+
     // Attempt to fetch details from parking-spots endpoint first
     Response parkingSpotsResponse = await apiClient.get(
       '/parking-spots/$parkingId',
@@ -154,6 +184,18 @@ class POIParkingService {
         (parkingSpot['capacity_disabled'] ?? 0) -
         (parkingSpot['free_capacity_disabled'] ?? 0);
 
+    // Extract city name from parking location address
+    // Currently designed for the German address format
+    String address = parkingSpot['address'] ?? '';
+    List<String> addressParts = address.split(',');
+    if (addressParts.length >= 2) {
+      String cityPart = addressParts[1].trim();
+      List<String> cityParts = cityPart.split(' ');
+      if (cityParts.length >= 2) {
+        parkingSpot['city'] = cityParts.sublist(1).join(' ');
+      }
+    }
+
     return parkingSpot;
   }
 
@@ -179,6 +221,18 @@ class POIParkingService {
     parkingSite["occupied_disabled"] =
         (parkingSite['capacity_disabled'] ?? 0) -
         (parkingSite['free_capacity_disabled'] ?? 0);
+
+    // Extract city name from parking location address
+    // Currently designed for the German address format
+    String address = parkingSite['address'] ?? '';
+    List<String> addressParts = address.split(',');
+    if (addressParts.length >= 2) {
+      String cityPart = addressParts[1].trim();
+      List<String> cityParts = cityPart.split(' ');
+      if (cityParts.length >= 2) {
+        parkingSite['city'] = cityParts.sublist(1).join(' ');
+      }
+    }
 
     return parkingSite;
   }

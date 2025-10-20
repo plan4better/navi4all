@@ -409,7 +409,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get routingDisclaimerTitle => 'Achtung';
 
   @override
-  String get routingDisclaimerMessage => 'Die von dieser App bereitgestellte Navigationsanleitung befindet sich derzeit in der Beta-Testphase und kann fehlerhaft sein. Bitte seien Sie vorsichtig und überprüfen Sie die Routeninformationen unabhängig. Befolgen Sie immer die örtlichen Verkehrsregeln und -vorschriften und achten Sie auf die Straßenverhältnisse.';
+  String get routingDisclaimerMessage => 'Die von dieser App bereitgestellte Navigationsanleitung befindet sich derzeit in der Beta-Testphase und kann fehlerhaft sein. Bitte seien Sie vorsichtig und überprüfen Sie die Routeninformationen selbst. Befolgen Sie immer die örtlichen Verkehrsregeln und -vorschriften und achten Sie auf die Straßenverhältnisse.';
 
   @override
   String get routingDisclaimerCancelButton => 'Abbrechen';
