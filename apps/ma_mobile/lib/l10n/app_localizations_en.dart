@@ -96,7 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSettingsButton => 'Settings';
 
   @override
-  String get searchTextFieldHint => 'Search here';
+  String get searchTextFieldHint => 'Search here...';
 
   @override
   String get searchTextFieldOriginHintSemantic => 'Text input. Type to search for an origin location.';
@@ -240,7 +240,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNavigationSettingsTitle => 'Settings';
 
   @override
-  String get homeSearchButtonHint => 'Search here';
+  String get homeSearchButtonHint => 'Search here...';
 
   @override
   String get favouritesTitle => 'Favourites';

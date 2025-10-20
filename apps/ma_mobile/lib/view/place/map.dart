@@ -21,37 +21,31 @@ class PlaceMap extends StatefulWidget {
 
 class _PlaceMapState extends State<PlaceMap> {
   late MapLibreMapController _mapController;
+  bool _canInteractWithMap = false;
   List<Map<String, dynamic>> _parkingSites = [];
   final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
   int? _lastRadius;
 
   Future<void> _onStyleLoaded() async {
+    // Fetch and draw map layers
+    _fetchMapLayers().then((_) {
+      // Add symbol tap listener
+      _mapController.onCircleTapped.add(_onCircleTapped);
+    });
+
     // Load custom marker icons
-    final bytes = await rootBundle.load('assets/parking_avbl_yes.png');
-    final list = bytes.buffer.asUint8List();
-    _mapController.addImage("parking_avbl_yes.png", list);
-
-    final bytes2 = await rootBundle.load('assets/parking_avbl_no.png');
-    final list2 = bytes2.buffer.asUint8List();
-    _mapController.addImage("parking_avbl_no.png", list2);
-
-    final bytes3 = await rootBundle.load('assets/parking_avbl_unknown.png');
-    final list3 = bytes3.buffer.asUint8List();
-    _mapController.addImage("parking_avbl_unknown.png", list3);
-
     final bytes4 = await rootBundle.load('assets/place.png');
     final list4 = bytes4.buffer.asUint8List();
     _mapController.addImage("place.png", list4);
 
-    await _fetchMapLayers();
-
-    // Add symbol tap listener
-    _mapController.onSymbolTapped.add(_onSymbolTapped);
+    await Future.delayed(const Duration(milliseconds: 250));
+    setState(() => _canInteractWithMap = true);
   }
 
   Future<void> _fetchMapLayers() async {
     // Clear existing layers
     _mapController.clearSymbols();
+    _mapController.clearCircles();
     _mapController.clearFills();
 
     // Draw radius circle
@@ -106,8 +100,8 @@ class _PlaceMapState extends State<PlaceMap> {
     }
   }
 
-  void _onSymbolTapped(Symbol symbol) {
-    final site = _symbolIdToSite[symbol.id] ?? {};
+  void _onCircleTapped(Circle circle) {
+    final site = _symbolIdToSite[circle.id] ?? {};
     if (site.isNotEmpty) {
       Navigator.push(
         context,
@@ -128,7 +122,11 @@ class _PlaceMapState extends State<PlaceMap> {
     return Stack(
       children: [
         MapLibreMap(
-          annotationOrder: [AnnotationType.fill, AnnotationType.symbol],
+          annotationOrder: [
+            AnnotationType.fill,
+            AnnotationType.circle,
+            AnnotationType.symbol,
+          ],
           myLocationEnabled: true,
           styleString: Settings.mapStyleUrl,
           onMapCreated: (controller) => _mapController = controller,
@@ -150,6 +148,10 @@ class _PlaceMapState extends State<PlaceMap> {
           compassViewMargins: const Point(16, 160),
           compassViewPosition: CompassViewPosition.topRight,
         ),
+        // Fill screen with grey background while map is loading
+        !_canInteractWithMap
+            ? Container(color: Colors.grey[200])
+            : SizedBox.shrink(),
         /*SafeArea(
           child: Align(
             alignment: Alignment.bottomRight,
@@ -241,21 +243,23 @@ class _PlaceMapState extends State<PlaceMap> {
       int? total = site["capacity_disabled"];
       int? occupied = site["occupied_disabled"];
 
-      String iconName;
+      String markerColor = "#3685E2";
       if (!hasRealtimeData || total == null || occupied == null) {
-        iconName = "parking_avbl_unknown.png";
+        markerColor = "#3685E2";
       } else if (occupied < total) {
-        iconName = "parking_avbl_yes.png";
+        markerColor = "#089161";
       } else {
-        iconName = "parking_avbl_no.png";
+        markerColor = "#F4B1A4";
       }
 
       _mapController
-          .addSymbol(
-            SymbolOptions(
+          .addCircle(
+            CircleOptions(
               geometry: site["coordinates"],
-              iconImage: iconName,
-              iconSize: 0.85,
+              circleColor: markerColor,
+              circleRadius: 5.5,
+              circleStrokeWidth: 1.0,
+              circleStrokeColor: "#FFFFFF",
             ),
           )
           .then((symbol) {

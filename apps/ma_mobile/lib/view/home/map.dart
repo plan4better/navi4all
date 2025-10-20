@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/theme/colors.dart';
@@ -59,26 +58,14 @@ class _HomeMapState extends State<HomeMap> {
   }
 
   Future<void> _onStyleLoaded() async {
-    setState(() => _canInteractWithMap = true);
-
-    // Load custom marker icons
-    final bytes = await rootBundle.load('assets/parking_avbl_yes.png');
-    final list = bytes.buffer.asUint8List();
-    _mapController.addImage("parking_avbl_yes.png", list);
-
-    final bytes2 = await rootBundle.load('assets/parking_avbl_no.png');
-    final list2 = bytes2.buffer.asUint8List();
-    _mapController.addImage("parking_avbl_no.png", list2);
-
-    final bytes3 = await rootBundle.load('assets/parking_avbl_unknown.png');
-    final list3 = bytes3.buffer.asUint8List();
-    _mapController.addImage("parking_avbl_unknown.png", list3);
-
     // Fetch and display parking locations
-    await _fetchParkingSites();
+    _fetchParkingSites().then((_) {
+      // Add circle tap listener
+      _mapController.onCircleTapped.add(_onCircleTapped);
+    });
 
-    // Add symbol tap listener
-    _mapController.onSymbolTapped.add(_onSymbolTapped);
+    await Future.delayed(const Duration(milliseconds: 250));
+    setState(() => _canInteractWithMap = true);
   }
 
   Future<void> _fetchParkingSites() async {
@@ -106,8 +93,8 @@ class _HomeMapState extends State<HomeMap> {
     }
   }
 
-  void _onSymbolTapped(Symbol symbol) {
-    final site = _symbolIdToSite[symbol.id] ?? {};
+  void _onCircleTapped(Circle circle) {
+    final site = _symbolIdToSite[circle.id] ?? {};
     if (site.isNotEmpty) {
       Navigator.push(
         context,
@@ -141,6 +128,10 @@ class _HomeMapState extends State<HomeMap> {
           compassViewMargins: const Point(16, 160),
           compassViewPosition: CompassViewPosition.topRight,
         ),
+        // Fill screen with grey background while map is loading
+        !_canInteractWithMap
+            ? Container(color: Colors.grey[200])
+            : SizedBox.shrink(),
         SafeArea(
           child: Align(
             alignment: Alignment.bottomRight,
@@ -178,21 +169,23 @@ class _HomeMapState extends State<HomeMap> {
       int? total = site["capacity_disabled"];
       int? occupied = site["occupied_disabled"];
 
-      String iconName;
+      String markerColor = "#3685E2";
       if (!hasRealtimeData || total == null || occupied == null) {
-        iconName = "parking_avbl_unknown.png";
+        markerColor = "#3685E2";
       } else if (occupied < total) {
-        iconName = "parking_avbl_yes.png";
+        markerColor = "#089161";
       } else {
-        iconName = "parking_avbl_no.png";
+        markerColor = "#F4B1A4";
       }
 
       _mapController
-          .addSymbol(
-            SymbolOptions(
+          .addCircle(
+            CircleOptions(
               geometry: site["coordinates"],
-              iconImage: iconName,
-              iconSize: 0.85,
+              circleColor: markerColor,
+              circleRadius: 5.5,
+              circleStrokeWidth: 1.0,
+              circleStrokeColor: "#FFFFFF",
             ),
           )
           .then((symbol) {

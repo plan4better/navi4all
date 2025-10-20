@@ -495,34 +495,35 @@ class RoutingState extends State<RoutingScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 16),
-                                Text(
-                                  widget.parkingSite["name"],
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color:
-                                        SmartRootsColors.maBlueExtraExtraDark,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 16),
+                                  Text(
+                                    widget.parkingSite["name"],
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  widget.parkingSite["address"],
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color:
-                                        SmartRootsColors.maBlueExtraExtraDark,
+                                  Text(
+                                    widget.parkingSite["address"],
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             SizedBox(width: 8),
-                            Spacer(),
                             IconButton(
                               icon: const Icon(
                                 Icons.close,

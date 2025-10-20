@@ -272,7 +272,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchTextFieldHint.
   ///
   /// In en, this message translates to:
-  /// **'Search here'**
+  /// **'Search here...'**
   String get searchTextFieldHint;
 
   /// No description provided for @searchTextFieldOriginHintSemantic.
@@ -512,7 +512,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeSearchButtonHint.
   ///
   /// In en, this message translates to:
-  /// **'Search here'**
+  /// **'Search here...'**
   String get homeSearchButtonHint;
 
   /// No description provided for @favouritesTitle.
