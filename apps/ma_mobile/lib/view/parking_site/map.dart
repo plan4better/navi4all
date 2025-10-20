@@ -31,7 +31,6 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     final list3 = bytes3.buffer.asUint8List();
     _mapController.addImage("parking_avbl_unknown.png", list3);
 
-    await Future.delayed(const Duration(milliseconds: 500));
     _drawPlace();
   }
 

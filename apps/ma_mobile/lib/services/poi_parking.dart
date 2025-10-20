@@ -30,32 +30,35 @@ class POIParkingService {
   );
 
   Future<List<Map<String, dynamic>>> getParkingLocations({
-    required double focusPointLat,
-    required double focusPointLon,
-    required int radius,
+    double? focusPointLat,
+    double? focusPointLon,
+    int? radius,
   }) async {
     List<Map<String, dynamic>> parkingLocations = [];
+
+    // Build request query parameters
+    Map<String, dynamic> queryParameters = {
+      'purpose': 'CAR',
+      'source_uids': Settings.parkApiSourceUids.join(','),
+    };
+    if (focusPointLat != null && focusPointLon != null && radius != null) {
+      queryParameters.addAll({
+        'lat': focusPointLat,
+        'lon': focusPointLon,
+        'radius': radius,
+      });
+    }
 
     // Fetch parking spots
     Response parkingSpotsResponse = await apiClient.get(
       '/parking-spots',
-      queryParameters: {
-        'lat': focusPointLat,
-        'lon': focusPointLon,
-        'radius': radius,
-        'purpose': 'CAR',
-      },
+      queryParameters: queryParameters,
     );
 
     // Fetch parking sites
     Response parkingSitesResponse = await apiClient.get(
       '/parking-sites',
-      queryParameters: {
-        'lat': focusPointLat,
-        'lon': focusPointLon,
-        'radius': radius,
-        'purpose': 'CAR',
-      },
+      queryParameters: queryParameters,
     );
 
     // TODO: ONLY FOR TESTING
@@ -90,31 +93,35 @@ class POIParkingService {
     }
 
     // Remove parking locations outside the specified radius
-    parkingLocations = parkingLocations.where((location) {
-      num distance = maps_toolkit.SphericalUtil.computeDistanceBetween(
-        maps_toolkit.LatLng(focusPointLat, focusPointLon),
-        maps_toolkit.LatLng(
-          location['coordinates'].latitude,
-          location['coordinates'].longitude,
-        ),
-      );
-      return distance <= radius;
-    }).toList();
+    if (focusPointLat != null && focusPointLon != null && radius != null) {
+      parkingLocations = parkingLocations.where((location) {
+        num distance = maps_toolkit.SphericalUtil.computeDistanceBetween(
+          maps_toolkit.LatLng(focusPointLat, focusPointLon),
+          maps_toolkit.LatLng(
+            location['coordinates'].latitude,
+            location['coordinates'].longitude,
+          ),
+        );
+        return distance <= radius;
+      }).toList();
+    }
 
     // Order parking locations by distance to focus point
-    parkingLocations.sort((a, b) {
-      double distanceA =
-          ((a['coordinates'].latitude - focusPointLat) *
-              (a['coordinates'].latitude - focusPointLat)) +
-          ((a['coordinates'].longitude - focusPointLon) *
-              (a['coordinates'].longitude - focusPointLon));
-      double distanceB =
-          ((b['coordinates'].latitude - focusPointLat) *
-              (b['coordinates'].latitude - focusPointLat)) +
-          ((b['coordinates'].longitude - focusPointLon) *
-              (b['coordinates'].longitude - focusPointLon));
-      return distanceA.compareTo(distanceB);
-    });
+    if (focusPointLat != null && focusPointLon != null) {
+      parkingLocations.sort((a, b) {
+        double distanceA =
+            ((a['coordinates'].latitude - focusPointLat) *
+                (a['coordinates'].latitude - focusPointLat)) +
+            ((a['coordinates'].longitude - focusPointLon) *
+                (a['coordinates'].longitude - focusPointLon));
+        double distanceB =
+            ((b['coordinates'].latitude - focusPointLat) *
+                (b['coordinates'].latitude - focusPointLat)) +
+            ((b['coordinates'].longitude - focusPointLon) *
+                (b['coordinates'].longitude - focusPointLon));
+        return distanceA.compareTo(distanceB);
+      });
+    }
 
     return parkingLocations;
   }

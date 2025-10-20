@@ -62,6 +62,14 @@ class _HomeMapState extends State<HomeMap> {
     _fetchParkingSites().then((_) {
       // Add circle tap listener
       _mapController.onCircleTapped.add(_onCircleTapped);
+
+      // Pan to user location by default if location access was granted
+      Geolocator.checkPermission().then((permission) {
+        if (permission != LocationPermission.denied &&
+            permission != LocationPermission.deniedForever) {
+          _panToUserLocation();
+        }
+      });
     });
 
     await Future.delayed(const Duration(milliseconds: 250));
@@ -72,11 +80,7 @@ class _HomeMapState extends State<HomeMap> {
     POIParkingService parkingService = POIParkingService();
     try {
       List<Map<String, dynamic>> result = await parkingService
-          .getParkingLocations(
-            focusPointLat: 49.487164933378104,
-            focusPointLon: 8.46624749208,
-            radius: 2500,
-          );
+          .getParkingLocations();
 
       setState(() {
         _parkingSites = result;
@@ -164,6 +168,9 @@ class _HomeMapState extends State<HomeMap> {
   }
 
   void _updateMarkers() {
+    _mapController.clearCircles();
+
+    List<CircleOptions> circles = [];
     for (var site in _parkingSites) {
       bool hasRealtimeData = site["has_realtime_data"];
       int? total = site["capacity_disabled"];
@@ -178,19 +185,21 @@ class _HomeMapState extends State<HomeMap> {
         markerColor = "#F4B1A4";
       }
 
-      _mapController
-          .addCircle(
-            CircleOptions(
-              geometry: site["coordinates"],
-              circleColor: markerColor,
-              circleRadius: 5.5,
-              circleStrokeWidth: 1.0,
-              circleStrokeColor: "#FFFFFF",
-            ),
-          )
-          .then((symbol) {
-            _symbolIdToSite[symbol.id] = site;
-          });
+      circles.add(
+        CircleOptions(
+          geometry: site["coordinates"],
+          circleColor: markerColor,
+          circleRadius: 5.5,
+          circleStrokeWidth: 1.0,
+          circleStrokeColor: "#FFFFFF",
+        ),
+      );
     }
+
+    _mapController.addCircles(circles).then((symbols) {
+      for (int i = 0; i < symbols.length; i++) {
+        _symbolIdToSite[symbols[i].id] = _parkingSites[i];
+      }
+    });
   }
 }
