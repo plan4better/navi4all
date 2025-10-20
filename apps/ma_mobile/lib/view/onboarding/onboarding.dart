@@ -241,6 +241,7 @@ class _UserLocationScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             AppLocalizations.of(context)!.onboardingUserLocationTitle,

@@ -170,7 +170,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'The app that guides you to\naccessible parking spots.'**
+  /// **'Find accessible parking spots quickly and easily.'**
   String get onboardingWelcomeSubtitle;
 
   /// No description provided for @onboardingWelcomeHint.
@@ -182,13 +182,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSymbolInformationTitle.
   ///
   /// In en, this message translates to:
-  /// **'Important symbols'**
+  /// **'How it works'**
   String get onboardingSymbolInformationTitle;
 
   /// No description provided for @onboardingSymbolInformationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'These show availability at accessible parking spots.'**
+  /// **'These symbols help you find the right parking spot.'**
   String get onboardingSymbolInformationSubtitle;
 
   /// No description provided for @onboardingSymbolInformationParkingAvailable.
@@ -212,25 +212,25 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingUserLocationTitle.
   ///
   /// In en, this message translates to:
-  /// **'We need access to your location'**
+  /// **'Location access'**
   String get onboardingUserLocationTitle;
 
   /// No description provided for @onboardingUserLocationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'This is necessary for search and navigation to work correctly.'**
+  /// **'With access to your location, we can show you parking spots nearby and navigate there directly.'**
   String get onboardingUserLocationSubtitle;
 
   /// No description provided for @onboardingFinishTitle.
   ///
   /// In en, this message translates to:
-  /// **'All done!'**
+  /// **'Perfect - You\'re all set!'**
   String get onboardingFinishTitle;
 
   /// No description provided for @onboardingFinishSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to ParkStark.'**
+  /// **'Now you can find accessible parking spots nearby.'**
   String get onboardingFinishSubtitle;
 
   /// No description provided for @onboardingFinishAppTutorialButton.

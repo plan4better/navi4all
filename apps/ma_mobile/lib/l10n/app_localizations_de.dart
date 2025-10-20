@@ -45,16 +45,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Willkommen bei\nParkStark';
 
   @override
-  String get onboardingWelcomeSubtitle => 'Die App, die Sie zu\nbarrierefreien Parkplätzen führt.';
+  String get onboardingWelcomeSubtitle => 'Gemeinsam finden wir barrierefreie Parkplätze – schnell und unkompliziert.';
 
   @override
   String get onboardingWelcomeHint => 'Drücken Sie die Taste, um fortzufahren.';
 
   @override
-  String get onboardingSymbolInformationTitle => 'Wichtige Symbole';
+  String get onboardingSymbolInformationTitle => 'So funktioniert\'s';
 
   @override
-  String get onboardingSymbolInformationSubtitle => 'Diese zeigen die Verfügbarkeit an barrierefreien Parkplätzen.';
+  String get onboardingSymbolInformationSubtitle => 'Diese Symbole helfen Ihnen, den passenden Parkplatz zu finden.';
 
   @override
   String get onboardingSymbolInformationParkingAvailable => 'Parkplatz verfügbar';
@@ -66,16 +66,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingSymbolInformationParkingUnknown => 'Echtzeitstatus unbekannt';
 
   @override
-  String get onboardingUserLocationTitle => 'Wir benötigen Zugriff auf Ihren Standort';
+  String get onboardingUserLocationTitle => 'Standort aktivieren';
 
   @override
-  String get onboardingUserLocationSubtitle => 'Dies ist notwendig, damit die Such- und Navigationsfunktionen funktionieren.';
+  String get onboardingUserLocationSubtitle => 'Mit Ihrer Standortfreigabe zeigen wir Ihnen die nächsten verfügbaren Parkplätze und navigieren Sie direkt dorthin.';
 
   @override
-  String get onboardingFinishTitle => 'Alles erledigt!';
+  String get onboardingFinishTitle => 'Perfekt – Sie sind startbereit!';
 
   @override
-  String get onboardingFinishSubtitle => 'Willkommen bei ParkStark.';
+  String get onboardingFinishSubtitle => 'Entdecken Sie jetzt barrierefreie Parkplätze in Ihrer Nähe.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'Zum App-Tutorial';

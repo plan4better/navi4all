@@ -45,16 +45,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Welcome to\nParkStark';
 
   @override
-  String get onboardingWelcomeSubtitle => 'The app that guides you to\naccessible parking spots.';
+  String get onboardingWelcomeSubtitle => 'Find accessible parking spots quickly and easily.';
 
   @override
   String get onboardingWelcomeHint => 'Press the button to continue.';
 
   @override
-  String get onboardingSymbolInformationTitle => 'Important symbols';
+  String get onboardingSymbolInformationTitle => 'How it works';
 
   @override
-  String get onboardingSymbolInformationSubtitle => 'These show availability at accessible parking spots.';
+  String get onboardingSymbolInformationSubtitle => 'These symbols help you find the right parking spot.';
 
   @override
   String get onboardingSymbolInformationParkingAvailable => 'Parking available';
@@ -66,16 +66,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSymbolInformationParkingUnknown => 'Real-time data unavailable';
 
   @override
-  String get onboardingUserLocationTitle => 'We need access to your location';
+  String get onboardingUserLocationTitle => 'Location access';
 
   @override
-  String get onboardingUserLocationSubtitle => 'This is necessary for search and navigation to work correctly.';
+  String get onboardingUserLocationSubtitle => 'With access to your location, we can show you parking spots nearby and navigate there directly.';
 
   @override
-  String get onboardingFinishTitle => 'All done!';
+  String get onboardingFinishTitle => 'Perfect - You\'re all set!';
 
   @override
-  String get onboardingFinishSubtitle => 'Welcome to ParkStark.';
+  String get onboardingFinishSubtitle => 'Now you can find accessible parking spots nearby.';
 
   @override
   String get onboardingFinishAppTutorialButton => 'View App Tutorial';
