@@ -146,17 +146,20 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                             ),
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            widget.parkingSite["address"],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: SmartRootsColors.maBlueExtraExtraDark,
-                            ),
-                          ),
-                        ),
+                        widget.parkingSite["address"] != null
+                            ? Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  widget.parkingSite["address"],
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color:
+                                        SmartRootsColors.maBlueExtraExtraDark,
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
                         SizedBox(height: 16),
                         Row(
                           children: [

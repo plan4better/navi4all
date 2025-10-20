@@ -511,15 +511,17 @@ class RoutingState extends State<RoutingScreen> {
                                           SmartRootsColors.maBlueExtraExtraDark,
                                     ),
                                   ),
-                                  Text(
-                                    widget.parkingSite["address"],
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                    ),
-                                  ),
+                                  widget.parkingSite["address"] != null
+                                      ? Text(
+                                          widget.parkingSite["address"],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: SmartRootsColors
+                                                .maBlueExtraExtraDark,
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
                                 ],
                               ),
                             ),
