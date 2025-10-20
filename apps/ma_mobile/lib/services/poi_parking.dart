@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:smartroots/core/config.dart' show Settings;
 import 'package:maplibre_gl/maplibre_gl.dart' show LatLng;
+import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
 
 class POIParkingService {
   // TODO: ONLY FOR TESTING
@@ -11,18 +12,6 @@ class POIParkingService {
       "address": "Schellingstraße 84, 80798 München",
       "lat": "48.152458623658056",
       "lon": "11.568498141412222",
-      "has_realtime_data": true,
-      "realtime_status": "AVAILABLE",
-      "restricted_to": [
-        {"type": "DISABLED"},
-      ],
-    },
-    {
-      "id": "test2",
-      "name": "Hamburg Test Parking 2",
-      "address": "Bergstraße 28, 20095 Hamburg",
-      "lat": "53.551556570027785",
-      "lon": "9.99480543500771",
       "has_realtime_data": true,
       "realtime_status": "AVAILABLE",
       "restricted_to": [
@@ -99,6 +88,18 @@ class POIParkingService {
     } else {
       throw Exception(parkingSitesResponse.statusMessage);
     }
+
+    // Remove parking locations outside the specified radius
+    parkingLocations = parkingLocations.where((location) {
+      num distance = maps_toolkit.SphericalUtil.computeDistanceBetween(
+        maps_toolkit.LatLng(focusPointLat, focusPointLon),
+        maps_toolkit.LatLng(
+          location['coordinates'].latitude,
+          location['coordinates'].longitude,
+        ),
+      );
+      return distance <= radius;
+    }).toList();
 
     // Order parking locations by distance to focus point
     parkingLocations.sort((a, b) {

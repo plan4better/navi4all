@@ -35,14 +35,16 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                     },
                   ),
                   SizedBox(width: 8),
-                  Text(
-                    AppLocalizations.of(context)!.legalPrivacyScreenTitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
+                  Expanded(
+                    child: Text(
+                      AppLocalizations.of(context)!.legalPrivacyScreenTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
                     ),
                   ),
                 ],

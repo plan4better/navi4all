@@ -93,7 +93,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   : AppLocalizations.of(
                       context,
                     )!.onboardingFinishHomeScreenButton,
-              style: AccessibleButtonStyle.white,
+              style: AccessibleButtonStyle.blueLight,
               onTap: () => _nextPage(),
             ),
           ),

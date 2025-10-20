@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/persistence/processing_status.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/feedback/feedback_type.dart';
 import 'package:smartroots/view/common/accessible_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -14,15 +16,36 @@ class FeedbackScreen extends StatefulWidget {
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  FeedbackType _selectedFeedbackType = FeedbackType.localData;
+  FeedbackType _selectedFeedbackType = FeedbackType.unselected;
   ProcessingStatus _submissionStatus = ProcessingStatus.idle;
+  final TextEditingController _subjectController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
   Future<void> _submitFeedback() async {
     if (!_formKey.currentState!.validate() ||
         _submissionStatus != ProcessingStatus.idle) {
       return;
     }
-    setState(() {
+
+    String messageBody = '';
+    if (_selectedFeedbackType != FeedbackType.unselected) {
+      messageBody +=
+          '${AppLocalizations.of(context)!.feedbackTypeHint}: $_selectedFeedbackType\n\n';
+    }
+    messageBody +=
+        '${AppLocalizations.of(context)!.feedbackSubjectHint}: ${_subjectController.text}\n\n';
+    messageBody +=
+        '${AppLocalizations.of(context)!.feedbackMessageHint}: ${_messageController.text}\n\n';
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: Settings.supportEmailUrl,
+      query: 'subject=${Settings.feedbackEmailSubject}&body=$messageBody',
+    );
+
+    await launchUrl(emailLaunchUri);
+
+    // TODO: Enable with direct feedback submission
+    /* setState(() {
       _submissionStatus = ProcessingStatus.processing;
     });
 
@@ -35,7 +58,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       SnackBar(
         content: Text(AppLocalizations.of(context)!.featureComingSoonMessage),
       ),
-    );
+    ); */
 
     // Reset form after submission
     _formKey.currentState!.reset();
@@ -89,11 +112,28 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Text(
+                              AppLocalizations.of(context)!.feedbackTypeHint,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
                         Row(
                           children: [
                             Expanded(
                               child: SegmentedButton(
                                 showSelectedIcon: false,
+                                emptySelectionAllowed: true,
                                 style: ButtonStyle(
                                   side: WidgetStateProperty.all(
                                     BorderSide(
@@ -102,7 +142,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     ),
                                   ),
                                   padding: WidgetStateProperty.all(
-                                    EdgeInsets.symmetric(vertical: 24),
+                                    EdgeInsets.symmetric(vertical: 16),
                                   ),
                                 ),
                                 segments: [
@@ -160,15 +200,30 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ],
                         ),
                         SizedBox(height: 32),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Text(
+                              AppLocalizations.of(context)!.feedbackSubjectHint,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
                         TextFormField(
+                          controller: _subjectController,
                           enabled: _submissionStatus == ProcessingStatus.idle,
                           maxLines: 1,
                           decoration: InputDecoration(
-                            hintText: AppLocalizations.of(
-                              context,
-                            )!.feedbackSubjectHint,
+                            hintText: '...',
                             hintStyle: TextStyle(
-                              color: SmartRootsColors.maBlueExtraExtraDark,
+                              color: SmartRootsColors.maBlue,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -190,15 +245,30 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               : null,
                         ),
                         SizedBox(height: 16),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Text(
+                              AppLocalizations.of(context)!.feedbackMessageHint,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
                         TextFormField(
+                          controller: _messageController,
                           enabled: _submissionStatus == ProcessingStatus.idle,
                           maxLines: 6,
                           decoration: InputDecoration(
-                            hintText: AppLocalizations.of(
-                              context,
-                            )!.feedbackMessageHint,
+                            hintText: '...',
                             hintStyle: TextStyle(
-                              color: SmartRootsColors.maBlueExtraExtraDark,
+                              color: SmartRootsColors.maBlue,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -224,7 +294,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           label: AppLocalizations.of(
                             context,
                           )!.feedbackSubmitButton,
-                          style: AccessibleButtonStyle.red,
+                          style: AccessibleButtonStyle.blueLight,
                           onTap: () => _submitFeedback(),
                         ),
                         SizedBox(height: 32),

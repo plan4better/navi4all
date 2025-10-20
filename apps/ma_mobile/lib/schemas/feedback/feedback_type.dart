@@ -1,1 +1,1 @@
-enum FeedbackType { localData, appFunctionality }
+enum FeedbackType { unselected, localData, appFunctionality }

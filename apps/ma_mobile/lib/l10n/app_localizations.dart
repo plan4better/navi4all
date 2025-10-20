@@ -200,7 +200,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSymbolInformationParkingUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'Parking not available'**
+  /// **'Parking occupied'**
   String get onboardingSymbolInformationParkingUnavailable;
 
   /// No description provided for @onboardingSymbolInformationParkingUnknown.
@@ -641,6 +641,12 @@ abstract class AppLocalizations {
   /// **'Feedback'**
   String get feedbackScreenTitle;
 
+  /// No description provided for @feedbackTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback type'**
+  String get feedbackTypeHint;
+
   /// No description provided for @feedbackTypeLocalData.
   ///
   /// In en, this message translates to:
@@ -650,7 +656,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackTypeAppFunctionality.
   ///
   /// In en, this message translates to:
-  /// **'App Functionality'**
+  /// **'App Features'**
   String get feedbackTypeAppFunctionality;
 
   /// No description provided for @feedbackSubjectHint.

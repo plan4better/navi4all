@@ -24,11 +24,9 @@ class AccessibleButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: style == AccessibleButtonStyle.white
-              ? SmartRootsColors.maWhite
-              : style == AccessibleButtonStyle.pink
-              ? SmartRootsColors.maBlue
-              : SmartRootsColors.maBlueExtraDark,
+          backgroundColor: style == AccessibleButtonStyle.blueLight
+              ? SmartRootsColors.maBlueLight
+              : SmartRootsColors.maBlueExtraExtraDark,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Navi4AllGeometry.radiusLarge),
           ),
@@ -42,10 +40,8 @@ class AccessibleButton extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16.0,
-              color:
-                  (style == AccessibleButtonStyle.white) |
-                      (style == AccessibleButtonStyle.pink)
-                  ? SmartRootsColors.maBlueExtraDark
+              color: style == AccessibleButtonStyle.blueLight
+                  ? SmartRootsColors.maBlueExtraExtraDark
                   : SmartRootsColors.maWhite,
             ),
             maxLines: 1,
@@ -57,4 +53,4 @@ class AccessibleButton extends StatelessWidget {
   }
 }
 
-enum AccessibleButtonStyle { white, pink, red }
+enum AccessibleButtonStyle { blueLight, blueExtraExtraDark }

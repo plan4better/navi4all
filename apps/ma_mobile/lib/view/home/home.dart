@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                padding: const EdgeInsets.only(bottom: 16, left: 12, right: 12),
                 child: Material(
                   elevation: _pageIndex == 0 ? 4 : 0,
                   borderRadius: BorderRadius.circular(64),
@@ -125,10 +125,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return const TextStyle(
                                   color: SmartRootsColors.maBlueExtraExtraDark,
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 13,
                                 );
                               }
                               return const TextStyle(
                                 color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontSize: 13,
                               );
                             }),
                         backgroundColor: _pageIndex == 0

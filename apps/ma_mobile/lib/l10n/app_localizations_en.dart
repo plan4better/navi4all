@@ -60,7 +60,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSymbolInformationParkingAvailable => 'Parking available';
 
   @override
-  String get onboardingSymbolInformationParkingUnavailable => 'Parking not available';
+  String get onboardingSymbolInformationParkingUnavailable => 'Parking occupied';
 
   @override
   String get onboardingSymbolInformationParkingUnknown => 'Real-time data unavailable';
@@ -306,10 +306,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedbackScreenTitle => 'Feedback';
 
   @override
+  String get feedbackTypeHint => 'Feedback type';
+
+  @override
   String get feedbackTypeLocalData => 'Local Data';
 
   @override
-  String get feedbackTypeAppFunctionality => 'App Functionality';
+  String get feedbackTypeAppFunctionality => 'App Features';
 
   @override
   String get feedbackSubjectHint => 'Subject';

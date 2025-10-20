@@ -209,14 +209,18 @@ class _FavouritesListItem extends StatelessWidget {
                   color: SmartRootsColors.maBlueLight,
                   borderRadius: BorderRadius.circular(16),
                 ),
+                width: 92,
                 child: Row(
                   children: [
-                    Text(
-                      getOccupancyText(context, parkingLocation),
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        getOccupancyText(context, parkingLocation),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
                       ),
                     ),
                   ],

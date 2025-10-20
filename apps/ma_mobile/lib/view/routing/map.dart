@@ -144,7 +144,7 @@ class _RoutingMapState extends State<RoutingMap> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: LatLng(
-              widget.userPosition!.latitude - 0.0003,
+              widget.userPosition!.latitude - 0.0001,
               widget.userPosition!.longitude,
             ),
             zoom: 17.0,

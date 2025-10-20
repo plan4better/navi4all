@@ -21,8 +21,8 @@ class PlaceScreen extends StatefulWidget {
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
-  int _selectedRadius = 300;
-  int _changedRadius = 300;
+  int _selectedRadius = 500;
+  int _changedRadius = 500;
   List<Map<String, dynamic>> _parkingSites = [];
 
   @override
