@@ -304,7 +304,7 @@ class PlaceListItem extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
-                ParkingSiteScreen(place: place, parkingSite: parkingSite),
+                ParkingSiteScreen(place: place, parkingLocation: parkingSite),
           ),
         );
       },

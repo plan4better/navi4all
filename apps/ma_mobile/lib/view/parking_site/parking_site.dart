@@ -20,8 +20,12 @@ import 'package:smartroots/view/routing/routing.dart';
 
 class ParkingSiteScreen extends StatefulWidget {
   final Place? place;
-  final Map<String, dynamic> parkingSite;
-  const ParkingSiteScreen({this.place, required this.parkingSite, super.key});
+  final Map<String, dynamic> parkingLocation;
+  const ParkingSiteScreen({
+    this.place,
+    required this.parkingLocation,
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => _ParkingSiteScreenState();
@@ -41,8 +45,8 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
 
   Future<void> _checkIfFavorite() async {
     _isFavorite = await PreferenceHelper.isFavoriteParkingLocation(
-      widget.parkingSite["id"],
-      widget.parkingSite["parking_type"],
+      widget.parkingLocation["id"],
+      widget.parkingLocation["parking_type"],
     );
     setState(() {});
   }
@@ -50,13 +54,13 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
   Future<void> _toggleFavorite() async {
     if (_isFavorite) {
       await PreferenceHelper.removeFavoriteParkingLocation(
-        widget.parkingSite["id"],
-        widget.parkingSite["parking_type"],
+        widget.parkingLocation["id"],
+        widget.parkingLocation["parking_type"],
       );
     } else {
       await PreferenceHelper.addFavoriteParkingLocation(
-        widget.parkingSite["id"],
-        widget.parkingSite["parking_type"],
+        widget.parkingLocation["id"],
+        widget.parkingLocation["parking_type"],
       );
     }
     setState(() {
@@ -85,8 +89,8 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
       final response = await routingService.getItineraries(
         originLat: userLatLng.latitude,
         originLon: userLatLng.longitude,
-        destinationLat: widget.parkingSite['coordinates'].latitude,
-        destinationLon: widget.parkingSite['coordinates'].longitude,
+        destinationLat: widget.parkingLocation['coordinates'].latitude,
+        destinationLon: widget.parkingLocation['coordinates'].longitude,
         date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
         time: DateFormat('HH:mm:ss').format(DateTime.now()),
         timeIsArrival: false,
@@ -126,7 +130,7 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          ParkingSiteMap(parkingSite: widget.parkingSite),
+          ParkingSiteMap(parkingSite: widget.parkingLocation),
           SlidingBottomSheet(
             Row(
               children: <Widget>[
@@ -138,39 +142,55 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            widget.parkingSite["name"],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: SmartRootsColors.maBlueExtraExtraDark,
-                            ),
-                          ),
-                        ),
-                        widget.parkingSite["address"] != null
-                            ? Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  widget.parkingSite["address"],
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color:
-                                        SmartRootsColors.maBlueExtraExtraDark,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.parkingLocation["name"],
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                    ),
                                   ),
-                                ),
-                              )
-                            : SizedBox.shrink(),
+                                  widget.parkingLocation["address"] != null
+                                      ? Text(
+                                          widget.parkingLocation["address"],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: SmartRootsColors
+                                                .maBlueExtraExtraDark,
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            IconButton(
+                              onPressed: () => _toggleFavorite(),
+                              icon: Icon(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                size: 28,
+                                _isFavorite ? Icons.star : Icons.star_border,
+                              ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: 16),
                         Row(
                           children: [
                             Flexible(
                               flex: 1,
                               child: SheetButton(
+                                icon: Icons.directions_car_outlined,
                                 label: AppLocalizations.of(
                                   context,
                                 )!.parkingLocationButtonStart,
@@ -178,7 +198,7 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => RoutingScreen(
-                                        parkingSite: widget.parkingSite,
+                                        parkingSite: widget.parkingLocation,
                                       ),
                                     ),
                                   );
@@ -188,30 +208,21 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                             ),
                             SizedBox(width: 8),
                             Flexible(
-                              flex: 2,
+                              flex: 1,
                               child: SheetButton(
-                                icon: _isFavorite
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                label: AppLocalizations.of(
-                                  context,
-                                )!.parkingLocationButtonFavourite,
-                                onTap: () => _toggleFavorite(),
-                                shrinkWrap: false,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Flexible(
-                              flex: 2,
-                              child: SheetButton(
+                                icon: Icons.directions_outlined,
                                 label: AppLocalizations.of(
                                   context,
                                 )!.parkingLocationButtonRouteExternal,
                                 onTap: () {
                                   MapsLauncher.launchCoordinates(
-                                    widget.parkingSite['coordinates'].latitude,
-                                    widget.parkingSite['coordinates'].longitude,
-                                    widget.parkingSite['name'],
+                                    widget
+                                        .parkingLocation['coordinates']
+                                        .latitude,
+                                    widget
+                                        .parkingLocation['coordinates']
+                                        .longitude,
+                                    widget.parkingLocation['name'],
                                   ).then((value) {
                                     if (!value) {
                                       ScaffoldMessenger.of(
@@ -231,6 +242,99 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                                 shrinkWrap: false,
                               ),
                             ),
+                            /*SizedBox(width: 8),
+                            Flexible(
+                              flex: 2,
+                              child: SheetButton(
+                                icon: _isFavorite
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.parkingLocationButtonFavourite,
+                                onTap: () => _toggleFavorite(),
+                                shrinkWrap: false,
+                              ),
+                            ),*/
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        _itineraries.isNotEmpty
+                            ? Row(
+                                children: [
+                                  Icon(
+                                    Icons.directions_car_outlined,
+                                    color:
+                                        SmartRootsColors.maBlueExtraExtraDark,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    '${_itineraries.first.duration ~/ 60} min',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(width: 6.0),
+                                  Icon(
+                                    Icons.circle,
+                                    size: 6,
+                                    color:
+                                        SmartRootsColors.maBlueExtraExtraDark,
+                                  ),
+                                  SizedBox(width: 6.0),
+                                  Text(
+                                    getItineraryDistanceText(
+                                      _itineraries.first,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color:
+                                    widget.parkingLocation['has_realtime_data']
+                                    ? widget.parkingLocation['disabled_parking_available']
+                                          ? SmartRootsColors.maGreen
+                                          : SmartRootsColors.maRed
+                                    : SmartRootsColors.maBlueExtraDark,
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.local_parking,
+                                    size: 16,
+                                    color: SmartRootsColors.maWhite,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              getOccupancyText(context, widget.parkingLocation),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontSize: 16,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -239,87 +343,7 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                 ),
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 8.0,
-              ),
-              child: Column(
-                children: [
-                  _itineraries.isNotEmpty
-                      ? Row(
-                          children: [
-                            Icon(
-                              Icons.directions_car_outlined,
-                              color: SmartRootsColors.maBlueExtraExtraDark,
-                            ),
-                            SizedBox(width: 8.0),
-                            Text(
-                              '${_itineraries.first.duration ~/ 60} min',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: SmartRootsColors.maBlueExtraExtraDark,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(width: 6.0),
-                            Icon(
-                              Icons.circle,
-                              size: 6,
-                              color: SmartRootsColors.maBlueExtraExtraDark,
-                            ),
-                            SizedBox(width: 6.0),
-                            Text(
-                              getItineraryDistanceText(_itineraries.first),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: SmartRootsColors.maBlueExtraExtraDark,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        )
-                      : SizedBox.shrink(),
-                  SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: widget.parkingSite['has_realtime_data']
-                              ? widget.parkingSite['disabled_parking_available']
-                                    ? SmartRootsColors.maGreen
-                                    : SmartRootsColors.maRed
-                              : SmartRootsColors.maBlueExtraDark,
-                          borderRadius: BorderRadius.circular(32),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.local_parking,
-                              size: 16,
-                              color: SmartRootsColors.maWhite,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        getOccupancyText(context, widget.parkingSite),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            listItems: [],
             initSize: 0.35,
             maxSize: 0.35,
           ),
@@ -358,7 +382,7 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              widget.parkingSite["name"],
+                              widget.parkingLocation["name"],
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: SmartRootsColors.maBlueExtraExtraDark,

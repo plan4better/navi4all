@@ -103,7 +103,7 @@ class _HomeMapState extends State<HomeMap> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParkingSiteScreen(parkingSite: site),
+          builder: (context) => ParkingSiteScreen(parkingLocation: site),
         ),
       );
     }

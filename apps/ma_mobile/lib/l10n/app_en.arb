@@ -196,7 +196,7 @@
     "availabilityUnknown": "Unknown",
     "availabilityOccupied": "Occupied",
     "availabilityAvailable": "Available",
-    "parkingLocationButtonStart": "Start",
+    "parkingLocationButtonStart": "Route",
     "parkingLocationButtonFavourite": "Favourite",
     "parkingLocationButtonRouteExternal": "Route External",
     "errorUnableToLaunchRouteExternal": "Unable to launch external maps app.",

@@ -144,7 +144,8 @@ class _FavouritesListItem extends StatelessWidget {
     onTap: () => Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ParkingSiteScreen(parkingSite: parkingLocation),
+        builder: (context) =>
+            ParkingSiteScreen(parkingLocation: parkingLocation),
       ),
     ),
     child: Column(

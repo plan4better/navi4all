@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/persistence/processing_status.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
@@ -33,6 +34,10 @@ class RoutingMap extends StatefulWidget {
 class _RoutingMapState extends State<RoutingMap> {
   bool _isMapInitialized = false;
   late MapLibreMapController _mapController;
+  // All points of leg geometry
+  List<maps_toolkit.LatLng> _legPoints = [];
+  int? _snappedPointIndex;
+  Symbol? _userPositionSymbol;
 
   Future<void> _onStyleLoaded() async {
     // Load custom marker icons
@@ -47,6 +52,10 @@ class _RoutingMapState extends State<RoutingMap> {
     final bytes3 = await rootBundle.load('assets/parking_avbl_unknown.png');
     final list3 = bytes3.buffer.asUint8List();
     _mapController.addImage("parking_avbl_unknown.png", list3);
+
+    final bytes4 = await rootBundle.load('assets/user_position.png');
+    final list4 = bytes4.buffer.asUint8List();
+    _mapController.addImage("user_position.png", list4);
 
     _drawPlace();
 
@@ -74,29 +83,59 @@ class _RoutingMapState extends State<RoutingMap> {
     );
   }
 
-  Future<void> _drawJourney() async {
+  Future<void> _drawLayers() async {
     if (!_isMapInitialized) {
       return;
     }
 
-    // Clear existing lines
+    // Clear existing layers
     _mapController.clearLines();
+    _mapController.clearCircles();
+    if (_userPositionSymbol != null) {
+      _mapController.removeSymbol(_userPositionSymbol!);
+      _userPositionSymbol = null;
+    }
 
-    if (widget.itineraryDetails == null) {
+    // Ensure an itinerary is available
+    if (widget.itineraryDetails == null ||
+        widget.itineraryDetails!.legs.isEmpty) {
       return;
     }
 
-    List<PointLatLng> polylinePoints = PolylinePoints.decodePolyline(
+    // Decode leg geometry points
+    _legPoints = maps_toolkit.PolygonUtil.decode(
       widget.itineraryDetails!.legs.first.geometry,
     );
 
+    // Draw journey polyline
+    await _drawJourney();
+
+    // Draw step action points
+    if (widget.navigationStatus == NavigationStatus.navigating) {
+      await _drawStepActionPoints();
+    }
+
+    // Draw user position
+    if (widget.navigationStatus == NavigationStatus.navigating &&
+        widget.userPosition != null) {
+      await _drawUserPosition();
+    }
+  }
+
+  Future<void> _drawJourney() async {
+    List<LatLng> polylinePoints = _snappedPointIndex != null
+        ? _legPoints
+              .sublist(_snappedPointIndex!)
+              .map((p) => LatLng(p.latitude, p.longitude))
+              .toList()
+        : _legPoints.map((p) => LatLng(p.latitude, p.longitude)).toList();
     _mapController.addLine(
       LineOptions(
-        geometry: polylinePoints
-            .map((p) => LatLng(p.latitude, p.longitude))
-            .toList(),
+        geometry: polylinePoints,
         lineColor: "#0078D7",
-        lineWidth: 4.5,
+        lineWidth: widget.navigationStatus == NavigationStatus.navigating
+            ? 8.0
+            : 5.0,
         lineOpacity: 0.8,
         lineJoin: "round",
       ),
@@ -115,6 +154,7 @@ class _RoutingMapState extends State<RoutingMap> {
           if (point.longitude < minLng) minLng = point.longitude;
           if (point.longitude > maxLng) maxLng = point.longitude;
         }
+
         _mapController.animateCamera(
           CameraUpdate.newLatLngBounds(
             LatLngBounds(
@@ -142,7 +182,7 @@ class _RoutingMapState extends State<RoutingMap> {
               widget.userPosition!.latitude - 0.0001,
               widget.userPosition!.longitude,
             ),
-            zoom: 17.0,
+            zoom: 18.0,
           ),
         ),
         duration: const Duration(seconds: 2),
@@ -150,24 +190,11 @@ class _RoutingMapState extends State<RoutingMap> {
     }
   }
 
-  void _drawStepActionPoints() {
-    if (!_isMapInitialized) {
-      return;
-    }
-
-    // Clear existing circles
-    _mapController.clearCircles();
-
-    // Ensure action points should be drawn
-    if (!_isMapInitialized ||
-        widget.itineraryDetails == null ||
-        widget.navigationStatus != NavigationStatus.navigating) {
-      return;
-    }
-
+  Future<void> _drawStepActionPoints() async {
     // Draw a circle for each step action point
+    List<CircleOptions> circles = [];
     for (var step in widget.itineraryDetails!.legs.first.steps) {
-      _mapController.addCircle(
+      circles.add(
         CircleOptions(
           geometry: LatLng(step.lat, step.lon),
           circleRadius: 2.0,
@@ -178,17 +205,83 @@ class _RoutingMapState extends State<RoutingMap> {
         ),
       );
     }
+    await _mapController.addCircles(circles);
+  }
+
+  Future<void> _drawUserPosition() async {
+    // Attempt to snap user position to leg path
+    int positionIndex = maps_toolkit.PolygonUtil.locationIndexOnPath(
+      maps_toolkit.LatLng(
+        widget.userPosition!.latitude,
+        widget.userPosition!.longitude,
+      ),
+      _legPoints,
+      true,
+      tolerance: 10,
+    );
+
+    // If snapping was possible, compute bearing and adjust map view
+    if (positionIndex > -1 && positionIndex < _legPoints.length - 1) {
+      if (_snappedPointIndex != positionIndex) {
+        setState(() {
+          _snappedPointIndex = positionIndex;
+        });
+      }
+
+      maps_toolkit.LatLng snappedPoint = _legPoints[positionIndex];
+      maps_toolkit.LatLng nextPoint = _legPoints[positionIndex + 1];
+
+      num bearing = maps_toolkit.SphericalUtil.computeHeading(
+        snappedPoint,
+        nextPoint,
+      );
+
+      // Adjust camera to focus on user position with bearing
+      _mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(snappedPoint.latitude, snappedPoint.longitude),
+            zoom: 18.0,
+            bearing: bearing.toDouble(),
+          ),
+        ),
+        duration: const Duration(seconds: 2),
+      );
+
+      // Draw user position marker
+      double latitude = _legPoints[positionIndex].latitude;
+      double longitude = _legPoints[positionIndex].longitude;
+      _userPositionSymbol = await _mapController.addSymbol(
+        SymbolOptions(
+          geometry: LatLng(latitude, longitude),
+          iconImage: "user_position.png",
+          iconSize: 0.75,
+        ),
+      );
+    } else {
+      if (_snappedPointIndex != null) {
+        setState(() {
+          _snappedPointIndex = null;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _drawJourney();
-    _drawStepActionPoints();
+    _drawLayers();
 
     return Stack(
       children: [
         MapLibreMap(
-          myLocationEnabled: true,
+          annotationOrder: [
+            AnnotationType.line,
+            AnnotationType.circle,
+            AnnotationType.symbol,
+          ],
+          myLocationEnabled:
+              _snappedPointIndex == null ||
+              widget.navigationStatus != NavigationStatus.navigating,
           styleString: Settings.mapStyleUrl,
           onMapCreated: (controller) => _mapController = controller,
           minMaxZoomPreference: MinMaxZoomPreference(5.0, null),

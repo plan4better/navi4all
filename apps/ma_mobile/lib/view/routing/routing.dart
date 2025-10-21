@@ -488,176 +488,139 @@ class RoutingState extends State<RoutingScreen> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
+                        child: Column(
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 16),
-                                  Text(
-                                    widget.parkingSite["name"],
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                    ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  flex: 3,
+                                  child: SheetButton(
+                                    icon:
+                                        _navigationStatus ==
+                                            NavigationStatus.idle
+                                        ? Icons.play_arrow
+                                        : _navigationStatus ==
+                                              NavigationStatus.navigating
+                                        ? Icons.pause
+                                        : _navigationStatus ==
+                                              NavigationStatus.arrived
+                                        ? Icons.check
+                                        : Icons.play_arrow,
+                                    label:
+                                        _navigationStatus ==
+                                            NavigationStatus.idle
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationStartButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.navigating
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationPauseButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.arrived
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationDoneButton
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationResumeButton,
+                                    onTap: () => _toggleNavigationState(),
+                                    shrinkWrap: false,
                                   ),
-                                  widget.parkingSite["address"] != null
-                                      ? Text(
-                                          widget.parkingSite["address"],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: SmartRootsColors
-                                                .maBlueExtraExtraDark,
-                                          ),
-                                        )
-                                      : SizedBox.shrink(),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: SmartRootsColors.maBlueExtraExtraDark,
-                              ),
-                              onPressed: () {
-                                _positionStream?.drain();
-                                _positionStreamSubscription?.cancel();
-                                _positionStream = null;
-                                _positionStreamSubscription = null;
-                                setState(() {
-                                  _navigationStatus = NavigationStatus.idle;
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 3,
-                              child: SheetButton(
-                                icon: _navigationStatus == NavigationStatus.idle
-                                    ? Icons.play_arrow
-                                    : _navigationStatus ==
-                                          NavigationStatus.navigating
-                                    ? Icons.pause
-                                    : _navigationStatus ==
-                                          NavigationStatus.arrived
-                                    ? Icons.check
-                                    : Icons.play_arrow,
-                                label:
-                                    _navigationStatus == NavigationStatus.idle
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.routingScreenNavigationStartButton
-                                    : _navigationStatus ==
-                                          NavigationStatus.navigating
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.routingScreenNavigationPauseButton
-                                    : _navigationStatus ==
-                                          NavigationStatus.arrived
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.routingScreenNavigationDoneButton
-                                    : AppLocalizations.of(
-                                        context,
-                                      )!.routingScreenNavigationResumeButton,
-                                onTap: () => _toggleNavigationState(),
-                                shrinkWrap: false,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Flexible(
-                              flex: 1,
-                              child: SheetButton(
-                                icon: _audioStatus == AudioStatus.muted
-                                    ? Icons.volume_off
-                                    : Icons.volume_up,
-                                onTap: () => _toggleAudioState(),
-                                shrinkWrap: false,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        _itineraries.isNotEmpty
-                            ? Row(
-                                children: [
-                                  Icon(
-                                    Icons.directions_car_outlined,
+                                ),
+                                SizedBox(width: 8),
+                                Flexible(
+                                  flex: 1,
+                                  child: SheetButton(
+                                    icon: _audioStatus == AudioStatus.muted
+                                        ? Icons.volume_off
+                                        : Icons.volume_up,
+                                    onTap: () => _toggleAudioState(),
+                                    shrinkWrap: false,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    size: 28,
                                     color:
                                         SmartRootsColors.maBlueExtraExtraDark,
                                   ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    '${_itineraries.first.duration ~/ 60} min',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6.0),
-                                  Icon(
-                                    Icons.circle,
-                                    size: 6,
-                                    color:
-                                        SmartRootsColors.maBlueExtraExtraDark,
-                                  ),
-                                  SizedBox(width: 6.0),
-                                  Text(
-                                    getItineraryDistanceText(
-                                      _itineraries.first,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : SizedBox.shrink(),
-                        SizedBox(height: 16.0),
-                      ],
-                    ),
+                                  onPressed: () {
+                                    _positionStream?.drain();
+                                    _positionStreamSubscription?.cancel();
+                                    _positionStream = null;
+                                    _positionStreamSubscription = null;
+                                    setState(() {
+                                      _navigationStatus = NavigationStatus.idle;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            _itineraries.isNotEmpty
+                                ? Row(
+                                    children: [
+                                      Icon(
+                                        Icons.directions_car_outlined,
+                                        color: SmartRootsColors
+                                            .maBlueExtraExtraDark,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text(
+                                        '${_itineraries.first.duration ~/ 60} min',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: SmartRootsColors
+                                              .maBlueExtraExtraDark,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox(width: 6.0),
+                                      Icon(
+                                        Icons.circle,
+                                        size: 6,
+                                        color: SmartRootsColors
+                                            .maBlueExtraExtraDark,
+                                      ),
+                                      SizedBox(width: 6.0),
+                                      Text(
+                                        getItineraryDistanceText(
+                                          _itineraries.first,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: SmartRootsColors
+                                              .maBlueExtraExtraDark,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          ],
+                        ),
+                      ),
+                      Divider(height: 0, color: SmartRootsColors.maBlue),
+                    ],
                   ),
                 ),
               ],
             ),
-            listItems:
-                _navigationStatus == NavigationStatus.idle ||
-                    _navigationStatus == NavigationStatus.paused
-                ? _processingStatus == ProcessingStatus.completed &&
-                          _itineraries.isNotEmpty
-                      ? [
-                          ItinerarySummaryTile(
-                            itinerarySummary: _itineraries.first,
-                          ),
-                        ]
-                      : []
-                : _navigationStatus == NavigationStatus.navigating
-                ? _legSteps
-                : [],
+            listItems: _legSteps,
             initSize: 0.35,
             maxSize: 0.7,
           ),
@@ -672,74 +635,90 @@ class RoutingState extends State<RoutingScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      InkWell(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(28),
-                          topRight: Radius.circular(28),
-                        ),
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(
-                                MaterialPageRoute(
-                                  builder: (context) => const SearchScreen(
-                                    isSecondarySearch: true,
-                                    isOriginPlaceSearch: true,
+                      _navigationStatus != NavigationStatus.navigating
+                          ? InkWell(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(28),
+                                topRight: Radius.circular(28),
+                              ),
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SearchScreen(
+                                              isSecondarySearch: true,
+                                              isOriginPlaceSearch: true,
+                                            ),
+                                      ),
+                                    )
+                                    .then((result) {
+                                      if (result is Place) {
+                                        setState(() {
+                                          _origin = result;
+                                          _navigationStatus =
+                                              NavigationStatus.idle;
+                                        });
+                                        _fetchItineraries();
+                                      }
+                                    });
+                              },
+                              child: Container(
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: SmartRootsColors.maWhite,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(28),
+                                    topRight: Radius.circular(28),
                                   ),
                                 ),
-                              )
-                              .then((result) {
-                                if (result is Place) {
-                                  setState(() {
-                                    _origin = result;
-                                    _navigationStatus = NavigationStatus.idle;
-                                  });
-                                  _fetchItineraries();
-                                }
-                              });
-                        },
-                        child: Container(
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: SmartRootsColors.maWhite,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(28),
-                              topRight: Radius.circular(28),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 16),
-                              Icon(
-                                Icons.place_outlined,
-                                color: SmartRootsColors.maBlueExtraExtraDark,
-                              ),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  _origin.id == SmartRootsValues.userLocation
-                                      ? AppLocalizations.of(
-                                          context,
-                                        )!.origDestCurrentLocation
-                                      : _origin.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color:
-                                        SmartRootsColors.maBlueExtraExtraDark,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 16),
+                                    Icon(
+                                      Icons.place_outlined,
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        _origin.id ==
+                                                SmartRootsValues.userLocation
+                                            ? AppLocalizations.of(
+                                                context,
+                                              )!.origDestCurrentLocation
+                                            : _origin.name,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: SmartRootsColors
+                                              .maBlueExtraExtraDark,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                    SizedBox(width: 16),
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: 16),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Divider(height: 0, color: SmartRootsColors.maBlue),
+                            )
+                          : SizedBox.shrink(),
+                      _navigationStatus != NavigationStatus.navigating
+                          ? Divider(height: 0, color: SmartRootsColors.maBlue)
+                          : SizedBox.shrink(),
                       Container(
                         height: 56,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
+                            topLeft:
+                                _navigationStatus != NavigationStatus.navigating
+                                ? Radius.circular(0)
+                                : Radius.circular(28),
+                            topRight:
+                                _navigationStatus != NavigationStatus.navigating
+                                ? Radius.circular(0)
+                                : Radius.circular(28),
                             bottomLeft: Radius.circular(28),
                             bottomRight: Radius.circular(28),
                           ),
@@ -798,18 +777,6 @@ class RoutingState extends State<RoutingScreen> {
       ),
     );
   }
-}
-
-class ItinerarySummaryTile extends StatelessWidget {
-  final ItinerarySummary itinerarySummary;
-
-  const ItinerarySummaryTile({required this.itinerarySummary, super.key});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-    child: SizedBox.shrink(),
-  );
 }
 
 class ItineraryLegStepTile extends StatelessWidget {

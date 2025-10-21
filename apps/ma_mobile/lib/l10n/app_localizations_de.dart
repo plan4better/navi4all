@@ -45,7 +45,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Willkommen bei\nParkStark';
 
   @override
-  String get onboardingWelcomeSubtitle => 'Gemeinsam finden wir barrierefreie Parkplätze – schnell und unkompliziert.';
+  String get onboardingWelcomeSubtitle => 'Gemeinsam finden wir allgemeinen Schwerbehindertenparkplätzen – schnell und unkompliziert.';
 
   @override
   String get onboardingWelcomeHint => 'Drücken Sie die Taste, um fortzufahren.';
@@ -264,7 +264,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get userLocationDeniedSnackbarText => 'Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.';
 
   @override
-  String get placeScreenChangeRadiusButton => 'Radius wählen';
+  String get placeScreenChangeRadiusButton => 'Suchbereich anpassen';
 
   @override
   String get placeScreenChangeRadiusCancel => 'Abbrechen';
@@ -288,7 +288,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get availabilityAvailable => 'Verfügbar';
 
   @override
-  String get parkingLocationButtonStart => 'Start';
+  String get parkingLocationButtonStart => 'Route';
 
   @override
   String get parkingLocationButtonFavourite => 'Favorit';

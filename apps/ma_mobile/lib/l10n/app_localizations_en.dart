@@ -288,7 +288,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get availabilityAvailable => 'Available';
 
   @override
-  String get parkingLocationButtonStart => 'Start';
+  String get parkingLocationButtonStart => 'Route';
 
   @override
   String get parkingLocationButtonFavourite => 'Favourite';

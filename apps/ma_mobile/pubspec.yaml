@@ -45,3 +45,4 @@ flutter:
     - assets/parking_avbl_no.png
     - assets/parking_avbl_unknown.png
     - assets/place.png
+    - assets/user_position.png

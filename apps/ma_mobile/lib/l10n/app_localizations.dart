@@ -608,7 +608,7 @@ abstract class AppLocalizations {
   /// No description provided for @parkingLocationButtonStart.
   ///
   /// In en, this message translates to:
-  /// **'Start'**
+  /// **'Route'**
   String get parkingLocationButtonStart;
 
   /// No description provided for @parkingLocationButtonFavourite.

@@ -106,7 +106,7 @@ class _PlaceMapState extends State<PlaceMap> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParkingSiteScreen(parkingSite: site),
+          builder: (context) => ParkingSiteScreen(parkingLocation: site),
         ),
       );
     }

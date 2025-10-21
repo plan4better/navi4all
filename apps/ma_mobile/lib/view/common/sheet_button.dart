@@ -41,7 +41,9 @@ class SheetButton extends StatelessWidget {
                       size: 20,
                     )
                   : const SizedBox.shrink(),
-              icon != null ? const SizedBox(width: 4) : const SizedBox.shrink(),
+              icon != null && label != null
+                  ? const SizedBox(width: 8)
+                  : const SizedBox.shrink(),
               label != null
                   ? Flexible(
                       child: Text(
