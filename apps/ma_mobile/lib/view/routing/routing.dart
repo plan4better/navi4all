@@ -752,11 +752,7 @@ class RoutingState extends State<RoutingScreen> {
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 color: widget.parkingSite['has_realtime_data']
-                                    ? widget.parkingSite['occupied_disabled'] !=
-                                                  null &&
-                                              widget.parkingSite['occupied_disabled'] <
-                                                  widget
-                                                      .parkingSite['capacity_disabled']
+                                    ? widget.parkingSite['disabled_parking_available']
                                           ? SmartRootsColors.maGreen
                                           : SmartRootsColors.maRed
                                     : SmartRootsColors.maBlueExtraDark,

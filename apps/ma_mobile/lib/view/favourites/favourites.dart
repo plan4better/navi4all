@@ -19,15 +19,16 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   List<Map<String, dynamic>> _parkingLocations = [];
 
   Future<void> _fetchParkingLocations() async {
-    List<String> favouriteParkingLocationIds =
-        await PreferenceHelper.getFavoriteParkingSites();
+    List<Map<String, dynamic>> favoriteParkingLocations =
+        await PreferenceHelper.getFavoriteParkingLocations();
 
     List<Map<String, dynamic>> parkingLocations = [];
     POIParkingService parkingService = POIParkingService();
     try {
-      for (String id in favouriteParkingLocationIds) {
+      for (var item in favoriteParkingLocations) {
         var details = await parkingService.getParkingLocationDetails(
-          parkingId: id,
+          id: item["id"],
+          parkingType: item["parking_type"],
         );
         if (details != null) {
           parkingLocations.add(details);
@@ -157,9 +158,7 @@ class _FavouritesListItem extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: parkingLocation['has_realtime_data']
-                      ? parkingLocation['occupied_disabled'] != null &&
-                                parkingLocation['occupied_disabled'] <
-                                    parkingLocation['capacity_disabled']
+                      ? parkingLocation['disabled_parking_available']
                             ? SmartRootsColors.maGreen
                             : SmartRootsColors.maRed
                       : SmartRootsColors.maBlueExtraDark,

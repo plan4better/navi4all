@@ -1,0 +1,1 @@
+enum ParkingType { parkingSite, parkingSpot }

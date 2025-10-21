@@ -365,9 +365,7 @@ class PlaceListItem extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: parkingSite['has_realtime_data']
-                    ? parkingSite['occupied_disabled'] != null &&
-                              parkingSite['occupied_disabled'] <
-                                  parkingSite['capacity_disabled']
+                    ? parkingSite['disabled_parking_available']
                           ? SmartRootsColors.maGreen
                           : SmartRootsColors.maRed
                     : SmartRootsColors.maBlueExtraDark,

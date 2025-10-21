@@ -172,14 +172,10 @@ class _HomeMapState extends State<HomeMap> {
 
     List<CircleOptions> circles = [];
     for (var site in _parkingSites) {
-      bool hasRealtimeData = site["has_realtime_data"];
-      int? total = site["capacity_disabled"];
-      int? occupied = site["occupied_disabled"];
-
       String markerColor = "#3685E2";
-      if (!hasRealtimeData || total == null || occupied == null) {
+      if (!site["has_realtime_data"]) {
         markerColor = "#3685E2";
-      } else if (occupied < total) {
+      } else if (site["disabled_parking_available"]) {
         markerColor = "#089161";
       } else {
         markerColor = "#F4B1A4";

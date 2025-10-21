@@ -6,22 +6,13 @@ String getOccupancyText(
   BuildContext context,
   Map<String, dynamic> parkingSite,
 ) {
-  int? capacityDisabled = parkingSite["capacity_disabled"];
-  int? occupiedDisabled = parkingSite["occupied_disabled"];
-  if (parkingSite["has_realtime_data"] == false ||
-      capacityDisabled == null ||
-      occupiedDisabled == null) {
+  if (!parkingSite["has_realtime_data"]) {
     return AppLocalizations.of(context)!.availabilityUnknown;
   }
-
-  if (capacityDisabled > 1) {
-    return '$occupiedDisabled/$capacityDisabled';
+  if (parkingSite["disabled_parking_available"]) {
+    return AppLocalizations.of(context)!.availabilityAvailable;
   } else {
-    if (occupiedDisabled >= capacityDisabled) {
-      return AppLocalizations.of(context)!.availabilityOccupied;
-    } else {
-      return AppLocalizations.of(context)!.availabilityAvailable;
-    }
+    return AppLocalizations.of(context)!.availabilityOccupied;
   }
 }
 

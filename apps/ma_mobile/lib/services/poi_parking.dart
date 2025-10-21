@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:smartroots/core/config.dart' show Settings;
 import 'package:maplibre_gl/maplibre_gl.dart' show LatLng;
 import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
+import 'package:smartroots/schemas/poi/parking_type.dart';
 
 class POIParkingService {
   // TODO: ONLY FOR TESTING
@@ -14,9 +15,10 @@ class POIParkingService {
       "lon": "11.568498141412222",
       "has_realtime_data": true,
       "realtime_status": "AVAILABLE",
-      "restricted_to": [
+      "restrictions": [
         {"type": "DISABLED"},
       ],
+      "parking_type": ParkingType.parkingSpot,
     },
   ];
 
@@ -73,7 +75,7 @@ class POIParkingService {
       parkingLocations.addAll(
         (parkingSpotsResponse.data['items'] as List)
             .map((item) => _parseParkingSpotLocation(item))
-            .where((site) => (site["capacity_disabled"] ?? 0) > 0)
+            .where((site) => site["disabled_parking_supported"] == true)
             .toList(),
       );
     } else {
@@ -85,7 +87,7 @@ class POIParkingService {
       parkingLocations.addAll(
         (parkingSitesResponse.data['items'] as List)
             .map((item) => _parseParkingSiteLocation(item))
-            .where((site) => (site["capacity_disabled"] ?? 0) > 0)
+            .where((site) => site["disabled_parking_supported"] == true)
             .toList(),
       );
     } else {
@@ -127,75 +129,89 @@ class POIParkingService {
   }
 
   Future<Map<String, dynamic>?> getParkingLocationDetails({
-    required String parkingId,
+    required String id,
+    required ParkingType parkingType,
   }) async {
     // TODO: ONLY FOR TESTING
     for (var testLocation in _testParkingLocations) {
-      if (testLocation['id'] == parkingId) {
-        return _parseParkingSpotLocation(testLocation);
+      if (testLocation['id'] == id) {
+        if (parkingType == ParkingType.parkingSite) {
+          return _parseParkingSiteLocation(testLocation);
+        } else if (parkingType == ParkingType.parkingSpot) {
+          return _parseParkingSpotLocation(testLocation);
+        } else {
+          throw Exception('Invalid parking type');
+        }
       }
     }
 
-    // Attempt to fetch details from parking-spots endpoint first
-    Response parkingSpotsResponse = await apiClient.get(
-      '/parking-spots/$parkingId',
-    );
-
-    if (parkingSpotsResponse.statusCode == 200) {
-      var item = parkingSpotsResponse.data;
-      return _parseParkingSpotLocation(item);
-    } else if (parkingSpotsResponse.statusCode != 404) {
-      throw Exception(parkingSpotsResponse.statusMessage);
-    }
-
-    // Attempt to fetch details from parking-sites endpoint if not found in parking-spots
-    Response parkingSitesResponse = await apiClient.get(
-      '/parking-sites/$parkingId',
-    );
-    if (parkingSitesResponse.statusCode == 200) {
-      var item = parkingSitesResponse.data;
-      return _parseParkingSiteLocation(item);
-    } else if (parkingSitesResponse.statusCode == 404) {
+    if (parkingType == ParkingType.parkingSpot) {
+      // Fetch details from parking-spots endpoint
+      Response parkingSpotsResponse = await apiClient.get('/parking-spots/$id');
+      if (parkingSpotsResponse.statusCode == 200) {
+        return _parseParkingSpotLocation(parkingSpotsResponse.data);
+      } else if (parkingSpotsResponse.statusCode != 404) {
+        throw Exception(parkingSpotsResponse.statusMessage);
+      }
+      return null;
+    } else if (parkingType == ParkingType.parkingSite) {
+      // Fetch details from parking-sites endpoint
+      Response parkingSitesResponse = await apiClient.get('/parking-sites/$id');
+      if (parkingSitesResponse.statusCode == 200) {
+        return _parseParkingSiteLocation(parkingSitesResponse.data);
+      } else if (parkingSitesResponse.statusCode != 404) {
+        throw Exception(parkingSitesResponse.statusMessage);
+      }
       return null;
     } else {
-      throw Exception(parkingSitesResponse.statusMessage);
+      throw Exception('Invalid parking type');
     }
   }
 
   Map<String, dynamic> _parseParkingSpotLocation(Map<String, dynamic> item) {
     Map<String, dynamic> parkingSpot = {
       "id": item['id'].toString(),
+      "parking_type": ParkingType.parkingSpot,
       "name": item['name'],
-      "address": item['address'],
+      "address": item['address'] ?? '',
       "coordinates": LatLng(
         double.parse(item['lat']),
         double.parse(item['lon']),
       ),
       "has_realtime_data": item['has_realtime_data'],
-      "capacity_disabled":
-          (item['restricted_to'] as List).any(
-            (restriction) => restriction['type'] == 'DISABLED',
-          )
-          ? 1
-          : 0,
-      "free_capacity_disabled": item['has_realtime_data']
-          ? item['realtime_status'] == 'AVAILABLE'
-                ? 1
-                : item['realtime_status'] == 'TAKEN'
-                ? 0
-                : null
-          : null,
     };
 
-    // Compute occupied space count
-    parkingSpot["occupied_disabled"] =
-        (parkingSpot['capacity_disabled'] ?? 0) -
-        (parkingSpot['free_capacity_disabled'] ?? 0);
+    // Parse availability information
+    int? capacityDisabled;
+    int? freeCapacityDisabled;
+    if (item.containsKey('restrictions')) {
+      for (var restriction in item['restrictions'] as List) {
+        if (restriction.containsKey('type') &&
+            restriction['type'] == 'DISABLED') {
+          capacityDisabled = 1;
+          break;
+        }
+      }
+    }
+    if (item["has_realtime_data"] == true &&
+        item.containsKey("realtime_status")) {
+      String status = item["realtime_status"];
+      if (status == "AVAILABLE") {
+        freeCapacityDisabled = 1;
+      } else if (status == "TAKEN") {
+        freeCapacityDisabled = 0;
+      } else {
+        freeCapacityDisabled = null;
+      }
+    }
+
+    // Compute availability of disabled parking
+    parkingSpot["disabled_parking_supported"] = (capacityDisabled ?? 0) > 0;
+    parkingSpot["disabled_parking_available"] = (freeCapacityDisabled ?? 0) > 0;
 
     // Extract city name from parking location address
     // Currently designed for the German address format
-    String address = parkingSpot['address'] ?? '';
-    List<String> addressParts = address.split(',');
+    List<String> addressParts = parkingSpot['address'].split(',');
     if (addressParts.length >= 2) {
       String cityPart = addressParts[1].trim();
       List<String> cityParts = cityPart.split(' ');
@@ -210,30 +226,39 @@ class POIParkingService {
   Map<String, dynamic> _parseParkingSiteLocation(Map<String, dynamic> item) {
     Map<String, dynamic> parkingSite = {
       "id": item['id'].toString(),
+      "parking_type": ParkingType.parkingSite,
       "name": item['name'],
-      "address": item['address'],
+      "address": item['address'] ?? '',
       "coordinates": LatLng(
         double.parse(item['lat']),
         double.parse(item['lon']),
       ),
       "has_realtime_data": item['has_realtime_data'],
-      "capacity_disabled": item['has_realtime_data']
-          ? item['realtime_capacity_disabled']
-          : item['capacity_disabled'],
-      "free_capacity_disabled": item['has_realtime_data']
-          ? item['realtime_free_capacity_disabled']
-          : null,
     };
 
-    // Compute occupied space count
-    parkingSite["occupied_disabled"] =
-        (parkingSite['capacity_disabled'] ?? 0) -
-        (parkingSite['free_capacity_disabled'] ?? 0);
+    // Parse availability information
+    int? capacityDisabled;
+    int? freeCapacityDisabled;
+    if (item["has_realtime_data"] == true) {
+      if (item.containsKey('realtime_capacity_disabled')) {
+        capacityDisabled = item['realtime_capacity_disabled'];
+      }
+      if (item.containsKey('realtime_free_capacity_disabled')) {
+        freeCapacityDisabled = item['realtime_free_capacity_disabled'];
+      }
+    } else {
+      if (item.containsKey('capacity_disabled')) {
+        capacityDisabled = item['capacity_disabled'];
+      }
+    }
+
+    // Compute availability of disabled parking
+    parkingSite["disabled_parking_supported"] = (capacityDisabled ?? 0) > 0;
+    parkingSite["disabled_parking_available"] = (freeCapacityDisabled ?? 0) > 0;
 
     // Extract city name from parking location address
     // Currently designed for the German address format
-    String address = parkingSite['address'] ?? '';
-    List<String> addressParts = address.split(',');
+    List<String> addressParts = parkingSite['address'].split(',');
     if (addressParts.length >= 2) {
       String cityPart = addressParts[1].trim();
       List<String> cityParts = cityPart.split(' ');

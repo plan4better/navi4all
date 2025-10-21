@@ -56,14 +56,10 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void _drawPlace() {
-    bool hasRealtimeData = widget.parkingSite["has_realtime_data"];
-    int? total = widget.parkingSite["capacity_disabled"];
-    int? occupied = widget.parkingSite["occupied_disabled"];
-
     String iconName;
-    if (!hasRealtimeData || total == null || occupied == null) {
+    if (!widget.parkingSite["has_realtime_data"]) {
       iconName = "parking_avbl_unknown.png";
-    } else if (occupied < total) {
+    } else if (widget.parkingSite["disabled_parking_available"]) {
       iconName = "parking_avbl_yes.png";
     } else {
       iconName = "parking_avbl_no.png";

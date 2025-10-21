@@ -40,19 +40,24 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
   }
 
   Future<void> _checkIfFavorite() async {
-    _isFavorite = await PreferenceHelper.isFavoriteParkingSite(
+    _isFavorite = await PreferenceHelper.isFavoriteParkingLocation(
       widget.parkingSite["id"],
+      widget.parkingSite["parking_type"],
     );
     setState(() {});
   }
 
   Future<void> _toggleFavorite() async {
     if (_isFavorite) {
-      await PreferenceHelper.removeFavoriteParkingSite(
+      await PreferenceHelper.removeFavoriteParkingLocation(
         widget.parkingSite["id"],
+        widget.parkingSite["parking_type"],
       );
     } else {
-      await PreferenceHelper.addFavoriteParkingSite(widget.parkingSite["id"]);
+      await PreferenceHelper.addFavoriteParkingLocation(
+        widget.parkingSite["id"],
+        widget.parkingSite["parking_type"],
+      );
     }
     setState(() {
       _isFavorite = !_isFavorite;
@@ -284,11 +289,7 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color: widget.parkingSite['has_realtime_data']
-                              ? widget.parkingSite['occupied_disabled'] !=
-                                            null &&
-                                        widget.parkingSite['occupied_disabled'] <
-                                            widget
-                                                .parkingSite['capacity_disabled']
+                              ? widget.parkingSite['disabled_parking_available']
                                     ? SmartRootsColors.maGreen
                                     : SmartRootsColors.maRed
                               : SmartRootsColors.maBlueExtraDark,
