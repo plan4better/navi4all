@@ -9,7 +9,6 @@ import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/persistence/processing_status.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 
 class RoutingMap extends StatefulWidget {
@@ -34,10 +33,8 @@ class RoutingMap extends StatefulWidget {
 class _RoutingMapState extends State<RoutingMap> {
   bool _isMapInitialized = false;
   late MapLibreMapController _mapController;
-  // All points of leg geometry
   List<maps_toolkit.LatLng> _legPoints = [];
   int? _snappedPointIndex;
-  Symbol? _userPositionSymbol;
 
   Future<void> _onStyleLoaded() async {
     // Load custom marker icons
@@ -57,14 +54,96 @@ class _RoutingMapState extends State<RoutingMap> {
     final list4 = bytes4.buffer.asUint8List();
     _mapController.addImage("user_position.png", list4);
 
-    _drawPlace();
-
     setState(() {
       _isMapInitialized = true;
     });
   }
 
-  void _drawPlace() {
+  Future<void> _drawLayers() async {
+    if (!_isMapInitialized) {
+      return;
+    }
+
+    // Clear existing layers
+    await _mapController.clearLines();
+    await _mapController.clearCircles();
+    await _mapController.clearSymbols();
+
+    // Draw parking location marker
+    _drawPlace();
+
+    // Ensure an itinerary is available
+    if (widget.itineraryDetails == null ||
+        widget.itineraryDetails!.legs.isEmpty) {
+      return;
+    }
+
+    // Process leg geometry
+    if (widget.navigationStatus == NavigationStatus.idle ||
+        _legPoints.isEmpty) {
+      _processPolyline();
+    }
+
+    // Draw journey polyline
+    await _drawJourney();
+
+    // Draw origin point
+    await _drawOrigin();
+
+    // Draw step action points
+    if (widget.navigationStatus == NavigationStatus.navigating) {
+      await _drawStepActionPoints();
+    }
+
+    // Draw user position
+    if (widget.navigationStatus == NavigationStatus.navigating &&
+        widget.userPosition != null) {
+      await _drawUserPosition();
+    }
+  }
+
+  void _processPolyline() {
+    // Decode leg geometry points
+    _legPoints = maps_toolkit.PolygonUtil.decode(
+      widget.itineraryDetails!.legs.first.geometry,
+    );
+
+    // Densify polyline using interpolation
+    List<maps_toolkit.LatLng> densifiedPoints = [];
+    for (int i = 0; i < _legPoints.length - 1; i++) {
+      maps_toolkit.LatLng start = _legPoints[i];
+      maps_toolkit.LatLng end = _legPoints[i + 1];
+      densifiedPoints.add(start);
+      num distance = maps_toolkit.SphericalUtil.computeDistanceBetween(
+        start,
+        end,
+      );
+      if (distance > 5) {
+        int numIntermediatePoints = (distance / 5).floor();
+        for (int j = 1; j <= numIntermediatePoints; j++) {
+          double fraction = j / (numIntermediatePoints + 1);
+          maps_toolkit.LatLng intermediatePoint =
+              maps_toolkit.SphericalUtil.interpolate(start, end, fraction);
+          densifiedPoints.add(intermediatePoint);
+        }
+      }
+    }
+    _legPoints = densifiedPoints;
+  }
+
+  Future<void> _drawOrigin() async {
+    await _mapController.addCircle(
+      CircleOptions(
+        geometry: LatLng(_legPoints.first.latitude, _legPoints.first.longitude),
+        circleRadius: 6.0,
+        circleColor: "#3685E2",
+        circleStrokeColor: "#FFFFFF",
+        circleStrokeWidth: 2.0,
+      ),
+    );
+  }
+
+  Future<void> _drawPlace() async {
     String iconName;
     if (!widget.parkingSite["has_realtime_data"]) {
       iconName = "parking_avbl_unknown.png";
@@ -81,45 +160,6 @@ class _RoutingMapState extends State<RoutingMap> {
         iconSize: 0.85,
       ),
     );
-  }
-
-  Future<void> _drawLayers() async {
-    if (!_isMapInitialized) {
-      return;
-    }
-
-    // Clear existing layers
-    _mapController.clearLines();
-    _mapController.clearCircles();
-    if (_userPositionSymbol != null) {
-      _mapController.removeSymbol(_userPositionSymbol!);
-      _userPositionSymbol = null;
-    }
-
-    // Ensure an itinerary is available
-    if (widget.itineraryDetails == null ||
-        widget.itineraryDetails!.legs.isEmpty) {
-      return;
-    }
-
-    // Decode leg geometry points
-    _legPoints = maps_toolkit.PolygonUtil.decode(
-      widget.itineraryDetails!.legs.first.geometry,
-    );
-
-    // Draw journey polyline
-    await _drawJourney();
-
-    // Draw step action points
-    if (widget.navigationStatus == NavigationStatus.navigating) {
-      await _drawStepActionPoints();
-    }
-
-    // Draw user position
-    if (widget.navigationStatus == NavigationStatus.navigating &&
-        widget.userPosition != null) {
-      await _drawUserPosition();
-    }
   }
 
   Future<void> _drawJourney() async {
@@ -182,7 +222,7 @@ class _RoutingMapState extends State<RoutingMap> {
               widget.userPosition!.latitude - 0.0001,
               widget.userPosition!.longitude,
             ),
-            zoom: 18.0,
+            zoom: 17.0,
           ),
         ),
         duration: const Duration(seconds: 2),
@@ -241,7 +281,7 @@ class _RoutingMapState extends State<RoutingMap> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: LatLng(snappedPoint.latitude, snappedPoint.longitude),
-            zoom: 18.0,
+            zoom: 17.0,
             bearing: bearing.toDouble(),
           ),
         ),
@@ -251,11 +291,11 @@ class _RoutingMapState extends State<RoutingMap> {
       // Draw user position marker
       double latitude = _legPoints[positionIndex].latitude;
       double longitude = _legPoints[positionIndex].longitude;
-      _userPositionSymbol = await _mapController.addSymbol(
+      await _mapController.addSymbol(
         SymbolOptions(
           geometry: LatLng(latitude, longitude),
           iconImage: "user_position.png",
-          iconSize: 0.75,
+          iconSize: 0.7,
         ),
       );
     } else {
