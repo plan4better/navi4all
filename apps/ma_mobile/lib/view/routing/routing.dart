@@ -180,6 +180,8 @@ class RoutingState extends State<RoutingScreen> {
   Future<void> _fetchItineraries() async {
     setState(() {
       _processingStatus = ProcessingStatus.processing;
+      _itineraries = [];
+      _itineraryDetails = null;
     });
 
     if (_origin.id == SmartRootsValues.userLocation ||
@@ -248,11 +250,11 @@ class RoutingState extends State<RoutingScreen> {
 
       if (itineraries.isNotEmpty) {
         await _fetchItineraryDetails(itineraries.first.itineraryId);
+      } else {
+        setState(() {
+          _processingStatus = ProcessingStatus.error;
+        });
       }
-
-      setState(() {
-        _processingStatus = ProcessingStatus.completed;
-      });
     } catch (e) {
       setState(() {
         _processingStatus = ProcessingStatus.error;
@@ -268,10 +270,6 @@ class RoutingState extends State<RoutingScreen> {
   }
 
   Future<void> _fetchItineraryDetails(String itineraryId) async {
-    setState(() {
-      _processingStatus = ProcessingStatus.processing;
-    });
-
     ItineraryDetails? itineraryDetails;
     RoutingService routingService = RoutingService();
     try {
@@ -620,7 +618,14 @@ class RoutingState extends State<RoutingScreen> {
                 ),
               ],
             ),
-            listItems: _legSteps,
+            listItems: _processingStatus == ProcessingStatus.completed
+                ? _legSteps
+                : null,
+            body:
+                _processingStatus == ProcessingStatus.processing ||
+                    _processingStatus == ProcessingStatus.error
+                ? NavigationProcessingTile(processingStatus: _processingStatus)
+                : SizedBox.shrink(),
             initSize: 0.35,
             maxSize: 0.7,
           ),
@@ -866,6 +871,37 @@ class ItineraryLegStepTile extends StatelessWidget {
                   : SizedBox.shrink(),
             ],
           ),
+        ),
+      ],
+    ),
+  );
+}
+
+class NavigationProcessingTile extends StatelessWidget {
+  final ProcessingStatus processingStatus;
+
+  const NavigationProcessingTile({required this.processingStatus, super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+    child: Column(
+      children: [
+        Icon(
+          processingStatus == ProcessingStatus.error
+              ? Icons.error_outline
+              : Icons.directions_car_filled_outlined,
+          size: 48,
+          color: SmartRootsColors.maBlue,
+        ),
+        SizedBox(height: 16),
+        Text(
+          processingStatus == ProcessingStatus.error
+              ? AppLocalizations.of(context)!.navigationNoRouteFound
+              : AppLocalizations.of(
+                  context,
+                )!.navigationGettingDrivingDirections,
+          style: const TextStyle(fontSize: 18, color: SmartRootsColors.maBlue),
         ),
       ],
     ),

@@ -409,6 +409,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get navigationGettingDrivingDirections => 'Getting driving directions';
+
+  @override
+  String get navigationNoRouteFound => 'No route found';
+
+  @override
   String get routingDisclaimerTitle => 'Attention';
 
   @override

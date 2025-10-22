@@ -839,6 +839,18 @@ abstract class AppLocalizations {
   /// **'in {distance} kilometres'**
   String navigationStepDistanceToActionKilometres(String distance);
 
+  /// No description provided for @navigationGettingDrivingDirections.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting driving directions'**
+  String get navigationGettingDrivingDirections;
+
+  /// No description provided for @navigationNoRouteFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No route found'**
+  String get navigationNoRouteFound;
+
   /// No description provided for @routingDisclaimerTitle.
   ///
   /// In en, this message translates to:

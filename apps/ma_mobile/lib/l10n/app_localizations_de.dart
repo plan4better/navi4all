@@ -409,6 +409,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get navigationGettingDrivingDirections => 'Fahrtroute wird berechnet';
+
+  @override
+  String get navigationNoRouteFound => 'Keine Route gefunden';
+
+  @override
   String get routingDisclaimerTitle => 'Achtung';
 
   @override
