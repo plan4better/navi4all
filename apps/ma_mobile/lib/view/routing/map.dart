@@ -33,7 +33,7 @@ class RoutingMap extends StatefulWidget {
 }
 
 class _RoutingMapState extends State<RoutingMap> {
-  bool _isMapInitialized = false;
+  bool _canInteractWithMap = false;
   late MapLibreMapController _mapController;
   List<maps_toolkit.LatLng> _legPoints = [];
   int? _snappedPointIndex;
@@ -64,13 +64,12 @@ class _RoutingMapState extends State<RoutingMap> {
     final list4 = bytes4.buffer.asUint8List();
     _mapController.addImage("user_position.png", list4);
 
-    setState(() {
-      _isMapInitialized = true;
-    });
+    await Future.delayed(const Duration(milliseconds: 250));
+    setState(() => _canInteractWithMap = true);
   }
 
   Future<void> _drawLayers() async {
-    if (!_isMapInitialized) {
+    if (!_canInteractWithMap) {
       return;
     }
 
@@ -355,6 +354,10 @@ class _RoutingMapState extends State<RoutingMap> {
             compassViewPosition: CompassViewPosition.topRight,
           ),
         ),
+        // Fill screen with background while map is loading
+        !_canInteractWithMap
+            ? Container(color: Theme.of(context).colorScheme.surface)
+            : SizedBox.shrink(),
         /*SafeArea(
           child: Align(
             alignment: Alignment.bottomRight,

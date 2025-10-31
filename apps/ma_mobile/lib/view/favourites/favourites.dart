@@ -101,7 +101,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                               Icon(
                                 Icons.star,
                                 size: 72,
-                                color: SmartRootsColors.maBlueLight,
+                                color: SmartRootsColors.maBlue,
                               ),
                               SizedBox(height: 16),
                               Padding(

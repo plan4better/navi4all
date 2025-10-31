@@ -18,6 +18,7 @@ class ParkingSiteMap extends StatefulWidget {
 
 class _ParkingSiteMapState extends State<ParkingSiteMap> {
   late MapLibreMapController _mapController;
+  bool _canInteractWithMap = false;
 
   Future<void> _onStyleLoaded() async {
     // Clear existing markers and listeners
@@ -38,6 +39,9 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     _mapController.addImage("parking_avbl_unknown.png", list3);
 
     _drawPlace();
+
+    await Future.delayed(const Duration(milliseconds: 250));
+    setState(() => _canInteractWithMap = true);
   }
 
   @override
@@ -69,6 +73,10 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
             compassViewPosition: CompassViewPosition.topRight,
           ),
         ),
+        // Fill screen with background while map is loading
+        !_canInteractWithMap
+            ? Container(color: Theme.of(context).colorScheme.surface)
+            : SizedBox.shrink(),
         /*SafeArea(
           child: Align(
             alignment: Alignment.bottomRight,

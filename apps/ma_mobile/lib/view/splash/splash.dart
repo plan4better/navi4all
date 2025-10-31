@@ -33,7 +33,7 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: SmartRootsColors.maBlueExtraDark,
+    backgroundColor: SmartRootsColors.maBlueExtraExtraDark,
     body: Align(
       alignment: Alignment.bottomCenter,
       child: Image.asset("assets/p_reserviert.png", width: 250),

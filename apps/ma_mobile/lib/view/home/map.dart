@@ -270,9 +270,9 @@ class _HomeMapState extends State<HomeMap> {
             compassViewPosition: CompassViewPosition.topRight,
           ),
         ),
-        // Fill screen with grey background while map is loading
+        // Fill screen with background while map is loading
         !_canInteractWithMap
-            ? Container(color: Colors.grey[200])
+            ? Container(color: Theme.of(context).colorScheme.surface)
             : SizedBox.shrink(),
         SafeArea(
           child: Align(

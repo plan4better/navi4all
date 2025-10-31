@@ -54,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: SmartRootsColors.maBlueExtraDark,
+      backgroundColor: SmartRootsColors.maBlueExtraExtraDark,
       body: Column(
         children: [
           SizedBox(height: 64),
