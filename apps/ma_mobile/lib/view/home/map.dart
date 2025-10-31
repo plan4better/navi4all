@@ -112,7 +112,7 @@ class _HomeMapState extends State<HomeMap> {
                           });
                         },
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 16),
                       SelectionTile(
                         title: getBaseMapStyleTitle(context, BaseMapStyle.dark),
                         isSelected: selectedBaseMapStyle == BaseMapStyle.dark,
@@ -123,7 +123,7 @@ class _HomeMapState extends State<HomeMap> {
                           });
                         },
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 16),
                       SelectionTile(
                         title: getBaseMapStyleTitle(
                           context,

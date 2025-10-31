@@ -192,6 +192,7 @@
     "settingsOptionFeedback": "Feedback",
     "settingsOptionSupport": "Support",
     "settingsOptionLegalAndPrivacy": "Legal & Privacy",
+    "settingsOptionSetupGuide": "Setup Guide",
     "userLocationDeniedSnackbarText": "Enable location access in system settings to use this feature.",
     "placeScreenChangeRadiusButton": "Change Radius",
     "placeScreenChangeRadiusCancel": "Cancel",

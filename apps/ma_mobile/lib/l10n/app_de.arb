@@ -192,6 +192,7 @@
     "settingsOptionFeedback": "Feedback",
     "settingsOptionSupport": "Support",
     "settingsOptionLegalAndPrivacy": "Rechtliches & Datenschutz",
+    "settingsOptionSetupGuide": "Anleitung",
     "userLocationDeniedSnackbarText": "Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.",
     "placeScreenChangeRadiusButton": "Suchbereich anpassen",
     "placeScreenChangeRadiusCancel": "Abbrechen",

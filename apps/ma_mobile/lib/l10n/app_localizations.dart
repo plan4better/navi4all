@@ -581,6 +581,12 @@ abstract class AppLocalizations {
   /// **'Legal & Privacy'**
   String get settingsOptionLegalAndPrivacy;
 
+  /// No description provided for @settingsOptionSetupGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Guide'**
+  String get settingsOptionSetupGuide;
+
   /// No description provided for @userLocationDeniedSnackbarText.
   ///
   /// In en, this message translates to:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/view/onboarding/onboarding.dart';
 import 'package:smartroots/view/settings/feedback.dart';
 import 'package:smartroots/view/settings/legal_privacy.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -46,6 +47,26 @@ class SettingsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(16),
                 shrinkWrap: true,
                 children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.play_circle_outline,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.settingsOptionSetupGuide,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
+                    ),
+                    onTap: () => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => OnboardingScreen(),
+                      ),
+                    ),
+                  ),
+                  Divider(color: SmartRootsColors.maBlue, height: 0),
                   ListTile(
                     leading: Icon(
                       Icons.feedback_outlined,
@@ -103,6 +124,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Divider(color: SmartRootsColors.maBlue, height: 0),
                 ],
               ),
             ),

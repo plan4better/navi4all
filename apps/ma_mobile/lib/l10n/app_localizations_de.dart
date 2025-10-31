@@ -276,6 +276,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsOptionLegalAndPrivacy => 'Rechtliches & Datenschutz';
 
   @override
+  String get settingsOptionSetupGuide => 'Anleitung';
+
+  @override
   String get userLocationDeniedSnackbarText => 'Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.';
 
   @override

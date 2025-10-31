@@ -27,9 +27,7 @@ class SelectionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isSelected
-          ? Theme.of(context).colorScheme.tertiary
-          : Colors.transparent,
+      color: isSelected ? SmartRootsColors.maBlueLight : Colors.transparent,
       borderRadius: BorderRadius.circular(32.0),
       child: InkWell(
         onTap: onTap,
