@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/favourites_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/search/search.dart';
@@ -14,7 +16,6 @@ import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:smartroots/core/processing_status.dart';
 import 'package:smartroots/core/utils.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:smartroots/core/persistence/preference_helper.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smartroots/view/routing/routing.dart';
 
@@ -44,21 +45,31 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
   }
 
   Future<void> _checkIfFavorite() async {
-    _isFavorite = await PreferenceHelper.isFavoriteParkingLocation(
-      widget.parkingLocation["id"],
-      widget.parkingLocation["parking_type"],
-    );
+    _isFavorite =
+        await Provider.of<FavouritesController>(
+          context,
+          listen: false,
+        ).checkIsFavouriteParkingLocation(
+          widget.parkingLocation["id"],
+          widget.parkingLocation["parking_type"],
+        );
     setState(() {});
   }
 
   Future<void> _toggleFavorite() async {
     if (_isFavorite) {
-      await PreferenceHelper.removeFavoriteParkingLocation(
+      await Provider.of<FavouritesController>(
+        context,
+        listen: false,
+      ).removeFavouriteParkingLocation(
         widget.parkingLocation["id"],
         widget.parkingLocation["parking_type"],
       );
     } else {
-      await PreferenceHelper.addFavoriteParkingLocation(
+      await Provider.of<FavouritesController>(
+        context,
+        listen: false,
+      ).addFavouriteParkingLocation(
         widget.parkingLocation["id"],
         widget.parkingLocation["parking_type"],
       );

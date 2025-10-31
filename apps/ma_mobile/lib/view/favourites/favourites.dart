@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/favourites_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
-import 'package:smartroots/services/poi_parking.dart';
-import 'package:smartroots/core/persistence/preference_helper.dart';
 import 'package:smartroots/core/utils.dart';
 import 'package:smartroots/view/parking_site/parking_site.dart';
 
@@ -15,51 +15,8 @@ class FavouritesScreen extends StatefulWidget {
 }
 
 class _FavouritesScreenState extends State<FavouritesScreen> {
-  bool _wasScreenInFocus = false;
-  List<Map<String, dynamic>> _parkingLocations = [];
-
-  Future<void> _fetchParkingLocations() async {
-    List<Map<String, dynamic>> favoriteParkingLocations =
-        await PreferenceHelper.getFavoriteParkingLocations();
-
-    List<Map<String, dynamic>> parkingLocations = [];
-    POIParkingService parkingService = POIParkingService();
-    try {
-      for (var item in favoriteParkingLocations) {
-        var details = await parkingService.getParkingLocationDetails(
-          id: item["id"],
-          parkingType: item["parking_type"],
-        );
-        if (details != null) {
-          parkingLocations.add(details);
-        }
-      }
-      parkingLocations.sort(
-        (a, b) => a["name"].toString().toLowerCase().compareTo(
-          b["name"].toString().toLowerCase(),
-        ),
-      );
-      setState(() {
-        _parkingLocations = parkingLocations;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (widget.screenInFocus && !_wasScreenInFocus) {
-      _fetchParkingLocations();
-    }
-    _wasScreenInFocus = widget.screenInFocus;
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -80,51 +37,56 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
               ),
             ),
             SizedBox(height: 8),
-            Expanded(
-              child: _parkingLocations.isNotEmpty
-                  ? ListView.builder(
-                      padding: EdgeInsets.all(16),
-                      shrinkWrap: true,
-                      itemCount: _parkingLocations.length,
-                      itemBuilder: (context, index) => _FavouritesListItem(
-                        parkingLocation: _parkingLocations[index],
-                      ),
-                    )
-                  : Expanded(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Semantics(
-                          excludeSemantics: true,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.star,
-                                size: 72,
-                                color: SmartRootsColors.maBlue,
-                              ),
-                              SizedBox(height: 16),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 32,
+            Consumer<FavouritesController>(
+              builder: (context, favouritesController, _) => Expanded(
+                child: favouritesController.favouriteParkingLocations.isNotEmpty
+                    ? ListView.builder(
+                        padding: EdgeInsets.all(16),
+                        shrinkWrap: true,
+                        itemCount: favouritesController
+                            .favouriteParkingLocations
+                            .length,
+                        itemBuilder: (context, index) => _FavouritesListItem(
+                          parkingLocation: favouritesController
+                              .favouriteParkingLocations[index],
+                        ),
+                      )
+                    : Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Semantics(
+                            excludeSemantics: true,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  size: 72,
+                                  color: SmartRootsColors.maBlue,
                                 ),
-                                child: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.favouritesScreenPrompt,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: SmartRootsColors.maBlue,
+                                SizedBox(height: 16),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 32,
+                                  ),
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.favouritesScreenPrompt,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: SmartRootsColors.maBlue,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 32),
-                            ],
+                                SizedBox(height: 32),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+              ),
             ),
             SizedBox(height: 96),
           ],

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
-import 'package:smartroots/controllers/core/theme_controller.dart';
+import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
 
 class ParkingSiteMap extends StatefulWidget {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:smartroots/controllers/core/theme_controller.dart';
+import 'package:smartroots/controllers/favourites_controller.dart';
+import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smartroots/core/theme/labels.dart';
@@ -23,8 +24,11 @@ class SmartRootsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeController(context),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeController(context)),
+        ChangeNotifierProvider(create: (_) => FavouritesController(context)),
+      ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(
           title: SmartRootsLabels.appName,

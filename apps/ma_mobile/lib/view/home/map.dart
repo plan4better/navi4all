@@ -4,7 +4,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
-import 'package:smartroots/controllers/core/theme_controller.dart';
+import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/persistence/preference_helper.dart';
 import 'package:smartroots/core/theme/base_map_style.dart';

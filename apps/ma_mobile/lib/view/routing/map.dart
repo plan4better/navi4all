@@ -7,7 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
 import 'package:provider/provider.dart';
-import 'package:smartroots/controllers/core/theme_controller.dart';
+import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/processing_status.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
