@@ -11,7 +11,7 @@ import 'dart:core';
 import 'package:intl/intl.dart';
 import 'package:smartroots/services/routing.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
-import 'package:smartroots/core/persistence/processing_status.dart';
+import 'package:smartroots/core/processing_status.dart';
 import 'package:smartroots/core/utils.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:smartroots/core/persistence/preference_helper.dart';
@@ -366,8 +366,8 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                     child: Container(
                       height: 56,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(28),
-                        color: SmartRootsColors.maWhite,
+                        borderRadius: BorderRadius.circular(32),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       child: Row(
                         children: [

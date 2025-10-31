@@ -1,18 +1,23 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartroots/core/theme/base_map_style.dart';
 import 'package:smartroots/schemas/poi/parking_type.dart';
 
+String keyOnboardingComplete = "ma_onboarding_complete";
 String keyFavoriteParkingSpots = "ma_favorite_parking_spots";
 String keyFavoriteParkingSites = "ma_favorite_parking_sites";
+String keyThemeMode = "ma_theme_mode";
+String keyBaseMapStyle = "ma_base_map_style";
 
 class PreferenceHelper {
   static Future<bool> isOnboardingComplete() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getBool("onboarding_complete") ?? false;
+    return preferences.getBool(keyOnboardingComplete) ?? false;
   }
 
   static Future<void> setOnboardingComplete(bool complete) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setBool("onboarding_complete", complete);
+    preferences.setBool(keyOnboardingComplete, complete);
   }
 
   static List<String> _getStoredFavoriteParkingLocations(
@@ -133,5 +138,29 @@ class PreferenceHelper {
       return true;
     }
     return false;
+  }
+
+  static Future<ThemeMode> getThemeMode() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return ThemeMode.values.byName(
+      preferences.getString(keyThemeMode) ?? ThemeMode.light.name,
+    );
+  }
+
+  static Future<void> setThemeMode(ThemeMode mode) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString(keyThemeMode, mode.name);
+  }
+
+  static Future<BaseMapStyle> getBaseMapStyle() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return BaseMapStyle.values.byName(
+      preferences.getString(keyBaseMapStyle) ?? BaseMapStyle.light.name,
+    );
+  }
+
+  static Future<void> setBaseMapStyle(BaseMapStyle style) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString(keyBaseMapStyle, style.name);
   }
 }

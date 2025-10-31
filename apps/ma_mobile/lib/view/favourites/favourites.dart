@@ -206,7 +206,7 @@ class _FavouritesListItem extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
-                  color: SmartRootsColors.maBlueLight,
+                  color: Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 width: 92,

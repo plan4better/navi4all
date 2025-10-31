@@ -35,7 +35,6 @@ class SlidingBottomSheet extends StatelessWidget {
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: SmartRootsColors.maWhite,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(32.0),
               topRight: Radius.circular(32.0),

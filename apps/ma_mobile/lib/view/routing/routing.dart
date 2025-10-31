@@ -11,7 +11,7 @@ import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
 import 'package:smartroots/view/search/search.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
-import 'package:smartroots/core/persistence/processing_status.dart';
+import 'package:smartroots/core/processing_status.dart';
 import 'package:smartroots/services/routing.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
@@ -85,7 +85,6 @@ class RoutingState extends State<RoutingScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
           ),
-          backgroundColor: SmartRootsColors.maWhite,
           child: Container(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -671,7 +670,9 @@ class RoutingState extends State<RoutingScreen> {
                               child: Container(
                                 height: 56,
                                 decoration: BoxDecoration(
-                                  color: SmartRootsColors.maWhite,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(28),
                                     topRight: Radius.circular(28),
@@ -727,7 +728,7 @@ class RoutingState extends State<RoutingScreen> {
                             bottomLeft: Radius.circular(28),
                             bottomRight: Radius.circular(28),
                           ),
-                          color: SmartRootsColors.maWhite,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                         child: Row(
                           children: [
@@ -821,7 +822,9 @@ class ItineraryLegStepTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-    color: isActive ? SmartRootsColors.maBlueLight : SmartRootsColors.maWhite,
+    color: isActive
+        ? Theme.of(context).colorScheme.tertiary
+        : Theme.of(context).colorScheme.surface,
     child: Row(
       children: [
         Icon(

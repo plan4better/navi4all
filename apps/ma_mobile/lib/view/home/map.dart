@@ -3,10 +3,16 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/core/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
+import 'package:smartroots/core/persistence/preference_helper.dart';
+import 'package:smartroots/core/theme/base_map_style.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/services/poi_parking.dart';
+import 'package:smartroots/view/common/selection_tile.dart';
+import 'package:smartroots/view/common/sheet_button.dart';
 import 'package:smartroots/view/parking_site/parking_site.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -57,7 +63,136 @@ class _HomeMapState extends State<HomeMap> {
     );
   }
 
+  void _onLayersButtonPressed() {
+    BaseMapStyle selectedBaseMapStyle = Provider.of<ThemeController>(
+      context,
+      listen: false,
+    ).baseMapStyle;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) => Dialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.homeChangeBaseMapTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Column(
+                    children: [
+                      SelectionTile(
+                        title: getBaseMapStyleTitle(
+                          context,
+                          BaseMapStyle.light,
+                        ),
+                        isSelected: selectedBaseMapStyle == BaseMapStyle.light,
+                        leadingImage: 'assets/base_map_light_thumbnail.png',
+                        onTap: () {
+                          setStateDialog(() {
+                            selectedBaseMapStyle = BaseMapStyle.light;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 8),
+                      SelectionTile(
+                        title: getBaseMapStyleTitle(context, BaseMapStyle.dark),
+                        isSelected: selectedBaseMapStyle == BaseMapStyle.dark,
+                        leadingImage: 'assets/base_map_dark_thumbnail.png',
+                        onTap: () {
+                          setStateDialog(() {
+                            selectedBaseMapStyle = BaseMapStyle.dark;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 8),
+                      SelectionTile(
+                        title: getBaseMapStyleTitle(
+                          context,
+                          BaseMapStyle.satellite,
+                        ),
+                        isSelected:
+                            selectedBaseMapStyle == BaseMapStyle.satellite,
+                        leadingImage: 'assets/base_map_satellite_thumbnail.png',
+                        onTap: () {
+                          setStateDialog(() {
+                            selectedBaseMapStyle = BaseMapStyle.satellite;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SheetButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.placeScreenChangeRadiusCancel,
+                          onTap: () {
+                            selectedBaseMapStyle = Provider.of<ThemeController>(
+                              context,
+                              listen: false,
+                            ).baseMapStyle;
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SheetButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.placeScreenChangeRadiusConfirm,
+                          onTap: () {
+                            PreferenceHelper.setBaseMapStyle(
+                              selectedBaseMapStyle,
+                            );
+                            setState(() {
+                              Provider.of<ThemeController>(
+                                context,
+                                listen: false,
+                              ).setBaseMapStyle(selectedBaseMapStyle);
+                              Navigator.of(context).pop();
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _onStyleLoaded() async {
+    // Clear existing markers and listeners
+    await _mapController.clearCircles();
+    _mapController.onCircleTapped.clear();
+
     // Fetch and display parking locations
     _fetchParkingSites().then((_) {
       // Add circle tap listener
@@ -113,24 +248,27 @@ class _HomeMapState extends State<HomeMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        MapLibreMap(
-          myLocationEnabled: true,
-          styleString: Settings.mapStyleUrl,
-          onMapCreated: (controller) => _mapController = controller,
-          minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
-          cameraTargetBounds: CameraTargetBounds(
-            LatLngBounds(
-              southwest: LatLng(47.2701, 5.8663),
-              northeast: LatLng(55.0581, 15.0419),
+        Consumer<ThemeController>(
+          builder: (context, themeController, _) => MapLibreMap(
+            myLocationEnabled: true,
+            styleString:
+                Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
+            onMapCreated: (controller) => _mapController = controller,
+            minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
+            cameraTargetBounds: CameraTargetBounds(
+              LatLngBounds(
+                southwest: LatLng(47.2701, 5.8663),
+                northeast: LatLng(55.0581, 15.0419),
+              ),
             ),
+            initialCameraPosition: CameraPosition(
+              target: LatLng(49.487164933378104, 8.46624749208),
+              zoom: 13.0,
+            ),
+            onStyleLoadedCallback: _onStyleLoaded,
+            compassViewMargins: const Point(16, 160),
+            compassViewPosition: CompassViewPosition.topRight,
           ),
-          initialCameraPosition: CameraPosition(
-            target: LatLng(49.487164933378104, 8.46624749208),
-            zoom: 13.0,
-          ),
-          onStyleLoadedCallback: _onStyleLoaded,
-          compassViewMargins: const Point(16, 160),
-          compassViewPosition: CompassViewPosition.topRight,
         ),
         // Fill screen with grey background while map is loading
         !_canInteractWithMap
@@ -144,14 +282,19 @@ class _HomeMapState extends State<HomeMap> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  /*FloatingActionButton(
-                    onPressed: () {},
-                    child: Icon(Icons.layers),
-                  ),*/
+                  FloatingActionButton(
+                    shape: CircleBorder(),
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    onPressed: () => _onLayersButtonPressed(),
+                    child: Icon(
+                      Icons.layers,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                  ),
                   SizedBox(height: 16),
                   FloatingActionButton(
                     shape: CircleBorder(),
-                    backgroundColor: SmartRootsColors.maWhite,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                     onPressed: () => _panToUserLocation(),
                     child: Icon(
                       Icons.my_location,

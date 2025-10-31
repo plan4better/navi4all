@@ -4,6 +4,8 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/core/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
 
 class ParkingSiteMap extends StatefulWidget {
@@ -18,6 +20,10 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   late MapLibreMapController _mapController;
 
   Future<void> _onStyleLoaded() async {
+    // Clear existing markers and listeners
+    await _mapController.clearSymbols();
+    _mapController.onSymbolTapped.clear();
+
     // Load custom marker icons
     final bytes = await rootBundle.load('assets/parking_avbl_yes.png');
     final list = bytes.buffer.asUint8List();
@@ -38,27 +44,30 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        MapLibreMap(
-          myLocationEnabled: true,
-          styleString: Settings.mapStyleUrl,
-          onMapCreated: (controller) => _mapController = controller,
-          minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
-          cameraTargetBounds: CameraTargetBounds(
-            LatLngBounds(
-              southwest: LatLng(47.2701, 5.8663),
-              northeast: LatLng(55.0581, 15.0419),
+        Consumer<ThemeController>(
+          builder: (context, themeController, child) => MapLibreMap(
+            myLocationEnabled: true,
+            styleString:
+                Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
+            onMapCreated: (controller) => _mapController = controller,
+            minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
+            cameraTargetBounds: CameraTargetBounds(
+              LatLngBounds(
+                southwest: LatLng(47.2701, 5.8663),
+                northeast: LatLng(55.0581, 15.0419),
+              ),
             ),
-          ),
-          initialCameraPosition: CameraPosition(
-            target: LatLng(
-              widget.parkingSite['coordinates'].latitude - 0.003,
-              widget.parkingSite['coordinates'].longitude,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                widget.parkingSite['coordinates'].latitude - 0.003,
+                widget.parkingSite['coordinates'].longitude,
+              ),
+              zoom: 14,
             ),
-            zoom: 14,
+            onStyleLoadedCallback: _onStyleLoaded,
+            compassViewMargins: const Point(16, 160),
+            compassViewPosition: CompassViewPosition.topRight,
           ),
-          onStyleLoadedCallback: _onStyleLoaded,
-          compassViewMargins: const Point(16, 160),
-          compassViewPosition: CompassViewPosition.topRight,
         ),
         /*SafeArea(
           child: Align(

@@ -60,10 +60,10 @@ class _PlaceScreenState extends State<PlaceScreen> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
           ),
-          backgroundColor: SmartRootsColors.maWhite,
           child: Container(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -248,8 +248,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     child: Container(
                       height: 56,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(28),
-                        color: SmartRootsColors.maWhite,
+                        borderRadius: BorderRadius.circular(32),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       child: Row(
                         children: [

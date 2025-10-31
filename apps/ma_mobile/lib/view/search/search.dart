@@ -82,7 +82,6 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
@@ -91,16 +90,16 @@ class _SearchScreenState extends State<SearchScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: SmartRootsColors.maBackground,
+                  color: Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(28),
-                    topRight: const Radius.circular(28),
+                    topLeft: const Radius.circular(32),
+                    topRight: const Radius.circular(32),
                     bottomLeft: _showResults
                         ? const Radius.circular(0)
-                        : const Radius.circular(28),
+                        : const Radius.circular(32),
                     bottomRight: _showResults
                         ? const Radius.circular(0)
-                        : const Radius.circular(28),
+                        : const Radius.circular(32),
                   ),
                   border: _showResults
                       ? const Border(
@@ -168,11 +167,11 @@ class _SearchScreenState extends State<SearchScreen> {
               !_showResults ? SizedBox(height: 64) : SizedBox.shrink(),
               _showResults
                   ? Container(
-                      decoration: const BoxDecoration(
-                        color: SmartRootsColors.maBackground,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.tertiary,
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(28),
-                          bottomRight: Radius.circular(28),
+                          bottomLeft: Radius.circular(32),
+                          bottomRight: Radius.circular(32),
                         ),
                       ),
                       child: ListView.separated(
@@ -213,7 +212,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           Icon(
                             Icons.search_rounded,
                             size: 96,
-                            color: SmartRootsColors.maBlueLight,
+                            color: SmartRootsColors.maBlue,
                           ),
                           SizedBox(height: 16),
                           Padding(

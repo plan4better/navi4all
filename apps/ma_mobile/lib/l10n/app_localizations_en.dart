@@ -96,7 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSettingsButton => 'Settings';
 
   @override
-  String get searchTextFieldHint => 'Search here...';
+  String get searchTextFieldHint => 'Search here';
 
   @override
   String get searchTextFieldOriginHintSemantic => 'Text input. Type to search for an origin location.';
@@ -240,7 +240,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNavigationSettingsTitle => 'Settings';
 
   @override
-  String get homeSearchButtonHint => 'Search here...';
+  String get homeSearchButtonHint => 'Search here';
+
+  @override
+  String get homeChangeBaseMapTitle => 'Map Style';
+
+  @override
+  String get homeBaseMapStyleTitleLight => 'Light';
+
+  @override
+  String get homeBaseMapStyleTitleDark => 'Dark';
+
+  @override
+  String get homeBaseMapStyleTitleSatellite => 'Satellite';
+
+  @override
+  String get homeBaseMapStyleTitleUnknown => 'Base Map';
 
   @override
   String get favouritesTitle => 'Favourites';
@@ -264,7 +279,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userLocationDeniedSnackbarText => 'Enable location access in system settings to use this feature.';
 
   @override
-  String get placeScreenChangeRadiusButton => 'Change radius';
+  String get placeScreenChangeRadiusButton => 'Change Radius';
 
   @override
   String get placeScreenChangeRadiusCancel => 'Cancel';

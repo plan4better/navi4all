@@ -272,7 +272,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchTextFieldHint.
   ///
   /// In en, this message translates to:
-  /// **'Search here...'**
+  /// **'Search here'**
   String get searchTextFieldHint;
 
   /// No description provided for @searchTextFieldOriginHintSemantic.
@@ -512,8 +512,38 @@ abstract class AppLocalizations {
   /// No description provided for @homeSearchButtonHint.
   ///
   /// In en, this message translates to:
-  /// **'Search here...'**
+  /// **'Search here'**
   String get homeSearchButtonHint;
+
+  /// No description provided for @homeChangeBaseMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Style'**
+  String get homeChangeBaseMapTitle;
+
+  /// No description provided for @homeBaseMapStyleTitleLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get homeBaseMapStyleTitleLight;
+
+  /// No description provided for @homeBaseMapStyleTitleDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get homeBaseMapStyleTitleDark;
+
+  /// No description provided for @homeBaseMapStyleTitleSatellite.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite'**
+  String get homeBaseMapStyleTitleSatellite;
+
+  /// No description provided for @homeBaseMapStyleTitleUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Map'**
+  String get homeBaseMapStyleTitleUnknown;
 
   /// No description provided for @favouritesTitle.
   ///
@@ -560,7 +590,7 @@ abstract class AppLocalizations {
   /// No description provided for @placeScreenChangeRadiusButton.
   ///
   /// In en, this message translates to:
-  /// **'Change radius'**
+  /// **'Change Radius'**
   String get placeScreenChangeRadiusButton;
 
   /// No description provided for @placeScreenChangeRadiusCancel.

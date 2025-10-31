@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/core/theme_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smartroots/core/theme/labels.dart';
 import 'package:smartroots/view/splash/splash.dart';
 import 'l10n/app_localizations.dart';
 
@@ -20,19 +23,41 @@ class SmartRootsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ParkStark',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: SmartRootsColors.maBlueExtraDark,
-          primary: SmartRootsColors.maBlueExtraDark,
-          secondary: SmartRootsColors.maBackground,
+    return ChangeNotifierProvider(
+      create: (_) => ThemeController(context),
+      child: Consumer<ThemeController>(
+        builder: (context, themeController, _) => MaterialApp(
+          title: SmartRootsLabels.appName,
+          themeMode: themeController.themeMode,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: SmartRootsColors.maBlueExtraDark,
+              surface: SmartRootsColors.maSurfaceLight,
+              secondary: SmartRootsColors.maSecondaryLight,
+              tertiary: SmartRootsColors.maTertiaryLight,
+              brightness: Brightness.light,
+            ),
+            textTheme: GoogleFonts.robotoTextTheme(),
+            brightness: Brightness.light,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: SmartRootsColors.maBlueExtraDark,
+              surface: SmartRootsColors.maSurfaceDark,
+              secondary: SmartRootsColors.maSecondaryDark,
+              tertiary: SmartRootsColors.maTertiaryDark,
+              brightness: Brightness.dark,
+            ),
+            textTheme: GoogleFonts.robotoTextTheme(
+              ThemeData(brightness: Brightness.dark).textTheme,
+            ),
+            brightness: Brightness.dark,
+          ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Splash(),
         ),
-        textTheme: GoogleFonts.robotoTextTheme(),
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const Splash(),
     );
   }
 }

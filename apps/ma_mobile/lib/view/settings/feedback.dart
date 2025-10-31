@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/core/config.dart';
-import 'package:smartroots/core/persistence/processing_status.dart';
+import 'package:smartroots/core/processing_status.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/feedback/feedback_type.dart';

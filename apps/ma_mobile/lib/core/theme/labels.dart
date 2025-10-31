@@ -1,3 +1,3 @@
-class Navi4AllLabels {
-  static const String appName = 'SmartRoots';
+class SmartRootsLabels {
+  static const String appName = 'ParkStark';
 }

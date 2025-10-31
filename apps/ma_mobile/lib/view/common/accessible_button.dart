@@ -25,7 +25,7 @@ class AccessibleButton extends StatelessWidget {
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: style == AccessibleButtonStyle.blueLight
-              ? SmartRootsColors.maBlueLight
+              ? Theme.of(context).colorScheme.tertiary
               : style == AccessibleButtonStyle.blueExtraExtraDark
               ? SmartRootsColors.maBlueExtraExtraDark
               : SmartRootsColors.maWhite,

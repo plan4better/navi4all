@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: SmartRootsColors.maWhite,
       body: Stack(
         children: [
           Stack(
@@ -67,10 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             height: 56,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(28),
+                              borderRadius: BorderRadius.circular(32),
                               color: _pageIndex == 0
-                                  ? SmartRootsColors.maWhite
-                                  : SmartRootsColors.maBlueLight,
+                                  ? Theme.of(context).colorScheme.secondary
+                                  : Theme.of(context).colorScheme.tertiary,
                             ),
                             child: Row(
                               children: [
@@ -112,10 +111,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(64),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(64)),
+                      borderRadius: BorderRadius.all(Radius.circular(32)),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(64)),
+                      borderRadius: BorderRadius.all(Radius.circular(32)),
                       child: NavigationBar(
                         labelTextStyle:
                             WidgetStateProperty.resolveWith<TextStyle>((
@@ -125,15 +124,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return const TextStyle(
                                   color: SmartRootsColors.maBlueExtraExtraDark,
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 12,
                                 );
                               }
                               return const TextStyle(
                                 color: SmartRootsColors.maBlueExtraExtraDark,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
                               );
                             }),
                         backgroundColor: _pageIndex == 0
-                            ? SmartRootsColors.maWhite
-                            : SmartRootsColors.maBlueLight,
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(context).colorScheme.tertiary,
                         selectedIndex: _pageIndex,
                         onDestinationSelected: (index) => setState(() {
                           _pageIndex = index;

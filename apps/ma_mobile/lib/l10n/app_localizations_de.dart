@@ -96,7 +96,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeSettingsButton => 'Einstellungen';
 
   @override
-  String get searchTextFieldHint => 'Hier suchen...';
+  String get searchTextFieldHint => 'Hier suchen';
 
   @override
   String get searchTextFieldOriginHintSemantic => 'Textfeld für die Eingabe. Tippen Sie, um einen Startort zu suchen.';
@@ -240,7 +240,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeNavigationSettingsTitle => 'Einstellungen';
 
   @override
-  String get homeSearchButtonHint => 'Hier suchen...';
+  String get homeSearchButtonHint => 'Hier suchen';
+
+  @override
+  String get homeChangeBaseMapTitle => 'Map Style';
+
+  @override
+  String get homeBaseMapStyleTitleLight => 'Hell';
+
+  @override
+  String get homeBaseMapStyleTitleDark => 'Dunkel';
+
+  @override
+  String get homeBaseMapStyleTitleSatellite => 'Satellit';
+
+  @override
+  String get homeBaseMapStyleTitleUnknown => 'Basis-Karte';
 
   @override
   String get favouritesTitle => 'Favoriten';

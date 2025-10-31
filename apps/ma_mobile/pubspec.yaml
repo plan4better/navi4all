@@ -46,3 +46,6 @@ flutter:
     - assets/parking_avbl_unknown.png
     - assets/place.png
     - assets/user_position.png
+    - assets/base_map_light_thumbnail.png
+    - assets/base_map_dark_thumbnail.png
+    - assets/base_map_satellite_thumbnail.png
