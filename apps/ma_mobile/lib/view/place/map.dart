@@ -262,7 +262,7 @@ class _PlaceMapState extends State<PlaceMap> {
             CircleOptions(
               geometry: site["coordinates"],
               circleColor: markerColor,
-              circleRadius: 5.5,
+              circleRadius: 6.0,
               circleStrokeWidth: 1.0,
               circleStrokeColor: "#FFFFFF",
             ),
