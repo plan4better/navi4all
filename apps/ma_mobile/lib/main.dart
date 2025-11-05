@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/availability_controller.dart';
 import 'package:smartroots/controllers/favourites_controller.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
@@ -28,6 +29,7 @@ class SmartRootsApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeController(context)),
         ChangeNotifierProvider(create: (_) => FavouritesController(context)),
+        ChangeNotifierProvider(create: (_) => AvailabilityController()),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(

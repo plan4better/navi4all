@@ -443,4 +443,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get routingDisclaimerAcceptButton => 'Fortfahren';
+
+  @override
+  String get availabilityChangeDialogTitle => 'Parkplatz Belegt';
+
+  @override
+  String get availabilityChangeDialogMessage => 'Dieser Parkplatz ist jetzt belegt.\nMöchten Sie in der Nähe nach alternativen Plätzen suchen?';
+
+  @override
+  String get availabilityChangeDialogCancelButton => 'Nein';
+
+  @override
+  String get availabilityChangeDialogConfirmButton => 'Ja';
 }

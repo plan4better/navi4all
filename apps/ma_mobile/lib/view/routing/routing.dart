@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/availability_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/core/theme/values.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/routing/coordinates.dart';
+import 'package:smartroots/view/place/place.dart';
 import 'package:smartroots/view/routing/map.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
@@ -31,6 +34,7 @@ class RoutingScreen extends StatefulWidget {
 }
 
 class RoutingState extends State<RoutingScreen> {
+  late Map<String, dynamic> _parkingLocation;
   bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
@@ -49,6 +53,8 @@ class RoutingState extends State<RoutingScreen> {
   void initState() {
     super.initState();
 
+    _parkingLocation = widget.parkingSite;
+
     // flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
 
     // Initialise origin and destination places
@@ -61,19 +67,166 @@ class RoutingState extends State<RoutingScreen> {
       coordinates: Coordinates(lat: 0.0, lon: 0.0),
     );
     _destination = Place(
-      id: widget.parkingSite['id'].toString(),
+      id: _parkingLocation['id'].toString(),
       type: 'PARKING',
-      name: widget.parkingSite['name'],
-      description: widget.parkingSite['description'] ?? '',
-      address: widget.parkingSite['address'] ?? '',
+      name: _parkingLocation['name'],
+      description: _parkingLocation['description'] ?? '',
+      address: _parkingLocation['address'] ?? '',
       coordinates: Coordinates(
-        lat: widget.parkingSite['coordinates'].latitude,
-        lon: widget.parkingSite['coordinates'].longitude,
+        lat: _parkingLocation['coordinates'].latitude,
+        lon: _parkingLocation['coordinates'].longitude,
       ),
     );
 
+    // Initiate availability monitoring
+    Provider.of<AvailabilityController>(
+      context,
+      listen: false,
+    ).startMonitoring(_parkingLocation);
+
+    // Listen for availability changes
+    Provider.of<AvailabilityController>(context, listen: false).addListener(() {
+      AvailabilityController availabilityController =
+          Provider.of<AvailabilityController>(context, listen: false);
+      if (availabilityController.state == AvailabilityControllerState.change) {
+        setState(() {
+          _parkingLocation = availabilityController.parkingLocation!;
+        });
+        _showAvailabilityChangeDialog();
+        availabilityController.stopMonitoring();
+      }
+    });
+
     // Fetch itineraries
     _fetchItineraries();
+  }
+
+  void _showAvailabilityChangeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) => Dialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: _parkingLocation['has_realtime_data']
+                                ? _parkingLocation['disabled_parking_available']
+                                      ? SmartRootsColors.maGreen
+                                      : SmartRootsColors.maRed
+                                : SmartRootsColors.maBlueExtraDark,
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.local_parking,
+                                size: 16,
+                                color: SmartRootsColors.maWhite,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.availabilityChangeDialogTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.availabilityChangeDialogMessage,
+                      style: TextStyle(
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SheetButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.availabilityChangeDialogCancelButton,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SheetButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.availabilityChangeDialogConfirmButton,
+                          onTap: () {
+                            _positionStream?.drain();
+                            _positionStreamSubscription?.cancel();
+                            _positionStream = null;
+                            _positionStreamSubscription = null;
+                            setState(() {
+                              _navigationStatus = NavigationStatus.idle;
+                            });
+
+                            Place place = Place(
+                              id: '',
+                              name: _parkingLocation['name'],
+                              type: '',
+                              description: _parkingLocation['address'] ?? '',
+                              address: _parkingLocation['address'] ?? '',
+                              coordinates: Coordinates(
+                                lat: _parkingLocation['coordinates'].latitude,
+                                lon: _parkingLocation['coordinates'].longitude,
+                              ),
+                            );
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => PlaceScreen(place: place),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _showDisclaimerDialog() {
@@ -476,7 +629,7 @@ class RoutingState extends State<RoutingScreen> {
         children: [
           RoutingMap(
             origin: _origin,
-            parkingSite: widget.parkingSite,
+            parkingSite: _parkingLocation,
             itineraryDetails: _itineraryDetails,
             navigationStatus: _navigationStatus,
             userPosition: _userPosition,
@@ -736,8 +889,8 @@ class RoutingState extends State<RoutingScreen> {
                             Container(
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
-                                color: widget.parkingSite['has_realtime_data']
-                                    ? widget.parkingSite['disabled_parking_available']
+                                color: _parkingLocation['has_realtime_data']
+                                    ? _parkingLocation['disabled_parking_available']
                                           ? SmartRootsColors.maGreen
                                           : SmartRootsColors.maRed
                                     : SmartRootsColors.maBlueExtraDark,

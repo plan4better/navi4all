@@ -443,4 +443,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingDisclaimerAcceptButton => 'Continue';
+
+  @override
+  String get availabilityChangeDialogTitle => 'Parking Occupied';
+
+  @override
+  String get availabilityChangeDialogMessage => 'This parking spot is now occupied.\nWould you like to find alternative spots nearby?';
+
+  @override
+  String get availabilityChangeDialogCancelButton => 'No';
+
+  @override
+  String get availabilityChangeDialogConfirmButton => 'Yes';
 }

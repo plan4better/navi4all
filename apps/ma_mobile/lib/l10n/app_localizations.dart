@@ -910,6 +910,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get routingDisclaimerAcceptButton;
+
+  /// No description provided for @availabilityChangeDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking Occupied'**
+  String get availabilityChangeDialogTitle;
+
+  /// No description provided for @availabilityChangeDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This parking spot is now occupied.\nWould you like to find alternative spots nearby?'**
+  String get availabilityChangeDialogMessage;
+
+  /// No description provided for @availabilityChangeDialogCancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get availabilityChangeDialogCancelButton;
+
+  /// No description provided for @availabilityChangeDialogConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get availabilityChangeDialogConfirmButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

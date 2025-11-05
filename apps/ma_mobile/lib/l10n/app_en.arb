@@ -260,5 +260,9 @@
     "routingDisclaimerTitle": "Attention",
     "routingDisclaimerMessage": "Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.",
     "routingDisclaimerCancelButton": "Cancel",
-    "routingDisclaimerAcceptButton": "Continue"
+    "routingDisclaimerAcceptButton": "Continue",
+    "availabilityChangeDialogTitle": "Parking Occupied",
+    "availabilityChangeDialogMessage": "This parking spot is now occupied.\nWould you like to find alternative spots nearby?",
+    "availabilityChangeDialogCancelButton": "No",
+    "availabilityChangeDialogConfirmButton": "Yes" 
 }
