@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/availability_controller.dart';
 import 'package:smartroots/controllers/favourites_controller.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
+import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smartroots/core/theme/labels.dart';
 import 'package:smartroots/view/splash/splash.dart';
 import 'l10n/app_localizations.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +20,13 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) => runApp(const SmartRootsApp()));
+
+  // Initialize Matomo analytics
+  MatomoTracker.instance.initialize(
+    siteId: Settings.matomoSiteId,
+    url: Settings.matomoUrl,
+    cookieless: true,
+  );
 }
 
 class SmartRootsApp extends StatelessWidget {

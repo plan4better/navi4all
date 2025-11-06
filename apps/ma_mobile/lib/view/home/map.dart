@@ -3,8 +3,10 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
+import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/persistence/preference_helper.dart';
 import 'package:smartroots/core/theme/base_map_style.dart';
@@ -13,7 +15,7 @@ import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/services/poi_parking.dart';
 import 'package:smartroots/view/common/selection_tile.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
-import 'package:smartroots/view/parking_site/parking_site.dart';
+import 'package:smartroots/view/parking_location/parking_location.dart';
 import 'package:geolocator/geolocator.dart';
 
 class HomeMap extends StatefulWidget {
@@ -174,6 +176,16 @@ class _HomeMapState extends State<HomeMap> {
                               ).setBaseMapStyle(selectedBaseMapStyle);
                               Navigator.of(context).pop();
                             });
+
+                            // Analytics event
+                            MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.homeMapScreen
+                                    .toString(),
+                                action: EventAction.homeMapScreenBaseMapChanged
+                                    .toString(),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -238,10 +250,19 @@ class _HomeMapState extends State<HomeMap> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParkingSiteScreen(parkingLocation: site),
+          builder: (context) => ParkingLocationScreen(parkingLocation: site),
         ),
       );
     }
+
+    // Analytics event
+    MatomoTracker.instance.trackEvent(
+      eventInfo: EventInfo(
+        category: EventCategory.homeMapScreen.toString(),
+        action: EventAction.homeMapScreenParkingLocationMarkerClicked
+            .toString(),
+      ),
+    );
   }
 
   @override

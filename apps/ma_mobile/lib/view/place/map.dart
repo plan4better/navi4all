@@ -10,7 +10,7 @@ import 'package:smartroots/core/config.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/services/poi_parking.dart';
 import 'package:smartroots/schemas/routing/place.dart';
-import 'package:smartroots/view/parking_site/parking_site.dart';
+import 'package:smartroots/view/parking_location/parking_location.dart';
 
 class PlaceMap extends StatefulWidget {
   final Place place;
@@ -112,7 +112,7 @@ class _PlaceMapState extends State<PlaceMap> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParkingSiteScreen(parkingLocation: site),
+          builder: (context) => ParkingLocationScreen(parkingLocation: site),
         ),
       );
     }

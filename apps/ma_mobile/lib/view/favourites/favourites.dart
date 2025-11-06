@@ -4,7 +4,7 @@ import 'package:smartroots/controllers/favourites_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/core/utils.dart';
-import 'package:smartroots/view/parking_site/parking_site.dart';
+import 'package:smartroots/view/parking_location/parking_location.dart';
 
 class FavouritesScreen extends StatefulWidget {
   final bool screenInFocus;
@@ -107,7 +107,7 @@ class _FavouritesListItem extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            ParkingSiteScreen(parkingLocation: parkingLocation),
+            ParkingLocationScreen(parkingLocation: parkingLocation),
       ),
     ),
     child: Column(

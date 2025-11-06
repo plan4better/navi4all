@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/availability_controller.dart';
+import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/core/theme/values.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
@@ -94,6 +96,15 @@ class RoutingState extends State<RoutingScreen> {
         });
         _showAvailabilityChangeDialog();
         availabilityController.stopMonitoring();
+
+        // Analytics event
+        MatomoTracker.instance.trackEvent(
+          eventInfo: EventInfo(
+            category: EventCategory.routingScreen.toString(),
+            action: EventAction.routingScreenAvailabilityChangeOccurred
+                .toString(),
+          ),
+        );
       }
     });
 
@@ -180,6 +191,17 @@ class RoutingState extends State<RoutingScreen> {
                           )!.availabilityChangeDialogCancelButton,
                           onTap: () {
                             Navigator.of(context).pop();
+
+                            // Analytics event
+                            MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.routingScreen
+                                    .toString(),
+                                action: EventAction
+                                    .routingScreenAvailabilityChangeAlternativeSearchCancelled
+                                    .toString(),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -213,6 +235,17 @@ class RoutingState extends State<RoutingScreen> {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) => PlaceScreen(place: place),
+                              ),
+                            );
+
+                            // Analytics event
+                            MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.routingScreen
+                                    .toString(),
+                                action: EventAction
+                                    .routingScreenAvailabilityChangeAlternativeSearchConfirmed
+                                    .toString(),
                               ),
                             );
                           },
@@ -279,6 +312,16 @@ class RoutingState extends State<RoutingScreen> {
                           disclaimerAccepted = false;
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
+
+                          // Analytics event
+                          MatomoTracker.instance.trackEvent(
+                            eventInfo: EventInfo(
+                              category: EventCategory.routingScreen.toString(),
+                              action: EventAction
+                                  .routingScreenDisclaimerRejected
+                                  .toString(),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -291,6 +334,16 @@ class RoutingState extends State<RoutingScreen> {
                         onTap: () {
                           disclaimerAccepted = true;
                           Navigator.of(context).pop();
+
+                          // Analytics event
+                          MatomoTracker.instance.trackEvent(
+                            eventInfo: EventInfo(
+                              category: EventCategory.routingScreen.toString(),
+                              action: EventAction
+                                  .routingScreenDisclaimerAccepted
+                                  .toString(),
+                            ),
+                          );
                         },
                       ),
                     ),

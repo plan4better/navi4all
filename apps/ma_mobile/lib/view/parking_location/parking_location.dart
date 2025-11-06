@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/favourites_controller.dart';
+import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/search/search.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
-import 'package:smartroots/view/parking_site/map.dart';
+import 'package:smartroots/view/parking_location/map.dart';
 import 'dart:core';
 
 import 'package:intl/intl.dart';
@@ -19,20 +21,20 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smartroots/view/routing/routing.dart';
 
-class ParkingSiteScreen extends StatefulWidget {
+class ParkingLocationScreen extends StatefulWidget {
   final Place? place;
   final Map<String, dynamic> parkingLocation;
-  const ParkingSiteScreen({
+  const ParkingLocationScreen({
     this.place,
     required this.parkingLocation,
     super.key,
   });
 
   @override
-  State<StatefulWidget> createState() => _ParkingSiteScreenState();
+  State<StatefulWidget> createState() => _ParkingLocationScreenState();
 }
 
-class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
+class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
   bool _isFavorite = false;
   List<ItinerarySummary> _itineraries = [];
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
@@ -72,6 +74,14 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
       ).addFavouriteParkingLocation(
         widget.parkingLocation["id"],
         widget.parkingLocation["parking_type"],
+      );
+
+      // Analytics event
+      MatomoTracker.instance.trackEvent(
+        eventInfo: EventInfo(
+          category: EventCategory.parkingLocationScreen.toString(),
+          action: EventAction.parkingLocationScreenFavouriteAdded.toString(),
+        ),
       );
     }
     setState(() {
@@ -213,6 +223,18 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                                       ),
                                     ),
                                   );
+
+                                  // Analytics event
+                                  MatomoTracker.instance.trackEvent(
+                                    eventInfo: EventInfo(
+                                      category: EventCategory
+                                          .parkingLocationScreen
+                                          .toString(),
+                                      action: EventAction
+                                          .parkingLocationScreenRouteInternalClicked
+                                          .toString(),
+                                    ),
+                                  );
                                 },
                                 shrinkWrap: false,
                               ),
@@ -249,6 +271,18 @@ class _ParkingSiteScreenState extends State<ParkingSiteScreen> {
                                       );
                                     }
                                   });
+
+                                  // Analytics event
+                                  MatomoTracker.instance.trackEvent(
+                                    eventInfo: EventInfo(
+                                      category: EventCategory
+                                          .parkingLocationScreen
+                                          .toString(),
+                                      action: EventAction
+                                          .parkingLocationScreenRouteExternalClicked
+                                          .toString(),
+                                    ),
+                                  );
                                 },
                                 shrinkWrap: false,
                               ),

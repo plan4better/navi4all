@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
+import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/view/home/map.dart';
@@ -60,6 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const SearchScreen(),
+                              ),
+                            );
+
+                            // Analytics event
+                            MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.homeMapScreen
+                                    .toString(),
+                                action: EventAction.homeMapScreenSearchClicked
+                                    .toString(),
                               ),
                             );
                           },

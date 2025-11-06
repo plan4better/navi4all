@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
+import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/search/search.dart';
@@ -6,7 +8,7 @@ import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
 import 'package:smartroots/view/place/map.dart';
 import 'dart:core';
-import 'package:smartroots/view/parking_site/parking_site.dart';
+import 'package:smartroots/view/parking_location/parking_location.dart';
 
 import 'package:smartroots/services/poi_parking.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
@@ -153,6 +155,15 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             _fetchParkingSites();
                             Navigator.of(context).pop();
                           });
+
+                          // Analytics event
+                          MatomoTracker.instance.trackEvent(
+                            eventInfo: EventInfo(
+                              category: EventCategory.placeScreen.toString(),
+                              action: EventAction.placeScreenSearchRadiusChanged
+                                  .toString(),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -303,8 +314,10 @@ class PlaceListItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                ParkingSiteScreen(place: place, parkingLocation: parkingSite),
+            builder: (context) => ParkingLocationScreen(
+              place: place,
+              parkingLocation: parkingSite,
+            ),
           ),
         );
       },
