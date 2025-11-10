@@ -6,7 +6,7 @@ from schemas.geocoding import (
 from httpx import AsyncClient, Response
 from urllib.parse import urljoin
 from fastapi import HTTPException
-from schemas.place import Place
+from schemas.place import Place, PlaceType
 from schemas.coordinates import Coordinates
 
 
@@ -53,7 +53,7 @@ class GeocodingAdaptor:
                     id=feature["properties"]["id"],
                     name=feature["properties"]["name"],
                     address=feature["properties"]["label"],
-                    type=feature["properties"]["layer"],
+                    type=PlaceType.ADDRESS,
                     street=feature["properties"].get("street", None),
                     locality=feature["properties"].get("locality", None),
                     postcode=feature["properties"].get("postalcode", None),
