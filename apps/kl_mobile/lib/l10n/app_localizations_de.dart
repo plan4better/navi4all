@@ -226,4 +226,91 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get origDestCurrentLocation => 'Aktueller Standort';
+
+  @override
+  String get homeNavigationMapTitle => 'Karte';
+
+  @override
+  String get homeNavigationFavouritesTitle => 'Favoriten';
+
+  @override
+  String get homeNavigationSettingsTitle => 'Einstellungen';
+
+  @override
+  String get homeSearchButtonHint => 'Hier suchen';
+
+  @override
+  String get homeChangeBaseMapTitle => 'Kartenstil';
+
+  @override
+  String get homeBaseMapStyleTitleLight => 'Hell';
+
+  @override
+  String get homeBaseMapStyleTitleDark => 'Dunkel';
+
+  @override
+  String get homeBaseMapStyleTitleSatellite => 'Satellit';
+
+  @override
+  String get homeBaseMapStyleTitleUnknown => 'Basis-Karte';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get settingsOptionFeedback => 'Feedback';
+
+  @override
+  String get settingsOptionSupport => 'Support';
+
+  @override
+  String get settingsOptionLegalAndPrivacy => 'Rechtliches & Datenschutz';
+
+  @override
+  String get settingsOptionSetupGuide => 'Anleitung';
+
+  @override
+  String get featureComingSoonMessage => 'Diese Funktion kommt bald.';
+
+  @override
+  String get feedbackScreenTitle => 'Feedback';
+
+  @override
+  String get feedbackTypeHint => 'Feedbacktyp';
+
+  @override
+  String get feedbackTypeLocalData => 'Lokale Daten';
+
+  @override
+  String get feedbackTypeAppFunctionality => 'App-Funktionen';
+
+  @override
+  String get feedbackSubjectHint => 'Betreff';
+
+  @override
+  String get feedbackMessageHint => 'Ihr Nachricht';
+
+  @override
+  String get feedbackSubmitButton => 'Absenden';
+
+  @override
+  String get feedbackFieldErrorRequired => 'Dieses Feld ist erforderlich.';
+
+  @override
+  String get legalPrivacyScreenTitle => 'Rechtliches & Datenschutz';
+
+  @override
+  String get legalPrivacyLocationAccess => 'Standortzugriff';
+
+  @override
+  String get legalPrivacyDataProtection => 'AGB & Datenschutz';
+
+  @override
+  String get placeScreenChangeRadiusCancel => 'Abbrechen';
+
+  @override
+  String get placeScreenChangeRadiusConfirm => 'Ändern';
+
+  @override
+  String get userLocationDeniedSnackbarText => 'Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.';
 }

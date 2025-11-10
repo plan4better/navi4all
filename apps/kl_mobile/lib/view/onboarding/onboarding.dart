@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
-import '../home/home.dart';
+import '../../view_alt/home/home.dart';
 import 'package:navi4all/view/common/accessible_selector.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:geolocator/geolocator.dart';
 
-class Onboarding extends StatefulWidget {
-  const Onboarding({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _OnboardingState();
+  State<StatefulWidget> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingState extends State<Onboarding> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _currentPage = 0;
 
@@ -27,6 +28,7 @@ class _OnboardingState extends State<Onboarding> {
     if (_currentPage == 2) {
       await _requestLocationPermission();
     } else if (_currentPage >= 3) {
+      PreferenceHelper.setOnboardingComplete(true);
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );

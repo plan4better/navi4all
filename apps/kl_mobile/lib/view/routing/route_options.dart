@@ -11,7 +11,7 @@ import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/core/theme/values.dart';
-import 'package:navi4all/core/persistence/processing_status.dart';
+import 'package:navi4all/core/processing_status.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:navi4all/view/search/search.dart';
 

@@ -484,6 +484,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Current location'**
   String get origDestCurrentLocation;
+
+  /// No description provided for @homeNavigationMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get homeNavigationMapTitle;
+
+  /// No description provided for @homeNavigationFavouritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get homeNavigationFavouritesTitle;
+
+  /// No description provided for @homeNavigationSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get homeNavigationSettingsTitle;
+
+  /// No description provided for @homeSearchButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search here'**
+  String get homeSearchButtonHint;
+
+  /// No description provided for @homeChangeBaseMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Style'**
+  String get homeChangeBaseMapTitle;
+
+  /// No description provided for @homeBaseMapStyleTitleLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get homeBaseMapStyleTitleLight;
+
+  /// No description provided for @homeBaseMapStyleTitleDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get homeBaseMapStyleTitleDark;
+
+  /// No description provided for @homeBaseMapStyleTitleSatellite.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite'**
+  String get homeBaseMapStyleTitleSatellite;
+
+  /// No description provided for @homeBaseMapStyleTitleUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Map'**
+  String get homeBaseMapStyleTitleUnknown;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsOptionFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get settingsOptionFeedback;
+
+  /// No description provided for @settingsOptionSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsOptionSupport;
+
+  /// No description provided for @settingsOptionLegalAndPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Privacy'**
+  String get settingsOptionLegalAndPrivacy;
+
+  /// No description provided for @settingsOptionSetupGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Guide'**
+  String get settingsOptionSetupGuide;
+
+  /// No description provided for @featureComingSoonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is coming soon.'**
+  String get featureComingSoonMessage;
+
+  /// No description provided for @feedbackScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedbackScreenTitle;
+
+  /// No description provided for @feedbackTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback type'**
+  String get feedbackTypeHint;
+
+  /// No description provided for @feedbackTypeLocalData.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Data'**
+  String get feedbackTypeLocalData;
+
+  /// No description provided for @feedbackTypeAppFunctionality.
+  ///
+  /// In en, this message translates to:
+  /// **'App Features'**
+  String get feedbackTypeAppFunctionality;
+
+  /// No description provided for @feedbackSubjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get feedbackSubjectHint;
+
+  /// No description provided for @feedbackMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback'**
+  String get feedbackMessageHint;
+
+  /// No description provided for @feedbackSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get feedbackSubmitButton;
+
+  /// No description provided for @feedbackFieldErrorRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get feedbackFieldErrorRequired;
+
+  /// No description provided for @legalPrivacyScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Privacy'**
+  String get legalPrivacyScreenTitle;
+
+  /// No description provided for @legalPrivacyLocationAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Access'**
+  String get legalPrivacyLocationAccess;
+
+  /// No description provided for @legalPrivacyDataProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection'**
+  String get legalPrivacyDataProtection;
+
+  /// No description provided for @placeScreenChangeRadiusCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get placeScreenChangeRadiusCancel;
+
+  /// No description provided for @placeScreenChangeRadiusConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get placeScreenChangeRadiusConfirm;
+
+  /// No description provided for @userLocationDeniedSnackbarText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location access in system settings to use this feature.'**
+  String get userLocationDeniedSnackbarText;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

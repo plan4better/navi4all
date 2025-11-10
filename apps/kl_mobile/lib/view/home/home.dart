@@ -1,61 +1,207 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/l10n/app_localizations.dart';
+// import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:navi4all/view/search/search.dart';
-import 'package:navi4all/view/common/accessible_button.dart';
+// import 'package:navi4all/view/favourites/favourites.dart';
+import 'package:navi4all/view/settings/settings.dart';
+// import 'package:navi4all/core/analytics/events.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/view/home/map.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _pageIndex = 0;
+  List<Widget> get _pages => [
+    HomeMap(),
+    SettingsScreen(), // FavouritesScreen(_pageIndex == 1),
+    SettingsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 32),
-                Spacer(),
-                AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeSearchButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
+      body: Stack(
+        children: [
+          Stack(
+            children: [
+              Offstage(
+                offstage: _pageIndex != 0,
+                child: TickerMode(enabled: _pageIndex == 0, child: _pages[0]),
+              ),
+              Offstage(
+                offstage: _pageIndex != 1,
+                child: TickerMode(enabled: _pageIndex == 1, child: _pages[1]),
+              ),
+              Offstage(
+                offstage: _pageIndex != 2,
+                child: TickerMode(enabled: _pageIndex == 2, child: _pages[2]),
+              ),
+            ],
+          ),
+          _pageIndex <= 1
+              ? SafeArea(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 32,
+                        left: 16,
+                        right: 16,
                       ),
-                    );
-                  },
+                      child: Material(
+                        elevation: _pageIndex == 0 ? 4 : 0,
+                        borderRadius: BorderRadius.circular(28),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const SearchScreen(),
+                              ),
+                            );
+
+                            // Analytics event
+                            /* MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.homeMapScreen
+                                    .toString(),
+                                action: EventAction.homeMapScreenSearchClicked
+                                    .toString(),
+                              ),
+                            ); */
+                          },
+                          child: Container(
+                            height: 56,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(32),
+                              color: _pageIndex == 0
+                                  ? Theme.of(context).colorScheme.secondary
+                                  : Theme.of(context).colorScheme.tertiary,
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 24),
+                                const Icon(
+                                  Icons.search,
+                                  color: Navi4AllColors.klRed,
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.homeSearchButtonHint,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Navi4AllColors.klRed,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                child: Material(
+                  elevation: _pageIndex == 0 ? 4 : 0,
+                  borderRadius: BorderRadius.circular(64),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(32)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(32)),
+                      child: NavigationBar(
+                        labelTextStyle:
+                            WidgetStateProperty.resolveWith<TextStyle>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return const TextStyle(
+                                  color: Navi4AllColors.klRed,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                );
+                              }
+                              return const TextStyle(
+                                color: Navi4AllColors.klRed,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              );
+                            }),
+                        backgroundColor: _pageIndex == 0
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(context).colorScheme.tertiary,
+                        selectedIndex: _pageIndex,
+                        onDestinationSelected: (index) => setState(() {
+                          _pageIndex = index;
+                        }),
+                        labelPadding: EdgeInsets.all(4),
+                        height: 72,
+                        destinations: [
+                          NavigationDestination(
+                            icon: Icon(
+                              Icons.place_outlined,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            selectedIcon: Icon(
+                              Icons.place_rounded,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            label: AppLocalizations.of(
+                              context,
+                            )!.homeNavigationMapTitle,
+                          ),
+                          NavigationDestination(
+                            icon: Icon(
+                              Icons.star_border,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            selectedIcon: Icon(
+                              Icons.star,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            label: AppLocalizations.of(
+                              context,
+                            )!.homeNavigationFavouritesTitle,
+                          ),
+                          NavigationDestination(
+                            icon: Icon(
+                              Icons.settings_outlined,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            selectedIcon: Icon(
+                              Icons.settings,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            label: AppLocalizations.of(
+                              context,
+                            )!.homeNavigationSettingsTitle,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 32),
-                AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeSavedButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: null,
-                ),
-                const SizedBox(height: 32),
-                AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeRouteButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: null,
-                ),
-                const SizedBox(height: 32),
-                AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeSettingsButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: null,
-                ),
-                const SizedBox(height: 32),
-                Spacer(),
-                Image.asset("assets/stadt_kl_red.png", width: 100),
-                const SizedBox(height: 16),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

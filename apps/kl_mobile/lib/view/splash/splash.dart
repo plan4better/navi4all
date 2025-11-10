@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/profile_mode_controller.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
-import '../onboarding/onboarding.dart';
+import 'package:provider/provider.dart';
+import 'package:navi4all/view/onboarding/onboarding.dart';
+import 'package:navi4all/view/home/home.dart';
+import 'package:navi4all/view_alt/home/home.dart' as home_alt;
+import 'package:navi4all/core/theme/profile_mode.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -14,15 +19,28 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 1500)).then((_) {
-      PreferenceHelper.incrementLaunchCount().then((launchCount) {
-        if (launchCount == 1) {
+      PreferenceHelper.isOnboardingComplete().then((isComplete) {
+        if (!isComplete) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Onboarding()),
+            MaterialPageRoute(builder: (context) => OnboardingScreen()),
           );
         } else {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Onboarding()),
-          );
+          switch (Provider.of<ProfileModeController>(
+            context,
+            listen: false,
+          ).profileMode) {
+            case ProfileMode.blind:
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => home_alt.HomeScreen()),
+              );
+              break;
+            case ProfileMode.visionImpaired:
+            case ProfileMode.general:
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+              break;
+          }
         }
       });
     });
