@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/profile_mode_controller.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
-import '../../view_alt/home/home.dart';
+import 'package:provider/provider.dart';
+import 'package:navi4all/view_alt/home/home.dart' as home_alt;
 import 'package:navi4all/view/common/accessible_selector.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
+import 'package:navi4all/view/home/home.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:navi4all/core/theme/profile_mode.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -29,9 +33,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       await _requestLocationPermission();
     } else if (_currentPage >= 3) {
       PreferenceHelper.setOnboardingComplete(true);
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      switch (Provider.of<ProfileModeController>(
+        context,
+        listen: false,
+      ).profileMode) {
+        case ProfileMode.blind:
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => home_alt.HomeScreen()),
+          );
+          break;
+        case ProfileMode.visionImpaired:
+        case ProfileMode.general:
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+          break;
+      }
     }
     _controller.nextPage(
       duration: const Duration(milliseconds: 300),
@@ -187,6 +204,10 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
                   selected: _selectedIndex == index,
                   onTap: () {
                     setState(() => _selectedIndex = index);
+                    Provider.of<ProfileModeController>(
+                      context,
+                      listen: false,
+                    ).setProfileMode(ProfileMode.values[index]);
                   },
                 ),
               ),

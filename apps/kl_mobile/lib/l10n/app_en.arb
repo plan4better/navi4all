@@ -185,6 +185,8 @@
     "homeBaseMapStyleTitleDark": "Dark",
     "homeBaseMapStyleTitleSatellite": "Satellite",
     "homeBaseMapStyleTitleUnknown": "Base Map",
+    "favouritesTitle": "Favourites",
+    "favouritesScreenPrompt": "Add favourites to see them here.",
     "settingsTitle": "Settings",
     "settingsOptionFeedback": "Feedback",
     "settingsOptionSupport": "Support",

@@ -539,6 +539,18 @@ abstract class AppLocalizations {
   /// **'Base Map'**
   String get homeBaseMapStyleTitleUnknown;
 
+  /// No description provided for @favouritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get favouritesTitle;
+
+  /// No description provided for @favouritesScreenPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add favourites to see them here.'**
+  String get favouritesScreenPrompt;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:

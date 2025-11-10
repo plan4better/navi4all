@@ -255,6 +255,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeBaseMapStyleTitleUnknown => 'Basis-Karte';
 
   @override
+  String get favouritesTitle => 'Favoriten';
+
+  @override
+  String get favouritesScreenPrompt => 'Fügen Sie Favoriten hinzu, um sie hier zu sehen.';
+
+  @override
   String get settingsTitle => 'Einstellungen';
 
   @override

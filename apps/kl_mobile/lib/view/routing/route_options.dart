@@ -47,7 +47,7 @@ class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
       _origin = Place(
         id: Navi4AllValues.userLocation,
         name: "",
-        type: Navi4AllValues.userLocation,
+        type: PlaceType.address,
         description: "",
         address: "",
         coordinates: Coordinates(

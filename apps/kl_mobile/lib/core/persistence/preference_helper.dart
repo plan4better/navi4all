@@ -1,12 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:navi4all/core/theme/profile_mode.dart';
+import 'package:navi4all/schemas/routing/place.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:navi4all/core/theme/base_map_style.dart';
-// import 'package:navi4all/schemas/poi/parking_type.dart';
 
 String keyOnboardingComplete = "kl_onboarding_complete";
-// String keyFavoriteParkingSpots = "kl_favorite_parking_spots";
-// String keyFavoriteParkingSites = "kl_favorite_parking_sites";
+String keyFavorites = "kl_favorites";
 String keyProfileMode = "kl_profile_mode";
 String keyThemeMode = "kl_theme_mode";
 String keyBaseMapStyle = "kl_base_map_style";
@@ -22,125 +23,52 @@ class PreferenceHelper {
     preferences.setBool(keyOnboardingComplete, complete);
   }
 
-  /* static List<String> _getStoredFavoriteParkingLocations(
-    ParkingType parkingType,
-    SharedPreferences preferences,
-  ) {
-    if (parkingType == ParkingType.parkingSpot) {
-      return preferences.getStringList(keyFavoriteParkingSpots) ?? [];
-    } else if (parkingType == ParkingType.parkingSite) {
-      return preferences.getStringList(keyFavoriteParkingSites) ?? [];
-    } else {
-      throw Exception('Invalid parking type');
+  static List<String> _getStoredFavorites(SharedPreferences preferences) =>
+      preferences.getStringList(keyFavorites) ?? [];
+
+  static Future<List<Place>> getFavorites() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<Place> favorites = [];
+
+    for (var item in _getStoredFavorites(preferences)) {
+      favorites.add(Place.fromJson(jsonDecode(item)));
     }
+    return favorites;
   }
 
-  static Future<List<Map<String, dynamic>>>
-  getFavoriteParkingLocations() async {
+  static Future<void> addFavorite(Place place) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<Map<String, dynamic>> favoriteParkingLocations = [];
+    List<String> favorites = _getStoredFavorites(preferences);
 
-    for (var item in _getStoredFavoriteParkingLocations(
-      ParkingType.parkingSpot,
-      preferences,
-    )) {
-      favoriteParkingLocations.add({
-        "id": item,
-        "parking_type": ParkingType.parkingSpot,
-      });
-    }
-    for (var item in _getStoredFavoriteParkingLocations(
-      ParkingType.parkingSite,
-      preferences,
-    )) {
-      favoriteParkingLocations.add({
-        "id": item,
-        "parking_type": ParkingType.parkingSite,
-      });
-    }
-    return favoriteParkingLocations;
+    favorites.add(jsonEncode(place.toJson()));
+
+    preferences.setStringList(keyFavorites, favorites);
   }
 
-  static Future<void> addFavoriteParkingLocation(
-    String id,
-    ParkingType parkingType,
-  ) async {
+  static Future<void> removeFavorite(String id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> favoriteParkingLocations = _getStoredFavoriteParkingLocations(
-      parkingType,
-      preferences,
-    );
+    List<String> favorites = _getStoredFavorites(preferences);
 
-    if (parkingType == ParkingType.parkingSpot) {
-      if (!favoriteParkingLocations.contains(id)) {
-        favoriteParkingLocations.add(id);
-        preferences.setStringList(
-          keyFavoriteParkingSpots,
-          favoriteParkingLocations,
-        );
-      }
-      return;
-    } else if (parkingType == ParkingType.parkingSite) {
-      if (!favoriteParkingLocations.contains(id)) {
-        favoriteParkingLocations.add(id);
-        preferences.setStringList(
-          keyFavoriteParkingSites,
-          favoriteParkingLocations,
-        );
-      }
-      return;
-    } else {
-      throw Exception('Invalid parking type');
-    }
+    favorites.removeWhere((item) {
+      Place place = Place.fromJson(jsonDecode(item));
+      return place.id == id;
+    });
+
+    preferences.setStringList(keyFavorites, favorites);
   }
 
-  static Future<void> removeFavoriteParkingLocation(
-    String id,
-    ParkingType parkingType,
-  ) async {
+  static Future<bool> isFavorite(String id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> favoriteParkingLocations = _getStoredFavoriteParkingLocations(
-      parkingType,
-      preferences,
-    );
+    List<String> favorites = _getStoredFavorites(preferences);
 
-    if (parkingType == ParkingType.parkingSpot) {
-      if (favoriteParkingLocations.contains(id)) {
-        favoriteParkingLocations.remove(id);
-        preferences.setStringList(
-          keyFavoriteParkingSpots,
-          favoriteParkingLocations,
-        );
+    for (var item in favorites) {
+      Place place = Place.fromJson(jsonDecode(item));
+      if (place.id == id) {
+        return true;
       }
-      return;
-    } else if (parkingType == ParkingType.parkingSite) {
-      if (favoriteParkingLocations.contains(id)) {
-        favoriteParkingLocations.remove(id);
-        preferences.setStringList(
-          keyFavoriteParkingSites,
-          favoriteParkingLocations,
-        );
-      }
-      return;
-    } else {
-      throw Exception('Invalid parking type');
-    }
-  }
-
-  static Future<bool> isFavoriteParkingLocation(
-    String id,
-    ParkingType parkingType,
-  ) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> favoriteParkingLocations = _getStoredFavoriteParkingLocations(
-      parkingType,
-      preferences,
-    );
-    if (favoriteParkingLocations.contains(id)) {
-      return true;
     }
     return false;
-  } */
+  }
 
   static Future<ProfileMode> getProfileMode() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

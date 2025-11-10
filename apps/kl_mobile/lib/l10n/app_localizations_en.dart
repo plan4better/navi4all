@@ -255,6 +255,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeBaseMapStyleTitleUnknown => 'Base Map';
 
   @override
+  String get favouritesTitle => 'Favourites';
+
+  @override
+  String get favouritesScreenPrompt => 'Add favourites to see them here.';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

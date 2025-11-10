@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:navi4all/view/search/search.dart';
-// import 'package:navi4all/view/favourites/favourites.dart';
+import 'package:navi4all/view/favourites/favorites.dart';
 import 'package:navi4all/view/settings/settings.dart';
 // import 'package:navi4all/core/analytics/events.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
@@ -17,11 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _pageIndex = 0;
-  List<Widget> get _pages => [
-    HomeMap(),
-    SettingsScreen(), // FavouritesScreen(_pageIndex == 1),
-    SettingsScreen(),
-  ];
+  List<Widget> get _pages => [HomeMap(), FavoritesScreen(), SettingsScreen()];
 
   @override
   Widget build(BuildContext context) {

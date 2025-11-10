@@ -185,6 +185,8 @@
     "homeBaseMapStyleTitleDark": "Dunkel",
     "homeBaseMapStyleTitleSatellite": "Satellit",
     "homeBaseMapStyleTitleUnknown": "Basis-Karte",
+    "favouritesTitle": "Favoriten",
+    "favouritesScreenPrompt": "Fügen Sie Favoriten hinzu, um sie hier zu sehen.",
     "settingsTitle": "Einstellungen",
     "settingsOptionFeedback": "Feedback",
     "settingsOptionSupport": "Support",

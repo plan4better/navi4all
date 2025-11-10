@@ -9,7 +9,7 @@ abstract class Place with _$Place {
   const factory Place({
     required String id,
     required String name,
-    required String type,
+    required PlaceType type,
     required String description,
     required String address,
     required Coordinates coordinates,
@@ -20,3 +20,5 @@ abstract class Place with _$Place {
 
   factory Place.fromJson(Map<String, Object?> json) => _$PlaceFromJson(json);
 }
+
+enum PlaceType { address, parkingSpot, parkingSite }
