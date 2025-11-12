@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/schemas/routing/place.dart';
+import 'package:navi4all/view/place/place.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/favorites_controller.dart';
 import 'package:navi4all/core/theme/colors.dart';
@@ -98,7 +99,11 @@ class _FavoritesListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () {},
+    onTap: () {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => PlaceScreen(place: place)),
+      );
+    },
     child: Column(
       children: [
         SizedBox(height: 4),
@@ -106,22 +111,8 @@ class _FavoritesListItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
           child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Navi4AllColors.klRed,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.place_rounded,
-                      size: 16,
-                      color: Navi4AllColors.klRed,
-                    ),
-                  ],
-                ),
-              ),
+              SizedBox(width: 4),
+              Icon(Icons.place_rounded, color: Navi4AllColors.klRed),
               SizedBox(width: 12),
               Expanded(
                 child: Column(

@@ -64,7 +64,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Divider(color: Navi4AllColors.klRed, height: 0),
+                  Divider(color: Navi4AllColors.klPink, height: 0),
                   ListTile(
                     leading: Icon(
                       Icons.feedback_outlined,

@@ -319,4 +319,61 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get userLocationDeniedSnackbarText => 'Aktivieren Sie den Standortzugriff in den Systemeinstellungen, um diese Funktion zu nutzen.';
+
+  @override
+  String get placeScreenStartButton => 'Start';
+
+  @override
+  String get placeScreenRouteButton => 'Route';
+
+  @override
+  String get navigationRelativeDirectionDepart => 'Abfahren';
+
+  @override
+  String get navigationRelativeDirectionHardLeft => 'Scharf links';
+
+  @override
+  String get navigationRelativeDirectionLeft => 'Links abbiegen';
+
+  @override
+  String get navigationRelativeDirectionSlightlyLeft => 'Leicht links';
+
+  @override
+  String get navigationRelativeDirectionContinue => 'Weiter';
+
+  @override
+  String get navigationRelativeDirectionSlightlyRight => 'Leicht rechts';
+
+  @override
+  String get navigationRelativeDirectionRight => 'Rechts abbiegen';
+
+  @override
+  String get navigationRelativeDirectionHardRight => 'Scharf rechts';
+
+  @override
+  String get navigationRelativeDirectionCircleClockwise => 'In den Kreisverkehr einfahren';
+
+  @override
+  String get navigationRelativeDirectionCircleCounterclockwise => 'In den Kreisverkehr einfahren';
+
+  @override
+  String get navigationRelativeDirectionElevator => 'Den Aufzug nehmen';
+
+  @override
+  String get navigationRelativeDirectionUturnLeft => 'U-Turn nach links';
+
+  @override
+  String get navigationRelativeDirectionUturnRight => 'U-Turn nach rechts';
+
+  @override
+  String get navigationRelativeDirectionEnterStation => 'Bahnhof betreten';
+
+  @override
+  String get navigationRelativeDirectionExitStation => 'Bahnhof verlassen';
+
+  @override
+  String get navigationRelativeDirectionFollowSigns => 'Folgen Sie den Schildern';
+
+  @override
+  String get navigationRelativeDirectionArrive => 'Ankommen';
 }

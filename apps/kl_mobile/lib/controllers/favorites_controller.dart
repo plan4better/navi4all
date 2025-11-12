@@ -32,9 +32,9 @@ class FavoritesController extends ChangeNotifier {
   Future<void> _refresh() async {
     _state = FavoritesControllerState.refreshing;
 
-    try {
-      _favorites.clear();
+    _favorites.clear();
 
+    try {
       // Fetch favorites from persistent storage
       List<Place> favoritesMetadata = await PreferenceHelper.getFavorites();
 

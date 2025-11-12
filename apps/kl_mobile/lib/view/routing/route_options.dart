@@ -31,7 +31,7 @@ class RouteOptionsScreen extends StatefulWidget {
 class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
   Place? _origin;
   Place? _destination;
-  List<Itinerary> _itineraries = [];
+  List<ItinerarySummary> _itineraries = [];
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
 
   @override
@@ -78,7 +78,7 @@ class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
       _processingStatus = ProcessingStatus.processing;
     });
 
-    List<Itinerary> itineraries = [];
+    List<ItinerarySummary> itineraries = [];
     RoutingService routingService = RoutingService();
     try {
       final response = await routingService.getItineraries(
@@ -86,20 +86,13 @@ class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
         originLon: _origin!.coordinates.lon,
         destinationLat: _destination!.coordinates.lat,
         destinationLon: _destination!.coordinates.lon,
-        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        time: DateFormat('HH:mm:ss').format(DateTime.now()),
+        time: DateTime.now(),
         timeIsArrival: false,
         transportModes: [widget.mode.name],
       );
-      if (response.statusCode == 200) {
-        final data = response.data["itineraries"] as List;
-        itineraries = data.map((item) => Itinerary.fromJson(item)).toList();
-        setState(() {
-          _itineraries = itineraries;
-        });
-      } else {
-        throw Exception('Failed to load itineraries');
-      }
+      setState(() {
+        _itineraries = response;
+      });
     } catch (e) {
       print('Error fetching itineraries: $e');
       // TODO: Handle error appropriately, e.g., show a snackbar or dialog

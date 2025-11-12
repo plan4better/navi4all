@@ -319,4 +319,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userLocationDeniedSnackbarText => 'Enable location access in system settings to use this feature.';
+
+  @override
+  String get placeScreenStartButton => 'Start';
+
+  @override
+  String get placeScreenRouteButton => 'Route';
+
+  @override
+  String get navigationRelativeDirectionDepart => 'Depart';
+
+  @override
+  String get navigationRelativeDirectionHardLeft => 'Sharp left';
+
+  @override
+  String get navigationRelativeDirectionLeft => 'Turn left';
+
+  @override
+  String get navigationRelativeDirectionSlightlyLeft => 'Slight left';
+
+  @override
+  String get navigationRelativeDirectionContinue => 'Continue';
+
+  @override
+  String get navigationRelativeDirectionSlightlyRight => 'Slight right';
+
+  @override
+  String get navigationRelativeDirectionRight => 'Turn right';
+
+  @override
+  String get navigationRelativeDirectionHardRight => 'Sharp right';
+
+  @override
+  String get navigationRelativeDirectionCircleClockwise => 'Enter roundabout';
+
+  @override
+  String get navigationRelativeDirectionCircleCounterclockwise => 'Enter roundabout';
+
+  @override
+  String get navigationRelativeDirectionElevator => 'Take the lift';
+
+  @override
+  String get navigationRelativeDirectionUturnLeft => 'Make a U-turn';
+
+  @override
+  String get navigationRelativeDirectionUturnRight => 'Make a U-turn';
+
+  @override
+  String get navigationRelativeDirectionEnterStation => 'Enter station';
+
+  @override
+  String get navigationRelativeDirectionExitStation => 'Exit station';
+
+  @override
+  String get navigationRelativeDirectionFollowSigns => 'Follow signs';
+
+  @override
+  String get navigationRelativeDirectionArrive => 'Arrive';
 }

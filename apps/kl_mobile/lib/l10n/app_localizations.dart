@@ -670,6 +670,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable location access in system settings to use this feature.'**
   String get userLocationDeniedSnackbarText;
+
+  /// No description provided for @placeScreenStartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get placeScreenStartButton;
+
+  /// No description provided for @placeScreenRouteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get placeScreenRouteButton;
+
+  /// No description provided for @navigationRelativeDirectionDepart.
+  ///
+  /// In en, this message translates to:
+  /// **'Depart'**
+  String get navigationRelativeDirectionDepart;
+
+  /// No description provided for @navigationRelativeDirectionHardLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp left'**
+  String get navigationRelativeDirectionHardLeft;
+
+  /// No description provided for @navigationRelativeDirectionLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn left'**
+  String get navigationRelativeDirectionLeft;
+
+  /// No description provided for @navigationRelativeDirectionSlightlyLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Slight left'**
+  String get navigationRelativeDirectionSlightlyLeft;
+
+  /// No description provided for @navigationRelativeDirectionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get navigationRelativeDirectionContinue;
+
+  /// No description provided for @navigationRelativeDirectionSlightlyRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Slight right'**
+  String get navigationRelativeDirectionSlightlyRight;
+
+  /// No description provided for @navigationRelativeDirectionRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn right'**
+  String get navigationRelativeDirectionRight;
+
+  /// No description provided for @navigationRelativeDirectionHardRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp right'**
+  String get navigationRelativeDirectionHardRight;
+
+  /// No description provided for @navigationRelativeDirectionCircleClockwise.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter roundabout'**
+  String get navigationRelativeDirectionCircleClockwise;
+
+  /// No description provided for @navigationRelativeDirectionCircleCounterclockwise.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter roundabout'**
+  String get navigationRelativeDirectionCircleCounterclockwise;
+
+  /// No description provided for @navigationRelativeDirectionElevator.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the lift'**
+  String get navigationRelativeDirectionElevator;
+
+  /// No description provided for @navigationRelativeDirectionUturnLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a U-turn'**
+  String get navigationRelativeDirectionUturnLeft;
+
+  /// No description provided for @navigationRelativeDirectionUturnRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a U-turn'**
+  String get navigationRelativeDirectionUturnRight;
+
+  /// No description provided for @navigationRelativeDirectionEnterStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter station'**
+  String get navigationRelativeDirectionEnterStation;
+
+  /// No description provided for @navigationRelativeDirectionExitStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit station'**
+  String get navigationRelativeDirectionExitStation;
+
+  /// No description provided for @navigationRelativeDirectionFollowSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow signs'**
+  String get navigationRelativeDirectionFollowSigns;
+
+  /// No description provided for @navigationRelativeDirectionArrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive'**
+  String get navigationRelativeDirectionArrive;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

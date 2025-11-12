@@ -41,3 +41,4 @@ flutter:
     - assets/base_map_light_thumbnail.png
     - assets/base_map_dark_thumbnail.png
     - assets/base_map_satellite_thumbnail.png
+    - assets/place.png

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:navi4all/core/theme/icons.dart' show ModeIcons;
 
 class ItineraryWidget extends StatelessWidget {
-  final Itinerary itinerary;
+  final ItinerarySummary itinerary;
   final Function onTap;
 
   const ItineraryWidget({

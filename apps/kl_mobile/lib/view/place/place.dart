@@ -1,166 +1,354 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/controllers/itinerary_controller.dart';
+import 'package:navi4all/core/theme/values.dart';
+import 'package:navi4all/core/utils.dart';
+import 'package:navi4all/schemas/routing/coordinates.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
-import '../routing/route_options.dart';
-import 'package:navi4all/view/common/accessible_button.dart';
+// import 'package:matomo_tracker/matomo_tracker.dart';
+import 'package:provider/provider.dart';
+import 'package:navi4all/controllers/favorites_controller.dart';
+// import 'package:navi4all/core/analytics/events.dart';
 import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/view/search/search.dart';
 import 'package:navi4all/schemas/routing/place.dart';
+import 'package:navi4all/view/common/sliding_bottom_sheet.dart';
+import 'package:navi4all/view/common/sheet_button.dart';
+import 'package:navi4all/view/place/map.dart';
+import 'dart:core';
+
+import 'package:intl/intl.dart';
+import 'package:navi4all/services/routing.dart';
+import 'package:navi4all/schemas/routing/itinerary.dart';
+import 'package:navi4all/core/processing_status.dart';
+import 'package:geolocator/geolocator.dart';
+// import 'package:navi4all/view/routing/routing.dart';
 
 class PlaceScreen extends StatefulWidget {
   final Place place;
   const PlaceScreen({required this.place, super.key});
 
   @override
-  State<PlaceScreen> createState() => _PlaceScreenState();
+  State<StatefulWidget> createState() => _PlaceScreenState();
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    _checkIfFavorite();
+    _fetchItineraries();
+
+    super.initState();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    _isFavorite = await Provider.of<FavoritesController>(
+      context,
+      listen: false,
+    ).checkIsFavorite(widget.place.id);
+    setState(() {});
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isFavorite) {
+      await Provider.of<FavoritesController>(
+        context,
+        listen: false,
+      ).removeFavorite(widget.place.id);
+    } else {
+      await Provider.of<FavoritesController>(
+        context,
+        listen: false,
+      ).addFavorite(widget.place);
+
+      // Analytics event
+      /* MatomoTracker.instance.trackEvent(
+        eventInfo: EventInfo(
+          category: EventCategory.parkingLocationScreen.toString(),
+          action: EventAction.parkingLocationScreenFavouriteAdded.toString(),
+        ),
+      ); */
+    }
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+  }
+
+  Future<void> _fetchItineraries() async {
+    // Check location permission status
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.whileInUse &&
+        permission != LocationPermission.always) {
+      return;
+    }
+
+    // Fetch user location
+    final userLatLng = await Geolocator.getCurrentPosition();
+    Place originPlace = Place(
+      id: Navi4AllValues.userLocation,
+      name: Navi4AllValues.userLocation,
+      type: PlaceType.address,
+      description: '',
+      address: '',
+      coordinates: Coordinates(
+        lat: userLatLng.latitude,
+        lon: userLatLng.longitude,
+      ),
+    );
+
+    // Set itinerary parameters
+    Provider.of<ItineraryController>(context, listen: false).setParameters(
+      originPlace: originPlace,
+      destinationPlace: widget.place,
+      modes: [Mode.WALK],
+      time: DateTime.now(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-          child: Column(
-            children: [
-              Semantics(
-                label: AppLocalizations.of(
-                  context,
-                )!.addressInfoBackToSearchButtonSemantic(widget.place.name),
-                excludeSemantics: true,
-                child: InkWell(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFEDEB),
-                      borderRadius: BorderRadius.circular(28),
+      body: Stack(
+        children: [
+          PlaceMap(place: widget.place),
+          SlidingBottomSheet(
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 24.0,
                     ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Navi4AllColors.klRed,
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.place.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Navi4AllColors.klRed,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.place.description,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Navi4AllColors.klRed,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            IconButton(
+                              onPressed: () => _toggleFavorite(),
+                              icon: Icon(
+                                color: Navi4AllColors.klRed,
+                                size: 28,
+                                _isFavorite ? Icons.star : Icons.star_border,
+                              ),
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: Text(
-                            widget.place.name,
-                            style: const TextStyle(fontSize: 16),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: SheetButton(
+                                icon: Icons.directions_outlined,
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.placeScreenRouteButton,
+                                onTap: () {
+                                  /* Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => RoutingScreen(
+                                        parkingSite: widget.parkingLocation,
+                                      ),
+                                    ),
+                                  ); */
+
+                                  // Analytics event
+                                  /* MatomoTracker.instance.trackEvent(
+                                    eventInfo: EventInfo(
+                                      category: EventCategory
+                                          .parkingLocationScreen
+                                          .toString(),
+                                      action: EventAction
+                                          .parkingLocationScreenRouteInternalClicked
+                                          .toString(),
+                                    ),
+                                  ); */
+                                },
+                                shrinkWrap: false,
+                              ),
+                            ),
+                            /* SizedBox(width: 8),
+                            Flexible(
+                              flex: 1,
+                              child: SheetButton(
+                                icon: Icons.directions_transit_filled_outlined,
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.placeScreenRouteButton,
+                                onTap: () {
+                                  // Analytics event
+                                  /* MatomoTracker.instance.trackEvent(
+                                    eventInfo: EventInfo(
+                                      category: EventCategory
+                                          .parkingLocationScreen
+                                          .toString(),
+                                      action: EventAction
+                                          .parkingLocationScreenRouteExternalClicked
+                                          .toString(),
+                                    ),
+                                  ); */
+                                },
+                                shrinkWrap: false,
+                              ),
+                            ), */
+                            /*SizedBox(width: 8),
+                            Flexible(
+                              flex: 2,
+                              child: SheetButton(
+                                icon: _isFavorite
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.parkingLocationButtonFavourite,
+                                onTap: () => _toggleFavorite(),
+                                shrinkWrap: false,
+                              ),
+                            ),*/
+                          ],
                         ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.mic,
-                            color: Navi4AllColors.klRed,
-                            semanticLabel: AppLocalizations.of(
-                              context,
-                            )!.commonMicButtonSemantic,
-                          ),
-                          onPressed: null,
+                        SizedBox(height: 16),
+                        Consumer(
+                          builder:
+                              (
+                                context,
+                                ItineraryController controller,
+                                child,
+                              ) => controller.itineraries.isNotEmpty
+                              ? Row(
+                                  children: [
+                                    Icon(
+                                      controller.itineraries.first.legs.length >
+                                              1
+                                          ? Icons.directions_transit_outlined
+                                          : Icons.directions_walk_outlined,
+                                      color: Navi4AllColors.klRed,
+                                    ),
+                                    SizedBox(width: 8.0),
+                                    Text(
+                                      '${controller.itineraries.first.duration ~/ 60} min',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Navi4AllColors.klRed,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(width: 6.0),
+                                    Icon(
+                                      Icons.circle,
+                                      size: 6,
+                                      color: Navi4AllColors.klRed,
+                                    ),
+                                    SizedBox(width: 6.0),
+                                    Text(
+                                      getItineraryDistanceText(
+                                        controller.itineraries.first,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Navi4AllColors.klRed,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 32),
-              Semantics(
-                excludeSemantics: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        widget.place.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28,
-                          color: Navi4AllColors.klRed,
+              ],
+            ),
+            listItems: [],
+            initSize: 0.35,
+            maxSize: 0.35,
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 32, left: 16, right: 16),
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(28),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SearchScreen(),
                         ),
+                      );
+                    },
+                    child: Container(
+                      height: 56,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(32),
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Navi4AllColors.klRed,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          Expanded(
+                            child: Text(
+                              widget.place.name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Navi4AllColors.klRed,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.place.description,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Navi4AllColors.klRed,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-              const Spacer(),
-              SizedBox(height: 16),
-              Column(
-                children: [
-                  AccessibleButton(
-                    label: AppLocalizations.of(
-                      context,
-                    )!.addressInfoWalkingRoutesButton,
-                    semanticLabel: AppLocalizations.of(
-                      context,
-                    )!.addressInfoWalkingRoutesButtonSemantic,
-                    style: AccessibleButtonStyle.red,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => RouteOptionsScreen(
-                            mode: Mode.WALK,
-                            place: widget.place,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  AccessibleButton(
-                    label: AppLocalizations.of(
-                      context,
-                    )!.addressInfoPublicTransportRoutesButton,
-                    semanticLabel: AppLocalizations.of(
-                      context,
-                    )!.addressInfoPublicTransportRoutesButtonSemantic,
-                    style: AccessibleButtonStyle.red,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => RouteOptionsScreen(
-                            mode: Mode.TRANSIT,
-                            place: widget.place,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  AccessibleButton(
-                    label: AppLocalizations.of(
-                      context,
-                    )!.addressInfoSaveAddressButton,
-                    style: AccessibleButtonStyle.pink,
-                    onTap: null,
-                  ),
-                  const SizedBox(height: 16),
-                  AccessibleButton(
-                    label: AppLocalizations.of(context)!.commonHomeScreenButton,
-                    style: AccessibleButtonStyle.pink,
-                    onTap: () => Navigator.of(
-                      context,
-                    ).popUntil((route) => route.isFirst),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
