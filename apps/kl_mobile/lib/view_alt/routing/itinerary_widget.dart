@@ -42,8 +42,8 @@ class ItineraryWidget extends StatelessWidget {
         ),
         child: Semantics(
           excludeSemantics: true,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -68,12 +68,25 @@ class ItineraryWidget extends StatelessWidget {
                     return Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFEDEB),
-                          borderRadius: BorderRadius.circular(4),
+                          color: Theme.of(context).colorScheme.tertiary,
+                          borderRadius: BorderRadius.only(
+                            topLeft: legSummary == itinerary.legs.first
+                                ? Radius.circular(32)
+                                : Radius.circular(0),
+                            topRight: legSummary == itinerary.legs.last
+                                ? Radius.circular(32)
+                                : Radius.circular(0),
+                            bottomLeft: legSummary == itinerary.legs.first
+                                ? Radius.circular(32)
+                                : Radius.circular(0),
+                            bottomRight: legSummary == itinerary.legs.last
+                                ? Radius.circular(32)
+                                : Radius.circular(0),
+                          ),
                         ),
                         padding: const EdgeInsets.symmetric(
                           vertical: 4,
-                          horizontal: 4,
+                          horizontal: 8,
                         ),
                         margin: legSummary != itinerary.legs.last
                             ? EdgeInsets.only(right: 4)
@@ -83,14 +96,18 @@ class ItineraryWidget extends StatelessWidget {
                           children: [
                             Icon(
                               ModeIcons.get(legSummary.mode),
-                              color: Color(0xFFD82028),
-                              size: 20,
+                              color: Navi4AllColors.klRed,
+                              size: 16,
                             ),
                             const SizedBox(width: 4),
-                            Text(
-                              '${(legSummary.duration / 60).round()} min',
-                              style: const TextStyle(
-                                color: Navi4AllColors.klRed,
+                            Expanded(
+                              child: Text(
+                                '${(legSummary.duration / 60).round()} min',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Navi4AllColors.klRed,
+                                ),
                               ),
                             ),
                           ],
@@ -99,7 +116,6 @@ class ItineraryWidget extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-                Divider(thickness: 1, color: Navi4AllColors.klRed),
               ],
             ),
           ),

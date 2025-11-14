@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
-import '../../view/routing/route_options.dart';
+import '../routing/route_options.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/schemas/routing/place.dart';

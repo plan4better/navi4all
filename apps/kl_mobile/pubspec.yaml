@@ -12,12 +12,14 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_tts: ^4.2.3
   freezed_annotation: ^3.1.0
   geolocator: ^14.0.2
   google_fonts: ^6.2.1
   intl: ^0.20.2
   json_annotation: ^4.9.0
   maplibre_gl: ^0.22.0
+  maps_toolkit: ^3.1.0
   matomo_tracker: ^6.1.0
   provider: ^6.1.5
   shared_preferences: ^2.5.3
@@ -42,3 +44,7 @@ flutter:
     - assets/base_map_dark_thumbnail.png
     - assets/base_map_satellite_thumbnail.png
     - assets/place.png
+    - assets/user_position.png
+    - assets/marker_walking.png
+    - assets/marker_bus.png
+    - assets/marker_train.png

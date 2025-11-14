@@ -376,4 +376,58 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get navigationRelativeDirectionArrive => 'Ankommen';
+
+  @override
+  String itineraryDepartureTime(String time) {
+    return 'Los um $time';
+  }
+
+  @override
+  String get itineraryModeTabWalking => 'Zu Fuß';
+
+  @override
+  String get itineraryModeTabPublicTransport => 'ÖPNV';
+
+  @override
+  String navigationStepDistanceToActionMetres(String distance) {
+    return 'in $distance Metern';
+  }
+
+  @override
+  String navigationStepDistanceToActionKilometres(String distance) {
+    return 'in $distance Kilometern';
+  }
+
+  @override
+  String get navigationGettingDrivingDirections => 'Fahrtroute wird berechnet';
+
+  @override
+  String get navigationNoRouteFound => 'Keine Route gefunden';
+
+  @override
+  String get routingDisclaimerTitle => 'Attention';
+
+  @override
+  String get routingDisclaimerMessage => 'Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.';
+
+  @override
+  String get routingDisclaimerCancelButton => 'Cancel';
+
+  @override
+  String get routingDisclaimerAcceptButton => 'Continue';
+
+  @override
+  String get errorUnableToFetchTravelTime => 'Reisezeit konnte nicht abgerufen werden, bitte versuchen Sie es später erneut.';
+
+  @override
+  String get routingScreenNavigationStartButton => 'Start';
+
+  @override
+  String get routingScreenNavigationPauseButton => 'Pause';
+
+  @override
+  String get routingScreenNavigationResumeButton => 'Fortsetzen';
+
+  @override
+  String get routingScreenNavigationDoneButton => 'Fertig';
 }

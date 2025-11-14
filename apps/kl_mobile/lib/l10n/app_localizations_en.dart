@@ -376,4 +376,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navigationRelativeDirectionArrive => 'Arrive';
+
+  @override
+  String itineraryDepartureTime(String time) {
+    return 'Depart at $time';
+  }
+
+  @override
+  String get itineraryModeTabWalking => 'Walking';
+
+  @override
+  String get itineraryModeTabPublicTransport => 'Transit';
+
+  @override
+  String navigationStepDistanceToActionMetres(String distance) {
+    return 'in $distance metres';
+  }
+
+  @override
+  String navigationStepDistanceToActionKilometres(String distance) {
+    return 'in $distance kilometres';
+  }
+
+  @override
+  String get navigationGettingDrivingDirections => 'Getting driving directions';
+
+  @override
+  String get navigationNoRouteFound => 'No route found';
+
+  @override
+  String get routingDisclaimerTitle => 'Attention';
+
+  @override
+  String get routingDisclaimerMessage => 'Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.';
+
+  @override
+  String get routingDisclaimerCancelButton => 'Cancel';
+
+  @override
+  String get routingDisclaimerAcceptButton => 'Continue';
+
+  @override
+  String get errorUnableToFetchTravelTime => 'Unable to fetch travel time, try again later.';
+
+  @override
+  String get routingScreenNavigationStartButton => 'Start';
+
+  @override
+  String get routingScreenNavigationPauseButton => 'Pause';
+
+  @override
+  String get routingScreenNavigationResumeButton => 'Resume';
+
+  @override
+  String get routingScreenNavigationDoneButton => 'Done';
 }

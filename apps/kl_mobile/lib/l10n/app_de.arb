@@ -225,5 +225,38 @@
     "navigationRelativeDirectionEnterStation": "Bahnhof betreten",
     "navigationRelativeDirectionExitStation": "Bahnhof verlassen",
     "navigationRelativeDirectionFollowSigns": "Folgen Sie den Schildern",
-    "navigationRelativeDirectionArrive": "Ankommen"
+    "navigationRelativeDirectionArrive": "Ankommen",
+    "itineraryDepartureTime": "Los um {time}",
+    "@itineraryDepartureTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "itineraryModeTabWalking": "Zu Fuß",
+    "itineraryModeTabPublicTransport": "ÖPNV",
+    "navigationStepDistanceToActionMetres": "in {distance} Metern",
+    "@navigationStepDistanceToActionMetres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "navigationStepDistanceToActionKilometres": "in {distance} Kilometern",
+    "@navigationStepDistanceToActionKilometres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "navigationGettingDrivingDirections": "Fahrtroute wird berechnet",
+    "navigationNoRouteFound": "Keine Route gefunden",
+    "errorUnableToFetchTravelTime": "Reisezeit konnte nicht abgerufen werden, bitte versuchen Sie es später erneut.",
+    "routingScreenNavigationStartButton": "Start",
+    "routingScreenNavigationPauseButton": "Pause",
+    "routingScreenNavigationResumeButton": "Fortsetzen",
+    "routingScreenNavigationDoneButton": "Fertig"
 }

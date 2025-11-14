@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/canvas_controller.dart';
+import 'package:navi4all/view/canvas/canvas_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/autocomplete_controller.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
@@ -151,10 +153,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                 if (widget.isSecondarySearch) {
                                   Navigator.of(context).pop(place);
                                 } else {
+                                  Provider.of<CanvasController>(
+                                    context,
+                                    listen: false,
+                                  ).setState(CanvasControllerState.place);
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          PlaceScreen(place: place),
+                                      builder: (context) => CanvasScreen(),
                                     ),
                                   );
                                 }

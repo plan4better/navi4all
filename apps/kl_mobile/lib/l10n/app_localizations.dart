@@ -784,6 +784,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arrive'**
   String get navigationRelativeDirectionArrive;
+
+  /// No description provided for @itineraryDepartureTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Depart at {time}'**
+  String itineraryDepartureTime(String time);
+
+  /// No description provided for @itineraryModeTabWalking.
+  ///
+  /// In en, this message translates to:
+  /// **'Walking'**
+  String get itineraryModeTabWalking;
+
+  /// No description provided for @itineraryModeTabPublicTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transit'**
+  String get itineraryModeTabPublicTransport;
+
+  /// No description provided for @navigationStepDistanceToActionMetres.
+  ///
+  /// In en, this message translates to:
+  /// **'in {distance} metres'**
+  String navigationStepDistanceToActionMetres(String distance);
+
+  /// No description provided for @navigationStepDistanceToActionKilometres.
+  ///
+  /// In en, this message translates to:
+  /// **'in {distance} kilometres'**
+  String navigationStepDistanceToActionKilometres(String distance);
+
+  /// No description provided for @navigationGettingDrivingDirections.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting driving directions'**
+  String get navigationGettingDrivingDirections;
+
+  /// No description provided for @navigationNoRouteFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No route found'**
+  String get navigationNoRouteFound;
+
+  /// No description provided for @routingDisclaimerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention'**
+  String get routingDisclaimerTitle;
+
+  /// No description provided for @routingDisclaimerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.'**
+  String get routingDisclaimerMessage;
+
+  /// No description provided for @routingDisclaimerCancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get routingDisclaimerCancelButton;
+
+  /// No description provided for @routingDisclaimerAcceptButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get routingDisclaimerAcceptButton;
+
+  /// No description provided for @errorUnableToFetchTravelTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch travel time, try again later.'**
+  String get errorUnableToFetchTravelTime;
+
+  /// No description provided for @routingScreenNavigationStartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get routingScreenNavigationStartButton;
+
+  /// No description provided for @routingScreenNavigationPauseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get routingScreenNavigationPauseButton;
+
+  /// No description provided for @routingScreenNavigationResumeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get routingScreenNavigationResumeButton;
+
+  /// No description provided for @routingScreenNavigationDoneButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get routingScreenNavigationDoneButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

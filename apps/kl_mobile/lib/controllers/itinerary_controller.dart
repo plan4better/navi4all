@@ -15,6 +15,12 @@ class ItineraryController extends ChangeNotifier {
   DateTime? _time;
   bool? _isArrivalTime;
 
+  Place? get originPlace => _originPlace;
+  Place? get destinationPlace => _destinationPlace;
+  List<Mode>? get modes => _modes;
+  DateTime? get time => _time;
+  bool? get isArrivalTime => _isArrivalTime;
+
   final List<ItinerarySummary> _itineraries = [];
   ItineraryControllerState _state = ItineraryControllerState.idle;
 
@@ -57,8 +63,8 @@ class ItineraryController extends ChangeNotifier {
 
   Future<void> _refresh() async {
     _state = ItineraryControllerState.refreshing;
-
     _itineraries.clear();
+    notifyListeners();
 
     // Ensure request parameters are set
     if (!hasParametersSet) {
@@ -83,7 +89,13 @@ class ItineraryController extends ChangeNotifier {
       _itineraries.addAll(results);
 
       // Post-process results
-      _itineraries.sort((a, b) => a.startTime.compareTo(b.startTime));
+      /* _itineraries.sort((a, b) {
+        int durationCompare = a.duration.compareTo(b.duration);
+        if (durationCompare != 0) return durationCompare;
+        return a.legs.length.compareTo(b.legs.length);
+      }); */
+
+      await Future.delayed(const Duration(milliseconds: 200));
     } catch (e) {
       _state = ItineraryControllerState.error;
       notifyListeners();

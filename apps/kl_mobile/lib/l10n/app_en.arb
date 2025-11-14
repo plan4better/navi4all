@@ -225,5 +225,42 @@
     "navigationRelativeDirectionEnterStation": "Enter station",
     "navigationRelativeDirectionExitStation": "Exit station",
     "navigationRelativeDirectionFollowSigns": "Follow signs",
-    "navigationRelativeDirectionArrive": "Arrive"
+    "navigationRelativeDirectionArrive": "Arrive",
+    "itineraryDepartureTime": "Depart at {time}",
+    "@itineraryDepartureTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "itineraryModeTabWalking": "Walking",
+    "itineraryModeTabPublicTransport": "Transit",
+    "navigationStepDistanceToActionMetres": "in {distance} metres",
+    "@navigationStepDistanceToActionMetres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "navigationStepDistanceToActionKilometres": "in {distance} kilometres",
+    "@navigationStepDistanceToActionKilometres": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "navigationGettingDrivingDirections": "Getting driving directions",
+    "navigationNoRouteFound": "No route found",
+    "routingDisclaimerTitle": "Attention",
+    "routingDisclaimerMessage": "Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.",
+    "routingDisclaimerCancelButton": "Cancel",
+    "routingDisclaimerAcceptButton": "Continue",
+    "errorUnableToFetchTravelTime": "Unable to fetch travel time, try again later.",
+    "routingScreenNavigationStartButton": "Start",
+    "routingScreenNavigationPauseButton": "Pause",
+    "routingScreenNavigationResumeButton": "Resume",
+    "routingScreenNavigationDoneButton": "Done"
 }

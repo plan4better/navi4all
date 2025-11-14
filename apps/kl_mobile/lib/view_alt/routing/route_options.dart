@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
-import 'package:navi4all/view/routing/itinerary_widget.dart';
+import 'package:navi4all/view_alt/routing/itinerary_widget.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'orig_dest_picker.dart';
 import 'package:navi4all/services/routing.dart';

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/canvas_controller.dart';
+import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/schemas/routing/place.dart';
+import 'package:navi4all/view/canvas/canvas_screen.dart';
 import 'package:navi4all/view/place/place.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/favorites_controller.dart';
@@ -100,9 +103,14 @@ class _FavoritesListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) => InkWell(
     onTap: () {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => PlaceScreen(place: place)),
-      );
+      Provider.of<CanvasController>(
+        context,
+        listen: false,
+      ).setState(CanvasControllerState.place);
+      Provider.of<PlaceController>(context, listen: false).setPlace(place);
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => CanvasScreen()));
     },
     child: Column(
       children: [
