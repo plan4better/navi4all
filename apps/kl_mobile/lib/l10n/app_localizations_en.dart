@@ -430,4 +430,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingScreenNavigationDoneButton => 'Done';
+
+  @override
+  String get settingsOptionChangeAppProfile => 'Change Profile';
 }

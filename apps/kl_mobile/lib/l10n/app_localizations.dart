@@ -880,6 +880,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get routingScreenNavigationDoneButton;
+
+  /// No description provided for @settingsOptionChangeAppProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Profile'**
+  String get settingsOptionChangeAppProfile;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -262,5 +262,6 @@
     "routingScreenNavigationStartButton": "Start",
     "routingScreenNavigationPauseButton": "Pause",
     "routingScreenNavigationResumeButton": "Resume",
-    "routingScreenNavigationDoneButton": "Done"
+    "routingScreenNavigationDoneButton": "Done",
+    "settingsOptionChangeAppProfile": "Change Profile"
 }

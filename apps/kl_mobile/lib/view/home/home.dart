@@ -32,7 +32,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Offstage(
                 offstage: _pageIndex != 1,
-                child: TickerMode(enabled: _pageIndex == 1, child: _pages[1]),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 64.0),
+                  child: TickerMode(enabled: _pageIndex == 1, child: _pages[1]),
+                ),
               ),
               Offstage(
                 offstage: _pageIndex != 2,

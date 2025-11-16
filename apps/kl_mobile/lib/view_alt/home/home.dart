@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/view/favourites/favorites.dart';
 import 'package:navi4all/view/search/search.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
+import 'package:navi4all/view/settings/settings.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -32,21 +34,29 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeSavedButton,
+                  label: AppLocalizations.of(context)!.favouritesTitle,
                   style: AccessibleButtonStyle.pink,
-                  onTap: null,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const FavoritesScreen(altMode: true),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
                 AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeRouteButton,
+                  label: AppLocalizations.of(context)!.settingsTitle,
                   style: AccessibleButtonStyle.pink,
-                  onTap: null,
-                ),
-                const SizedBox(height: 32),
-                AccessibleButton(
-                  label: AppLocalizations.of(context)!.homeSettingsButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: null,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const SettingsScreen(altMode: true),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
                 Spacer(),

@@ -44,7 +44,7 @@ class SelectionTile extends StatelessWidget {
                   ? SizedBox(width: 8.0)
                   : SizedBox.shrink(),
               leadingIcon != null
-                  ? Icon(leadingIcon!)
+                  ? Icon(leadingIcon!, color: Navi4AllColors.klRed)
                   : leadingImage != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(32.0),

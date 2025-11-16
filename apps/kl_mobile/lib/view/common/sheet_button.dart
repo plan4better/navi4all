@@ -64,4 +64,4 @@ class SheetButton extends StatelessWidget {
   }
 }
 
-enum AccessibleButtonStyle { white, pink, red }
+enum SheetButtonStyle { white, pink, red }
