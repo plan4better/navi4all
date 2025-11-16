@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/controllers/profile_mode_controller.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
-import 'package:provider/provider.dart';
 import 'package:navi4all/view_alt/home/home.dart' as home_alt;
 import 'package:navi4all/view/common/accessible_selector.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
@@ -33,10 +31,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       await _requestLocationPermission();
     } else if (_currentPage >= 3) {
       PreferenceHelper.setOnboardingComplete(true);
-      switch (Provider.of<ProfileModeController>(
-        context,
-        listen: false,
-      ).profileMode) {
+      switch (await PreferenceHelper.getProfileMode()) {
         case ProfileMode.blind:
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => home_alt.HomeScreen()),
@@ -204,10 +199,7 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
                   selected: _selectedIndex == index,
                   onTap: () {
                     setState(() => _selectedIndex = index);
-                    Provider.of<ProfileModeController>(
-                      context,
-                      listen: false,
-                    ).setProfileMode(ProfileMode.values[index]);
+                    PreferenceHelper.setProfileMode(ProfileMode.values[index]);
                   },
                 ),
               ),

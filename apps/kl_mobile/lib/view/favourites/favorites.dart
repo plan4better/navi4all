@@ -51,6 +51,22 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           itemCount: favoritesController.favorites.length,
                           itemBuilder: (context, index) => _FavoritesListItem(
                             place: favoritesController.favorites[index],
+                            onTap: () {
+                              Provider.of<CanvasController>(
+                                context,
+                                listen: false,
+                              ).setState(CanvasControllerState.place);
+                              Provider.of<PlaceController>(
+                                context,
+                                listen: false,
+                              ).setPlace(favoritesController.favorites[index]);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CanvasScreen(altMode: widget.altMode),
+                                ),
+                              );
+                            },
                           ),
                         )
                       : Expanded(
@@ -116,21 +132,13 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
 class _FavoritesListItem extends StatelessWidget {
   final Place place;
+  final Function onTap;
 
-  const _FavoritesListItem({required this.place});
+  const _FavoritesListItem({required this.place, required this.onTap});
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () {
-      Provider.of<CanvasController>(
-        context,
-        listen: false,
-      ).setState(CanvasControllerState.place);
-      Provider.of<PlaceController>(context, listen: false).setPlace(place);
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => CanvasScreen()));
-    },
+    onTap: () => onTap(),
     child: Semantics(
       label: place.name,
       excludeSemantics: true,

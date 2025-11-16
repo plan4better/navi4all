@@ -125,7 +125,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addressInfoPublicTransportRoutesButtonSemantic => 'Finden Sie ÖPNV-Optionen.';
 
   @override
-  String get addressInfoSaveAddressButton => 'Speichern Adresse';
+  String get addressInfoSaveAddressButton => 'Als Favorit speichern';
+
+  @override
+  String get addressInfoRemoveAddressButton => 'Aus Favoriten entfernen';
 
   @override
   String get routeOptionsRouteSettingsButton => 'Routeneinstellungen';

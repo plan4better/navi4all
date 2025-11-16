@@ -125,7 +125,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressInfoPublicTransportRoutesButtonSemantic => 'Find public transport route options.';
 
   @override
-  String get addressInfoSaveAddressButton => 'Save Address';
+  String get addressInfoSaveAddressButton => 'Favourite Address';
+
+  @override
+  String get addressInfoRemoveAddressButton => 'Unfavourite Address';
 
   @override
   String get routeOptionsRouteSettingsButton => 'Route Settings';

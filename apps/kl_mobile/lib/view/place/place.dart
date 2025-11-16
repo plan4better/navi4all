@@ -82,7 +82,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
 
     // Fetch user location
     final userLatLng = await Geolocator.getCurrentPosition();
-    /* Place originPlace = Place(
+    Place originPlace = Place(
       id: Navi4AllValues.userLocation,
       name: Navi4AllValues.userLocation,
       type: PlaceType.address,
@@ -92,15 +92,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
         lat: userLatLng.latitude,
         lon: userLatLng.longitude,
       ),
-    ); */
-    // TODO: Remove
-    Place originPlace = Place(
-      id: Navi4AllValues.userLocation,
-      name: Navi4AllValues.userLocation,
-      type: PlaceType.address,
-      description: '',
-      address: '',
-      coordinates: Coordinates(lat: 49.4305700521414, lon: 7.726379027294111),
     );
 
     Place destinationPlace = Provider.of<PlaceController>(

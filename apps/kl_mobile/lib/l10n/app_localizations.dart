@@ -326,8 +326,14 @@ abstract class AppLocalizations {
   /// No description provided for @addressInfoSaveAddressButton.
   ///
   /// In en, this message translates to:
-  /// **'Save Address'**
+  /// **'Favourite Address'**
   String get addressInfoSaveAddressButton;
+
+  /// No description provided for @addressInfoRemoveAddressButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfavourite Address'**
+  String get addressInfoRemoveAddressButton;
 
   /// No description provided for @routeOptionsRouteSettingsButton.
   ///

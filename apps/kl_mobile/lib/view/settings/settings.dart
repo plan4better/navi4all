@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/controllers/profile_mode_controller.dart';
+import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/profile_mode.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
@@ -10,7 +10,6 @@ import 'package:navi4all/view/onboarding/onboarding.dart';
 import 'package:navi4all/view/settings/feedback.dart';
 import 'package:navi4all/view/settings/legal_privacy.dart';
 import 'package:navi4all/view/splash/splash.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:navi4all/core/config.dart';
 
@@ -19,11 +18,8 @@ class SettingsScreen extends StatelessWidget {
 
   const SettingsScreen({super.key, this.altMode = false});
 
-  void _changeAppProfile(BuildContext context) {
-    ProfileMode selectedProfileMode = Provider.of<ProfileModeController>(
-      context,
-      listen: false,
-    ).profileMode;
+  Future<void> _changeAppProfile(BuildContext context) async {
+    ProfileMode selectedProfileMode = await PreferenceHelper.getProfileMode();
 
     showDialog(
       context: context,
@@ -115,11 +111,10 @@ class SettingsScreen extends StatelessWidget {
                           label: AppLocalizations.of(
                             context,
                           )!.placeScreenChangeRadiusConfirm,
-                          onTap: () {
-                            Provider.of<ProfileModeController>(
-                              context,
-                              listen: false,
-                            ).setProfileMode(selectedProfileMode);
+                          onTap: () async {
+                            await PreferenceHelper.setProfileMode(
+                              selectedProfileMode,
+                            );
                             Navigator.of(context).pop();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Splash()),
