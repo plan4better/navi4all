@@ -145,14 +145,12 @@ class _PlaceScreenState extends State<PlaceScreen> {
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
-                                color: Navi4AllColors.klRed,
                               ),
                             ),
                             Text(
                               placeController.place!.description,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: Navi4AllColors.klRed),
                             ),
                           ],
                         ),
@@ -162,7 +160,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
                         onPressed: () =>
                             _toggleFavorite(placeController.place!),
                         icon: Icon(
-                          color: Navi4AllColors.klRed,
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
                           size: 28,
                           _isFavorite ? Icons.star : Icons.star_border,
                         ),
@@ -250,23 +250,24 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                 controller.itineraries.first.legs.length > 1
                                     ? Icons.directions_transit_outlined
                                     : Icons.directions_walk_outlined,
-                                color: Navi4AllColors.klRed,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium?.color,
                               ),
                               SizedBox(width: 8.0),
                               Text(
                                 '${(controller.itineraries.first.duration / 60).round()} min',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Navi4AllColors.klRed,
-                                  fontSize: 16,
-                                ),
+                                style: TextStyle(fontSize: 16),
                               ),
                               SizedBox(width: 6.0),
                               Icon(
                                 Icons.circle,
                                 size: 6,
-                                color: Navi4AllColors.klRed,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium?.color,
                               ),
                               SizedBox(width: 6.0),
                               Text(
@@ -275,10 +276,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Navi4AllColors.klRed,
-                                  fontSize: 16,
-                                ),
+                                style: TextStyle(fontSize: 16),
                               ),
                             ],
                           )
@@ -318,7 +316,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           IconButton(
                             icon: const Icon(
                               Icons.arrow_back,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
@@ -329,7 +329,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
                               widget.place.name,
                               style: const TextStyle(
                                 fontSize: 16,
-                                color: Navi4AllColors.klRed,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,

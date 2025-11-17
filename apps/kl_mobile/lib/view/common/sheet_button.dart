@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/core/theme/colors.dart';
 
 class SheetButton extends StatelessWidget {
   final IconData? icon;
@@ -36,7 +35,11 @@ class SheetButton extends StatelessWidget {
               mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,
               children: [
                 icon != null
-                    ? Icon(icon, color: Navi4AllColors.klRed, size: 20)
+                    ? Icon(
+                        icon,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
+                        size: 20,
+                      )
                     : const SizedBox.shrink(),
                 icon != null && label != null
                     ? const SizedBox(width: 8)
@@ -48,10 +51,7 @@ class SheetButton extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Navi4AllColors.klRed,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       )
                     : const SizedBox.shrink(),

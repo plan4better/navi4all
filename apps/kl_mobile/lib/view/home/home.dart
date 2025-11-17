@@ -5,7 +5,6 @@ import 'package:navi4all/view/favourites/favorites.dart';
 import 'package:navi4all/view/settings/settings.dart';
 // import 'package:navi4all/core/analytics/events.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/view/home/map.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -85,9 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               children: [
                                 SizedBox(width: 24),
-                                const Icon(
+                                Icon(
                                   Icons.search,
-                                  color: Navi4AllColors.klRed,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium?.color,
                                 ),
                                 SizedBox(width: 16),
                                 Expanded(
@@ -95,10 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     AppLocalizations.of(
                                       context,
                                     )!.homeSearchButtonHint,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Navi4AllColors.klRed,
-                                    ),
+                                    style: const TextStyle(fontSize: 16),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -132,13 +130,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ) {
                               if (states.contains(WidgetState.selected)) {
                                 return const TextStyle(
-                                  color: Navi4AllColors.klRed,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                 );
                               }
                               return const TextStyle(
-                                color: Navi4AllColors.klRed,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
                               );
@@ -156,11 +152,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           NavigationDestination(
                             icon: Icon(
                               Icons.place_outlined,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             selectedIcon: Icon(
                               Icons.place_rounded,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             label: AppLocalizations.of(
                               context,
@@ -169,11 +169,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           NavigationDestination(
                             icon: Icon(
                               Icons.star_border,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             selectedIcon: Icon(
                               Icons.star,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             label: AppLocalizations.of(
                               context,
@@ -182,11 +186,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           NavigationDestination(
                             icon: Icon(
                               Icons.settings_outlined,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             selectedIcon: Icon(
                               Icons.settings,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             label: AppLocalizations.of(
                               context,

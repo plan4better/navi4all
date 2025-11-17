@@ -62,7 +62,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                             : widget.origin!.id == Navi4AllValues.userLocation
                             ? Icons.my_location
                             : Icons.place_rounded,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                         size: Navi4AllGeometry.iconSizeMedium,
                       ),
                       SizedBox(width: 12),
@@ -86,7 +86,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                 ),
               ),
             ),
-            Divider(height: 2, color: Navi4AllColors.klRed),
+            Divider(height: 2, color: Navi4AllColors.klPink),
             Semantics(
               label: AppLocalizations.of(context)!
                   .origDestPickerDestinationSemantic(
@@ -118,7 +118,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                   Navi4AllValues.userLocation
                             ? Icons.my_location
                             : Icons.place_rounded,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                         size: Navi4AllGeometry.iconSizeMedium,
                       ),
                       SizedBox(width: 12),

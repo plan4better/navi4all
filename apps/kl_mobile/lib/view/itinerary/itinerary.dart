@@ -89,9 +89,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                   child: IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.menu_rounded,
-                      color: Navi4AllColors.klRed,
+                      color: Theme.of(context).textTheme.displayMedium?.color,
                     ),
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -113,9 +113,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                   child: IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.close_rounded,
-                      color: Navi4AllColors.klRed,
+                      color: Theme.of(context).textTheme.displayMedium?.color,
                     ),
                     onPressed: () {
                       itineraryController.reset();
@@ -148,9 +148,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               },
               labelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Navi4AllColors.klRed,
-              unselectedLabelColor: Navi4AllColors.klRed,
-              labelColor: Navi4AllColors.klRed,
+              indicatorColor: Theme.of(context).textTheme.displayMedium?.color,
+              unselectedLabelColor: Theme.of(
+                context,
+              ).textTheme.displayMedium?.color,
+              labelColor: Theme.of(context).textTheme.displayMedium?.color,
               indicatorPadding: EdgeInsets.only(
                 bottom: 8.0,
                 left: 24.0,
@@ -347,7 +349,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                       Navi4AllValues.userLocation
                                   ? Icons.my_location
                                   : Icons.place_rounded,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             SizedBox(width: 16),
                             Expanded(
@@ -360,10 +364,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                     : itineraryController.originPlace!.name,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Navi4AllColors.klRed,
-                                  fontSize: 16.0,
-                                ),
+                                style: TextStyle(fontSize: 16.0),
                               ),
                             ),
                             /* Material(
@@ -375,7 +376,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                 child: IconButton(
                                   icon: const Icon(
                                     Icons.more_vert_outlined,
-                                    color: Navi4AllColors.klRed,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
                                   ),
                                   onPressed: () {},
                                 ),
@@ -420,7 +423,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                       Navi4AllValues.userLocation
                                   ? Icons.my_location
                                   : Icons.place_rounded,
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                             ),
                             SizedBox(width: 16),
                             Expanded(
@@ -436,7 +441,6 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Navi4AllColors.klRed,
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -452,9 +456,11 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                 ),
                                 child: IconButton(
                                   padding: EdgeInsets.zero,
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.swap_vert_outlined,
-                                    color: Navi4AllColors.klRed,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
                                   ),
                                   onPressed: _swapOriginDestination,
                                 ),

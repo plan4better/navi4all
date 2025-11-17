@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/theme_controller.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/profile_mode.dart';
@@ -10,6 +11,7 @@ import 'package:navi4all/view/onboarding/onboarding.dart';
 import 'package:navi4all/view/settings/feedback.dart';
 import 'package:navi4all/view/settings/legal_privacy.dart';
 import 'package:navi4all/view/splash/splash.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:navi4all/core/config.dart';
 
@@ -44,7 +46,6 @@ class SettingsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Navi4AllColors.klRed,
                       ),
                     ),
                   ),
@@ -115,6 +116,10 @@ class SettingsScreen extends StatelessWidget {
                             await PreferenceHelper.setProfileMode(
                               selectedProfileMode,
                             );
+                            Provider.of<ThemeController>(
+                              context,
+                              listen: false,
+                            ).setProfileMode(selectedProfileMode);
                             Navigator.of(context).pop();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Splash()),
@@ -159,11 +164,7 @@ class SettingsScreen extends StatelessWidget {
                   AppLocalizations.of(context)!.settingsTitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Navi4AllColors.klRed,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(height: 16),
@@ -174,7 +175,7 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.visibility_outlined,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(
@@ -182,7 +183,11 @@ class SettingsScreen extends StatelessWidget {
                         )!.settingsOptionChangeAppProfile,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () => _changeAppProfile(context),
                     ),
@@ -190,13 +195,17 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.play_circle_outline,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(context)!.settingsOptionSetupGuide,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () => Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
@@ -208,13 +217,17 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.feedback_outlined,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(context)!.settingsOptionFeedback,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
@@ -226,13 +239,17 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.support_agent_outlined,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(context)!.settingsOptionSupport,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () => _launchSupport(),
                     ),
@@ -240,7 +257,7 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.privacy_tip_outlined,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(
@@ -248,7 +265,11 @@ class SettingsScreen extends StatelessWidget {
                         )!.settingsOptionLegalAndPrivacy,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(

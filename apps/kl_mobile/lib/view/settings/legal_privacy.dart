@@ -25,9 +25,9 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                   InkWell(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                     ),
                     onTap: () {
@@ -43,7 +43,6 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Navi4AllColors.klRed,
                       ),
                     ),
                   ),
@@ -57,7 +56,7 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                     ListTile(
                       leading: Icon(
                         Icons.gps_fixed_outlined,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(
@@ -65,7 +64,11 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                         )!.legalPrivacyLocationAccess,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -83,7 +86,7 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                     ListTile(
                       leading: Icon(
                         Icons.security_outlined,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
                         AppLocalizations.of(
@@ -91,7 +94,11 @@ class _LegalPrivacyScreenState extends State<LegalPrivacyScreen> {
                         )!.legalPrivacyDataProtection,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
+                        ),
                       ),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -11,11 +11,13 @@ import 'package:navi4all/schemas/routing/place.dart';
 class SearchScreen extends StatefulWidget {
   final bool isSecondarySearch;
   final bool isOriginPlaceSearch;
+  final bool altMode;
 
   const SearchScreen({
     super.key,
     this.isSecondarySearch = false,
     this.isOriginPlaceSearch = false,
+    this.altMode = false,
   });
 
   @override
@@ -79,7 +81,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       IconButton(
                         icon: Icon(
                           Icons.arrow_back,
-                          color: Navi4AllColors.klRed,
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium?.color,
                           semanticLabel: AppLocalizations.of(
                             context,
                           )!.commonBackButtonSemantic,
@@ -163,7 +167,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ).setPlace(place);
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => CanvasScreen(),
+                                      builder: (context) =>
+                                          CanvasScreen(altMode: widget.altMode),
                                     ),
                                   );
                                 }
@@ -254,7 +259,6 @@ class _SearchSuggestion extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: Navi4AllColors.klRed,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -263,10 +267,7 @@ class _SearchSuggestion extends StatelessWidget {
                       place.locality!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Navi4AllColors.klRed,
-                      ),
+                      style: const TextStyle(fontSize: 12),
                     )
                   : const SizedBox.shrink(),
             ],

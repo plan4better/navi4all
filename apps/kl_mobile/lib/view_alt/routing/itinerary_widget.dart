@@ -52,15 +52,11 @@ class ItineraryWidget extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 20,
-                    color: Navi4AllColors.klRed,
                   ),
                 ),
                 Text(
                   '$_startTime - $_endTime',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Navi4AllColors.klRed,
-                  ),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -96,7 +92,9 @@ class ItineraryWidget extends StatelessWidget {
                           children: [
                             Icon(
                               ModeIcons.get(legSummary.mode),
-                              color: Navi4AllColors.klRed,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium?.color,
                               size: 16,
                             ),
                             const SizedBox(width: 4),
@@ -105,9 +103,6 @@ class ItineraryWidget extends StatelessWidget {
                                 '${(legSummary.duration / 60).round()} min',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Navi4AllColors.klRed,
-                                ),
                               ),
                             ),
                           ],

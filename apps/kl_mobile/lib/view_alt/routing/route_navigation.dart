@@ -51,7 +51,6 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         AppLocalizations.of(context)!.routeNavigationTitle,
-                        style: TextStyle(color: Navi4AllColors.klRed),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -60,7 +59,6 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
                       child: Text(
                         widget.address,
                         style: TextStyle(
-                          color: Navi4AllColors.klRed,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
@@ -72,10 +70,7 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
                         AppLocalizations.of(
                           context,
                         )!.routeNavigationTimeToArrival("30 min"),
-                        style: TextStyle(
-                          color: Navi4AllColors.klRed,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -215,7 +210,6 @@ class _NavigationStep extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color: Navi4AllColors.klRed,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -224,7 +218,6 @@ class _NavigationStep extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
-                            color: Navi4AllColors.klRed,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -232,7 +225,6 @@ class _NavigationStep extends StatelessWidget {
                           timeToStep,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Navi4AllColors.klRed,
                             letterSpacing: 0.5,
                           ),
                         ),
@@ -242,7 +234,7 @@ class _NavigationStep extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 8),
-              Divider(height: 1, color: Navi4AllColors.klRed),
+              Divider(height: 1, color: Navi4AllColors.klPink),
             ],
           ),
         ),

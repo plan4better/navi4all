@@ -44,7 +44,10 @@ class SelectionTile extends StatelessWidget {
                   ? SizedBox(width: 8.0)
                   : SizedBox.shrink(),
               leadingIcon != null
-                  ? Icon(leadingIcon!, color: Navi4AllColors.klRed)
+                  ? Icon(
+                      leadingIcon!,
+                      color: Theme.of(context).textTheme.displayMedium?.color,
+                    )
                   : leadingImage != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(32.0),
@@ -58,10 +61,7 @@ class SelectionTile extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Navi4AllColors.klRed,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle != null ? SizedBox(height: 4.0) : SizedBox.shrink(),
                   subtitle != null
@@ -69,7 +69,6 @@ class SelectionTile extends StatelessWidget {
                           subtitle!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Navi4AllColors.klRed),
                         )
                       : SizedBox.shrink(),
                 ],

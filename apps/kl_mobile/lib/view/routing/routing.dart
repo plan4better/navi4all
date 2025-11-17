@@ -91,11 +91,7 @@ class RoutingState extends State<RoutingScreen> {
                     AppLocalizations.of(context)!.routingDisclaimerTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Navi4AllColors.klRed,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 SizedBox(height: 16),
@@ -103,7 +99,7 @@ class RoutingState extends State<RoutingScreen> {
                   alignment: Alignment.topLeft,
                   child: Text(
                     AppLocalizations.of(context)!.routingDisclaimerMessage,
-                    style: TextStyle(fontSize: 14, color: Navi4AllColors.klRed),
+                    style: TextStyle(fontSize: 14),
                   ),
                 ),
                 SizedBox(height: 32),
@@ -539,10 +535,12 @@ class RoutingState extends State<RoutingScreen> {
                                 ),
                                 SizedBox(width: 8),
                                 IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.close,
                                     size: 28,
-                                    color: Navi4AllColors.klRed,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
                                   ),
                                   onPressed: () {
                                     _positionStream?.drain();
@@ -566,23 +564,24 @@ class RoutingState extends State<RoutingScreen> {
                                 children: [
                                   Icon(
                                     Icons.place_rounded,
-                                    color: Navi4AllColors.klRed,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
                                   ),
                                   SizedBox(width: 8.0),
                                   Text(
                                     '${widget.itinerarySummary.duration ~/ 60} min',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Navi4AllColors.klRed,
-                                      fontSize: 16,
-                                    ),
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                   SizedBox(width: 6.0),
                                   Icon(
                                     Icons.circle,
                                     size: 6,
-                                    color: Navi4AllColors.klRed,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
                                   ),
                                   SizedBox(width: 6.0),
                                   Text(
@@ -591,10 +590,7 @@ class RoutingState extends State<RoutingScreen> {
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Navi4AllColors.klRed,
-                                      fontSize: 16,
-                                    ),
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -676,7 +672,9 @@ class RoutingState extends State<RoutingScreen> {
                                                           .userLocation
                                                   ? Icons.my_location
                                                   : Icons.place_rounded,
-                                              color: Navi4AllColors.klRed,
+                                              color: Theme.of(
+                                                context,
+                                              ).textTheme.displayMedium?.color,
                                             ),
                                             SizedBox(width: 16),
                                             Expanded(
@@ -691,7 +689,6 @@ class RoutingState extends State<RoutingScreen> {
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                  color: Navi4AllColors.klRed,
                                                   fontSize: 16.0,
                                                 ),
                                               ),
@@ -748,7 +745,9 @@ class RoutingState extends State<RoutingScreen> {
                                                   NavigationStatus.navigating
                                             ? Icons.place_rounded
                                             : Icons.navigation_rounded,
-                                        color: Navi4AllColors.klRed,
+                                        color: Theme.of(
+                                          context,
+                                        ).textTheme.displayMedium?.color,
                                       ),
                                       SizedBox(width: 16),
                                       Expanded(
@@ -762,7 +761,6 @@ class RoutingState extends State<RoutingScreen> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            color: Navi4AllColors.klRed,
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -851,7 +849,6 @@ class ItineraryLegStepTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 18,
-                  color: Navi4AllColors.klRed,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -860,10 +857,7 @@ class ItineraryLegStepTile extends StatelessWidget {
                       _streetName!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Navi4AllColors.klRed,
-                      ),
+                      style: const TextStyle(fontSize: 16),
                     )
                   : SizedBox.shrink(),
               _distance(context) != null
@@ -871,10 +865,7 @@ class ItineraryLegStepTile extends StatelessWidget {
                       _distance(context)!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Navi4AllColors.klRed,
-                      ),
+                      style: const TextStyle(fontSize: 14),
                     )
                   : SizedBox.shrink(),
             ],
@@ -932,7 +923,6 @@ class ItineraryLegTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 18,
-                  color: Navi4AllColors.klRed,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -941,10 +931,7 @@ class ItineraryLegTile extends StatelessWidget {
                       leg.route!.shortName!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Navi4AllColors.klRed,
-                      ),
+                      style: const TextStyle(fontSize: 16),
                     )
                   : SizedBox.shrink(),
               null != null
@@ -952,10 +939,7 @@ class ItineraryLegTile extends StatelessWidget {
                       'for 5 stops',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Navi4AllColors.klRed,
-                      ),
+                      style: const TextStyle(fontSize: 14),
                     )
                   : SizedBox.shrink(),
             ],

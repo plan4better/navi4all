@@ -92,7 +92,6 @@ class _HomeMapState extends State<HomeMap> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Navi4AllColors.klRed,
                       ),
                     ),
                   ),
@@ -308,14 +307,20 @@ class _HomeMapState extends State<HomeMap> {
                     shape: CircleBorder(),
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                     onPressed: () => _onLayersButtonPressed(),
-                    child: Icon(Icons.layers, color: Navi4AllColors.klRed),
+                    child: Icon(
+                      Icons.layers,
+                      color: Theme.of(context).textTheme.displayMedium?.color,
+                    ),
                   ),
                   SizedBox(height: 16),
                   FloatingActionButton(
                     shape: CircleBorder(),
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                     onPressed: () => _panToUserLocation(),
-                    child: Icon(Icons.my_location, color: Navi4AllColors.klRed),
+                    child: Icon(
+                      Icons.my_location,
+                      color: Theme.of(context).textTheme.displayMedium?.color,
+                    ),
                   ),
                 ],
               ),

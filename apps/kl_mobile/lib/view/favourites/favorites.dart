@@ -35,11 +35,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   AppLocalizations.of(context)!.favouritesTitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Navi4AllColors.klRed,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(height: 16),
@@ -150,7 +146,10 @@ class _FavoritesListItem extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(width: 4),
-                Icon(Icons.place_rounded, color: Navi4AllColors.klRed),
+                Icon(
+                  Icons.place_rounded,
+                  color: Theme.of(context).textTheme.displayMedium?.color,
+                ),
                 SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -160,16 +159,12 @@ class _FavoritesListItem extends StatelessWidget {
                         place.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Navi4AllColors.klRed,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         place.description,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Navi4AllColors.klRed),
                       ),
                     ],
                   ),

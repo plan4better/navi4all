@@ -83,9 +83,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   InkWell(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back,
-                        color: Navi4AllColors.klRed,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                     ),
                     onTap: () {
@@ -97,11 +97,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     AppLocalizations.of(context)!.feedbackScreenTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Navi4AllColors.klRed,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -120,10 +116,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               AppLocalizations.of(context)!.feedbackTypeHint,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Navi4AllColors.klRed,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -136,7 +129,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 emptySelectionAllowed: true,
                                 style: ButtonStyle(
                                   side: WidgetStateProperty.all(
-                                    BorderSide(color: Navi4AllColors.klRed),
+                                    BorderSide(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.displayMedium?.color ??
+                                          Navi4AllColors.klRed,
+                                    ),
                                   ),
                                   padding: WidgetStateProperty.all(
                                     EdgeInsets.symmetric(vertical: 16),
@@ -147,7 +146,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     value: FeedbackType.localData,
                                     icon: Icon(
                                       Icons.place_outlined,
-                                      color: Navi4AllColors.klRed,
+                                      color: Theme.of(
+                                        context,
+                                      ).textTheme.displayMedium?.color,
                                     ),
                                     label: Text(
                                       AppLocalizations.of(
@@ -157,8 +158,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Navi4AllColors.klRed,
                                         fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).textTheme.displayMedium?.color,
                                       ),
                                     ),
                                   ),
@@ -166,7 +169,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     value: FeedbackType.appFunctionality,
                                     icon: Icon(
                                       Icons.phone_android_outlined,
-                                      color: Navi4AllColors.klRed,
+                                      color: Theme.of(
+                                        context,
+                                      ).textTheme.displayMedium?.color,
                                     ),
                                     label: Text(
                                       AppLocalizations.of(
@@ -176,7 +181,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Navi4AllColors.klRed,
+                                        color: Theme.of(
+                                          context,
+                                        ).textTheme.displayMedium?.color,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -201,10 +208,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               AppLocalizations.of(context)!.feedbackSubjectHint,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Navi4AllColors.klRed,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -219,13 +223,21 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
-                                color: Navi4AllColors.klRed,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color ??
+                                    Navi4AllColors.klRed,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
-                                color: Navi4AllColors.klRed,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color ??
+                                    Navi4AllColors.klRed,
                               ),
                             ),
                           ),
@@ -244,10 +256,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               AppLocalizations.of(context)!.feedbackMessageHint,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Navi4AllColors.klRed,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -262,13 +271,21 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
-                                color: Navi4AllColors.klRed,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color ??
+                                    Navi4AllColors.klRed,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
-                                color: Navi4AllColors.klRed,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color ??
+                                    Navi4AllColors.klRed,
                               ),
                             ),
                           ),

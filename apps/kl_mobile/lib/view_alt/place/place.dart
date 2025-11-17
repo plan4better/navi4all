@@ -77,16 +77,12 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
-                            color: Navi4AllColors.klRed,
                           ),
                         ),
                       ),
                       Text(
                         placeController.place!.description,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Navi4AllColors.klRed,
-                        ),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ],
                   ),

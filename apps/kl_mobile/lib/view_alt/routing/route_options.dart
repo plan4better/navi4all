@@ -221,10 +221,7 @@ class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
                                         context,
                                       )!.errorNoItinerariesFound,
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Navi4AllColors.klRed,
-                                      ),
+                                      style: const TextStyle(fontSize: 16),
                                     ),
                                   ),
                                 )
@@ -239,10 +236,7 @@ class _RouteOptionsScreenState extends State<RouteOptionsScreen> {
                                   context,
                                 )!.errorUnableToFetchItineraries,
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Navi4AllColors.klRed,
-                                ),
+                                style: const TextStyle(fontSize: 16),
                               ),
                             ),
                           )
