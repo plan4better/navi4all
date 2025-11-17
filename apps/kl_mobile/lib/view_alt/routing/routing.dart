@@ -1,19 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 // import 'package:matomo_tracker/matomo_tracker.dart';
-import 'package:provider/provider.dart';
 // import 'package:navi4all/core/analytics/events.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
-import 'package:navi4all/view/place/place.dart';
-import 'package:navi4all/view/routing/map.dart';
 import 'package:navi4all/view/common/sliding_bottom_sheet.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
-import 'package:navi4all/view/search/search.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/core/processing_status.dart';
 import 'package:navi4all/services/routing.dart';
@@ -464,173 +459,8 @@ class RoutingState extends State<RoutingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          RoutingMap(
-            originPlace: _origin,
-            destinationPlace: _destination,
-            itineraryDetails: _itineraryDetails,
-            navigationStatus: _navigationStatus,
-            userPosition: _userPosition,
-          ),
-          SlidingBottomSheet(
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: SheetButton(
-                                    icon:
-                                        _navigationStatus ==
-                                            NavigationStatus.idle
-                                        ? Icons.play_arrow
-                                        : _navigationStatus ==
-                                              NavigationStatus.navigating
-                                        ? Icons.pause
-                                        : _navigationStatus ==
-                                              NavigationStatus.arrived
-                                        ? Icons.check
-                                        : Icons.play_arrow,
-                                    label:
-                                        _navigationStatus ==
-                                            NavigationStatus.idle
-                                        ? AppLocalizations.of(
-                                            context,
-                                          )!.routingScreenNavigationStartButton
-                                        : _navigationStatus ==
-                                              NavigationStatus.navigating
-                                        ? AppLocalizations.of(
-                                            context,
-                                          )!.routingScreenNavigationPauseButton
-                                        : _navigationStatus ==
-                                              NavigationStatus.arrived
-                                        ? AppLocalizations.of(
-                                            context,
-                                          )!.routingScreenNavigationDoneButton
-                                        : AppLocalizations.of(
-                                            context,
-                                          )!.routingScreenNavigationResumeButton,
-                                    onTap: () => _toggleNavigationState(),
-                                    shrinkWrap: false,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Ink(
-                                  decoration: ShapeDecoration(
-                                    shape: CircleBorder(),
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.tertiary,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      _audioStatus == AudioStatus.muted
-                                          ? Icons.volume_off
-                                          : Icons.volume_up,
-                                      color: Theme.of(
-                                        context,
-                                      ).textTheme.displayMedium?.color,
-                                    ),
-                                    onPressed: () => _toggleAudioState(),
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Ink(
-                                  decoration: ShapeDecoration(
-                                    shape: CircleBorder(),
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.tertiary,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.close_rounded,
-                                      color: Theme.of(
-                                        context,
-                                      ).textTheme.displayMedium?.color,
-                                    ),
-                                    onPressed: () {
-                                      _positionStream?.drain();
-                                      _positionStreamSubscription?.cancel();
-                                      _positionStream = null;
-                                      _positionStreamSubscription = null;
-                                      setState(() {
-                                        _navigationStatus =
-                                            NavigationStatus.idle;
-                                      });
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.place_rounded,
-                                    color: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium?.color,
-                                  ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    '${widget.itinerarySummary.duration ~/ 60} min',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  SizedBox(width: 6.0),
-                                  Icon(
-                                    Icons.circle,
-                                    size: 6,
-                                    color: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium?.color,
-                                  ),
-                                  SizedBox(width: 6.0),
-                                  Text(
-                                    getItineraryDistanceText(
-                                      widget.itinerarySummary,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(height: 0, color: Navi4AllColors.klPink),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            listItems: _processingStatus == ProcessingStatus.completed
-                ? _getInstructionTiles
-                : null,
-            body:
-                _processingStatus == ProcessingStatus.processing ||
-                    _processingStatus == ProcessingStatus.error
-                ? NavigationProcessingTile(processingStatus: _processingStatus)
-                : SizedBox.shrink(),
-            initSize: 0.4,
-            maxSize: 0.75,
-          ),
           SafeArea(
             child: Align(
               alignment: Alignment.topCenter,
@@ -682,30 +512,17 @@ class RoutingState extends State<RoutingScreen> {
                                         child: Row(
                                           children: [
                                             SizedBox(width: 8.0),
-                                            Padding(
-                                              padding: const EdgeInsets.all(
-                                                2.0,
-                                              ),
-                                              child: Material(
-                                                elevation: 2.0,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                                child: Container(
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Color(0xFF3685E2),
-                                                    border: Border.all(
-                                                      color: Navi4AllColors
-                                                          .klWhite,
-                                                      width: 3.0,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                            Icon(
+                                              _origin.id ==
+                                                      Navi4AllValues
+                                                          .userLocation
+                                                  ? Icons.my_location
+                                                  : Icons.place_rounded,
+                                              color: Theme.of(
+                                                context,
+                                              ).textTheme.displayMedium?.color,
                                             ),
-                                            SizedBox(width: 12),
+                                            SizedBox(width: 16),
                                             Expanded(
                                               child: Text(
                                                 _origin.id ==
@@ -778,7 +595,7 @@ class RoutingState extends State<RoutingScreen> {
                                           context,
                                         ).textTheme.displayMedium?.color,
                                       ),
-                                      SizedBox(width: 12),
+                                      SizedBox(width: 16),
                                       Expanded(
                                         child: Text(
                                           _destination.id ==
@@ -809,6 +626,162 @@ class RoutingState extends State<RoutingScreen> {
                   ),
                 ),
               ),
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                flex: 3,
+                                child: SheetButton(
+                                  icon:
+                                      _navigationStatus == NavigationStatus.idle
+                                      ? Icons.play_arrow
+                                      : _navigationStatus ==
+                                            NavigationStatus.navigating
+                                      ? Icons.pause
+                                      : _navigationStatus ==
+                                            NavigationStatus.arrived
+                                      ? Icons.check
+                                      : Icons.play_arrow,
+                                  label:
+                                      _navigationStatus == NavigationStatus.idle
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.routingScreenNavigationStartButton
+                                      : _navigationStatus ==
+                                            NavigationStatus.navigating
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.routingScreenNavigationPauseButton
+                                      : _navigationStatus ==
+                                            NavigationStatus.arrived
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.routingScreenNavigationDoneButton
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.routingScreenNavigationResumeButton,
+                                  onTap: () => _toggleNavigationState(),
+                                  shrinkWrap: false,
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Flexible(
+                                flex: 1,
+                                child: SheetButton(
+                                  icon: _audioStatus == AudioStatus.muted
+                                      ? Icons.volume_off
+                                      : Icons.volume_up,
+                                  onTap: () => _toggleAudioState(),
+                                  shrinkWrap: false,
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  size: 28,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium?.color,
+                                ),
+                                onPressed: () {
+                                  _positionStream?.drain();
+                                  _positionStreamSubscription?.cancel();
+                                  _positionStream = null;
+                                  _positionStreamSubscription = null;
+                                  setState(() {
+                                    _navigationStatus = NavigationStatus.idle;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.place_rounded,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium?.color,
+                                ),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  '${widget.itinerarySummary.duration ~/ 60} min',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                SizedBox(width: 6.0),
+                                Icon(
+                                  Icons.circle,
+                                  size: 6,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium?.color,
+                                ),
+                                SizedBox(width: 6.0),
+                                Text(
+                                  getItineraryDistanceText(
+                                    widget.itinerarySummary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(height: 0, color: Navi4AllColors.klPink),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                ListView.separated(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  itemCount: _getInstructionTiles.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      _getInstructionTiles[index],
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(
+                        height: 1,
+                        color: Navi4AllColors.klPink,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                ),
+                _processingStatus == ProcessingStatus.processing ||
+                        _processingStatus == ProcessingStatus.error
+                    ? Center(
+                        child: NavigationProcessingTile(
+                          processingStatus: _processingStatus,
+                        ),
+                      )
+                    : SizedBox.shrink(),
+              ],
             ),
           ),
         ],

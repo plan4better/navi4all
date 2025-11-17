@@ -6,18 +6,15 @@ import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/core/utils.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
+import 'package:navi4all/view/search/search.dart';
 // import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/favorites_controller.dart';
 // import 'package:navi4all/core/analytics/events.dart';
-import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
 import 'dart:core';
-
-import 'package:geolocator/geolocator.dart';
-// import 'package:navi4all/view/routing/routing.dart';
 
 class PlaceScreen extends StatefulWidget {
   const PlaceScreen({super.key});
@@ -34,7 +31,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
     _checkIfFavorite(
       Provider.of<PlaceController>(context, listen: false).place!,
     );
-    _fetchItineraries();
+    _initializeItineraries();
 
     super.initState();
   }
@@ -72,35 +69,15 @@ class _PlaceScreenState extends State<PlaceScreen> {
     });
   }
 
-  Future<void> _fetchItineraries() async {
-    // Check location permission status
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission != LocationPermission.whileInUse &&
-        permission != LocationPermission.always) {
-      return;
-    }
-
-    // Fetch user location
-    /* final userLatLng = await Geolocator.getCurrentPosition();
+  Future<void> _initializeItineraries() async {
+    // Initialize origin and destination places
     Place originPlace = Place(
       id: Navi4AllValues.userLocation,
-      name: Navi4AllValues.userLocation,
+      name: '',
       type: PlaceType.address,
       description: '',
       address: '',
-      coordinates: Coordinates(
-        lat: userLatLng.latitude,
-        lon: userLatLng.longitude,
-      ),
-    ); */
-    // TODO: Remove
-    Place originPlace = Place(
-      id: Navi4AllValues.userLocation,
-      name: Navi4AllValues.userLocation,
-      type: PlaceType.address,
-      description: '',
-      address: '',
-      coordinates: Coordinates(lat: 49.4305700521414, lon: 7.726379027294111),
+      coordinates: Coordinates(lat: 0.0, lon: 0.0),
     );
 
     Place destinationPlace = Provider.of<PlaceController>(
@@ -110,6 +87,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
 
     // Set itinerary parameters
     Provider.of<ItineraryController>(context, listen: false).setParameters(
+      context: context,
       originPlace: originPlace,
       destinationPlace: destinationPlace,
       modes: [Mode.TRANSIT],
@@ -126,45 +104,73 @@ class _PlaceScreenState extends State<PlaceScreen> {
         children: <Widget>[
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16.0,
-                horizontal: 24.0,
-              ),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
                   Row(
                     children: [
+                      SizedBox(width: 8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              placeController.place!.name,
+                              placeController.place != null
+                                  ? placeController.place!.name
+                                  : '...',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
+                                height: 1.25,
                               ),
                             ),
                             Text(
-                              placeController.place!.description,
+                              placeController.place != null
+                                  ? placeController.place!.description
+                                  : '...',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(width: 16),
-                      IconButton(
-                        onPressed: () =>
-                            _toggleFavorite(placeController.place!),
-                        icon: Icon(
-                          color: Theme.of(
-                            context,
-                          ).textTheme.displayMedium?.color,
-                          size: 28,
-                          _isFavorite ? Icons.star : Icons.star_border,
+                      SizedBox(width: 8),
+                      Ink(
+                        decoration: ShapeDecoration(
+                          shape: CircleBorder(),
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            _isFavorite ? Icons.star : Icons.star_border,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.displayMedium?.color,
+                          ),
+                          onPressed: () => placeController.place != null
+                              ? _toggleFavorite(placeController.place!)
+                              : null,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Ink(
+                        decoration: ShapeDecoration(
+                          shape: CircleBorder(),
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.displayMedium?.color,
+                          ),
+                          onPressed: () {
+                            placeController.reset();
+                            Navigator.of(context).pop();
+                          },
                         ),
                       ),
                     ],
@@ -242,45 +248,56 @@ class _PlaceScreenState extends State<PlaceScreen> {
                   ),
                   SizedBox(height: 16),
                   Consumer(
-                    builder: (context, ItineraryController controller, child) =>
-                        controller.itineraries.isNotEmpty
-                        ? Row(
-                            children: [
-                              Icon(
-                                controller.itineraries.first.legs.length > 1
-                                    ? Icons.directions_transit_outlined
-                                    : Icons.directions_walk_outlined,
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.displayMedium?.color,
-                              ),
-                              SizedBox(width: 8.0),
-                              Text(
-                                '${(controller.itineraries.first.duration / 60).round()} min',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(width: 6.0),
-                              Icon(
-                                Icons.circle,
-                                size: 6,
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.displayMedium?.color,
-                              ),
-                              SizedBox(width: 6.0),
-                              Text(
-                                getItineraryDistanceText(
-                                  controller.itineraries.first,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          )
-                        : SizedBox.shrink(),
+                    builder:
+                        (
+                          context,
+                          ItineraryController itineraryController,
+                          child,
+                        ) =>
+                            itineraryController.hasParametersSet &&
+                                itineraryController.itineraries.isNotEmpty
+                            ? Row(
+                                children: [
+                                  Icon(
+                                    itineraryController
+                                                .itineraries
+                                                .first
+                                                .legs
+                                                .length >
+                                            1
+                                        ? Icons.directions_transit_outlined
+                                        : Icons.directions_walk_outlined,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    '${(itineraryController.itineraries.first.duration / 60).round()} min',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(width: 6.0),
+                                  Icon(
+                                    Icons.circle,
+                                    size: 6,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
+                                  ),
+                                  SizedBox(width: 6.0),
+                                  Text(
+                                    getItineraryDistanceText(
+                                      itineraryController.itineraries.first,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              )
+                            : SizedBox.shrink(),
                   ),
                 ],
               ),
@@ -343,5 +360,62 @@ class _PlaceScreenState extends State<PlaceScreen> {
               ),
             ),
           ), */
+  }
+}
+
+class PlaceSearchBar extends StatelessWidget {
+  const PlaceSearchBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 32, left: 16, right: 16),
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(28),
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SearchScreen()),
+                );
+              },
+              child: Container(
+                height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(32),
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(width: 24),
+                    Icon(
+                      Icons.search,
+                      color: Theme.of(context).textTheme.displayMedium?.color,
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Consumer<PlaceController>(
+                        builder: (context, placeController, _) => Text(
+                          placeController.place != null
+                              ? placeController.place!.name
+                              : AppLocalizations.of(
+                                  context,
+                                )!.homeSearchButtonHint,
+                          style: const TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

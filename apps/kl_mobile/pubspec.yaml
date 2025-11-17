@@ -1,7 +1,7 @@
 name: navi4all
 description: ""
 publish_to: 'none'
-version: 0.0.2+4
+version: 0.0.2+6
 
 environment:
   sdk: ^3.8.1
@@ -43,8 +43,9 @@ flutter:
     - assets/base_map_light_thumbnail.png
     - assets/base_map_dark_thumbnail.png
     - assets/base_map_satellite_thumbnail.png
-    - assets/place.png
     - assets/user_position.png
     - assets/marker_walking.png
     - assets/marker_bus.png
     - assets/marker_train.png
+    - assets/place_general.png
+    - assets/place_vis_imp.png

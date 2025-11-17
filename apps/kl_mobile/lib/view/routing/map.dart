@@ -6,7 +6,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
-import 'package:navi4all/schemas/routing/coordinates.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/core/theme/profile_mode.dart';
+import 'package:navi4all/core/theme/values.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/theme_controller.dart';
 import 'package:navi4all/core/config.dart';
@@ -54,7 +56,12 @@ class _RoutingMapState extends State<RoutingMap> {
     final list4 = bytes4.buffer.asUint8List();
     _mapController.addImage("user_position.png", list4);
 
-    final bytes5 = await rootBundle.load('assets/place.png');
+    String assetMarkerPlace =
+        Provider.of<ThemeController>(context, listen: false).profileMode ==
+            ProfileMode.visionImpaired
+        ? Navi4AllValues.assetMarkerPlaceVisImp
+        : Navi4AllValues.assetMarkerPlaceGeneral;
+    final bytes5 = await rootBundle.load(assetMarkerPlace);
     final list5 = bytes5.buffer.asUint8List();
     _mapController.addImage("place.png", list5);
 
@@ -173,7 +180,7 @@ class _RoutingMapState extends State<RoutingMap> {
           widget.destinationPlace.coordinates.lon,
         ),
         iconImage: "place.png",
-        iconSize: 1,
+        iconSize: 0.9,
       ),
     );
   }
@@ -185,10 +192,15 @@ class _RoutingMapState extends State<RoutingMap> {
               .map((p) => LatLng(p.latitude, p.longitude))
               .toList()
         : _journeyPoints.map((p) => LatLng(p.latitude, p.longitude)).toList();
+    final color =
+        (Theme.of(context).textTheme.bodyMedium?.color ?? Navi4AllColors.klPink)
+            .toARGB32()
+            .toRadixString(16)
+            .substring(2);
     _mapController.addLine(
       LineOptions(
         geometry: polylinePoints,
-        lineColor: "#D82028",
+        lineColor: "#$color",
         lineWidth: widget.navigationStatus == NavigationStatus.navigating
             ? 8.0
             : 5.0,
@@ -218,9 +230,9 @@ class _RoutingMapState extends State<RoutingMap> {
               northeast: LatLng(maxLat, maxLng),
             ),
             left: 32,
-            top: 224,
+            top: 208,
             right: 32,
-            bottom: 320,
+            bottom: 336,
           ),
           duration: const Duration(seconds: 2),
         );

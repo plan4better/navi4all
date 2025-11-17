@@ -10,9 +10,10 @@ import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
 import 'package:navi4all/view/routing/routing.dart';
-import 'package:navi4all/view_alt/routing/itinerary_widget.dart';
+import 'package:navi4all/view/common/itinerary_widget.dart';
 import 'package:navi4all/view/search/search.dart';
 import 'package:provider/provider.dart';
+import 'package:navi4all/view_alt/routing/routing.dart' as routing_alt;
 
 class ItineraryScreen extends StatefulWidget {
   const ItineraryScreen({super.key});
@@ -52,6 +53,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       newJourneyTime.minute,
     );
     itineraryController.setParameters(
+      context: context,
       originPlace: itineraryController.originPlace!,
       destinationPlace: itineraryController.destinationPlace!,
       modes: itineraryController.modes!,
@@ -90,7 +92,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                   ),
                   child: IconButton(
                     icon: Icon(
-                      Icons.menu_rounded,
+                      Icons.tune_rounded,
                       color: Theme.of(context).textTheme.displayMedium?.color,
                     ),
                     onPressed: () {
@@ -118,7 +120,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                       color: Theme.of(context).textTheme.displayMedium?.color,
                     ),
                     onPressed: () {
-                      itineraryController.reset();
+                      itineraryController.reset(context);
                       Provider.of<PlaceController>(
                         context,
                         listen: false,
@@ -130,15 +132,16 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               ],
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 4),
           DefaultTabController(
             length: _modes.length,
-            initialIndex: _modes.keys.toList().indexOf(
-              itineraryController.modes!.first,
-            ),
+            initialIndex: itineraryController.hasParametersSet
+                ? _modes.keys.toList().indexOf(itineraryController.modes!.first)
+                : 0,
             child: TabBar(
               onTap: (index) {
                 itineraryController.setParameters(
+                  context: context,
                   originPlace: itineraryController.originPlace!,
                   destinationPlace: itineraryController.destinationPlace!,
                   modes: [_modes.keys.toList()[index]],
@@ -154,20 +157,20 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               ).textTheme.displayMedium?.color,
               labelColor: Theme.of(context).textTheme.displayMedium?.color,
               indicatorPadding: EdgeInsets.only(
-                bottom: 8.0,
-                left: 24.0,
-                right: 24.0,
+                bottom: 10.0,
+                left: 32.0,
+                right: 32.0,
               ),
               splashBorderRadius: BorderRadius.circular(16.0),
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
               dividerHeight: 0.0,
               tabs: [
                 Tab(
-                  icon: Icon(Icons.directions_walk_outlined),
+                  icon: Icon(Icons.directions_walk_rounded),
                   text: AppLocalizations.of(context)!.itineraryModeTabWalking,
                 ),
                 Tab(
-                  icon: Icon(Icons.directions_transit_outlined),
+                  icon: Icon(Icons.directions_transit_rounded),
                   text: AppLocalizations.of(
                     context,
                   )!.itineraryModeTabPublicTransport,
@@ -184,8 +187,13 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
 class ItineraryList extends StatefulWidget {
   final ScrollController scrollController;
+  final bool altMode;
 
-  const ItineraryList({super.key, required this.scrollController});
+  const ItineraryList({
+    super.key,
+    required this.scrollController,
+    this.altMode = false,
+  });
 
   @override
   State<ItineraryList> createState() => _ItineraryListState();
@@ -195,30 +203,99 @@ class _ItineraryListState extends State<ItineraryList> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ItineraryController>(
-      builder: (context, itineraryController, _) => ListView.separated(
-        controller: widget.scrollController,
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        itemBuilder: (context, index) => ItineraryWidget(
-          itinerary: itineraryController.itineraries[index],
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => RoutingScreen(
-                  originPlace: itineraryController.originPlace!,
-                  destinationPlace: itineraryController.destinationPlace!,
-                  itinerarySummary: itineraryController.itineraries[index],
-                ),
+      builder: (context, itineraryController, _) =>
+          itineraryController.state == ItineraryControllerState.idle &&
+              itineraryController.itineraries.isNotEmpty
+          ? ListView.separated(
+              controller: widget.scrollController,
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              itemBuilder: (context, index) => ItineraryWidget(
+                itinerary: itineraryController.itineraries[index],
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        if (!widget.altMode) {
+                          return RoutingScreen(
+                            originPlace: itineraryController.originPlace!,
+                            destinationPlace:
+                                itineraryController.destinationPlace!,
+                            itinerarySummary:
+                                itineraryController.itineraries[index],
+                          );
+                        }
+                        return routing_alt.RoutingScreen(
+                          originPlace: itineraryController.originPlace!,
+                          destinationPlace:
+                              itineraryController.destinationPlace!,
+                          itinerarySummary:
+                              itineraryController.itineraries[index],
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-        separatorBuilder: (_, __) =>
-            Divider(height: 0, color: Navi4AllColors.klPink),
-        itemCount: itineraryController.itineraries.length,
-      ),
+              separatorBuilder: (_, __) =>
+                  Divider(height: 0, color: Navi4AllColors.klPink),
+              itemCount: itineraryController.itineraries.length,
+            )
+          : ProgressWidget(state: itineraryController.state),
     );
   }
+}
+
+class ProgressWidget extends StatelessWidget {
+  final ItineraryControllerState state;
+
+  const ProgressWidget({super.key, required this.state});
+
+  IconData get icon {
+    switch (state) {
+      case ItineraryControllerState.idle:
+        return Icons.error_outline;
+      case ItineraryControllerState.refreshing:
+        return Icons.directions_outlined;
+      case ItineraryControllerState.error:
+        return Icons.error_outline;
+    }
+  }
+
+  String message(BuildContext context) {
+    switch (state) {
+      case ItineraryControllerState.idle:
+        return AppLocalizations.of(context)!.navigationNoRouteFound;
+      case ItineraryControllerState.refreshing:
+        return AppLocalizations.of(context)!.navigationGettingDirections;
+      case ItineraryControllerState.error:
+        return AppLocalizations.of(context)!.navigationNoRouteFound;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: Theme.of(context).textTheme.displayMedium?.color,
+            size: 48,
+          ),
+          SizedBox(height: 16),
+          Text(
+            message(context),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class OrigDestPicker extends StatefulWidget {
@@ -247,6 +324,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
     );
 
     itineraryController.setParameters(
+      context: context,
       originPlace: originPlace,
       destinationPlace: itineraryController.destinationPlace!,
       modes: itineraryController.modes!,
@@ -273,6 +351,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
     );
 
     itineraryController.setParameters(
+      context: context,
       originPlace: itineraryController.originPlace!,
       destinationPlace: destinationPlace,
       modes: itineraryController.modes!,
@@ -290,6 +369,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
     final destinationPlace = itineraryController.destinationPlace;
 
     itineraryController.setParameters(
+      context: context,
       originPlace: destinationPlace!,
       destinationPlace: originPlace!,
       modes: itineraryController.modes!,
@@ -315,15 +395,18 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Semantics(
-                    label: AppLocalizations.of(context)!
-                        .origDestPickerOriginSemantic(
-                          itineraryController.originPlace!.id ==
-                                  Navi4AllValues.userLocation
-                              ? AppLocalizations.of(
-                                  context,
-                                )!.origDestCurrentLocation
-                              : itineraryController.originPlace!.name,
-                        ),
+                    label: itineraryController.hasParametersSet
+                        ? AppLocalizations.of(
+                            context,
+                          )!.origDestPickerOriginSemantic(
+                            itineraryController.originPlace!.id ==
+                                    Navi4AllValues.userLocation
+                                ? AppLocalizations.of(
+                                    context,
+                                  )!.origDestCurrentLocation
+                                : itineraryController.originPlace!.name,
+                          )
+                        : '',
                     excludeSemantics: true,
                     child: InkWell(
                       onTap: _onOriginTap,
@@ -344,46 +427,43 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                         child: Row(
                           children: [
                             SizedBox(width: 8.0),
-                            Icon(
-                              itineraryController.originPlace!.id ==
-                                      Navi4AllValues.userLocation
-                                  ? Icons.my_location
-                                  : Icons.place_rounded,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.displayMedium?.color,
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Material(
+                                elevation: 2.0,
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Container(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xFF3685E2),
+                                    border: Border.all(
+                                      color: Navi4AllColors.klWhite,
+                                      width: 3.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                itineraryController.originPlace!.id ==
-                                        Navi4AllValues.userLocation
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.origDestCurrentLocation
-                                    : itineraryController.originPlace!.name,
+                                itineraryController.hasParametersSet
+                                    ? itineraryController.originPlace!.id ==
+                                              Navi4AllValues.userLocation
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.origDestCurrentLocation
+                                          : itineraryController
+                                                .originPlace!
+                                                .name
+                                    : '...',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 16.0),
                               ),
                             ),
-                            /* Material(
-                              child: Ink(
-                                decoration: ShapeDecoration(
-                                  shape: CircleBorder(),
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.more_vert_outlined,
-                                    color: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium?.color,
-                                  ),
-                                  onPressed: () {},
-                                ),
-                              ),
-                            ), */
                             SizedBox(width: 48.0, height: 48.0),
                           ],
                         ),
@@ -394,12 +474,14 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                   Semantics(
                     label: AppLocalizations.of(context)!
                         .origDestPickerDestinationSemantic(
-                          itineraryController.destinationPlace!.id ==
-                                  Navi4AllValues.userLocation
-                              ? AppLocalizations.of(
-                                  context,
-                                )!.origDestCurrentLocation
-                              : itineraryController.destinationPlace!.name,
+                          itineraryController.hasParametersSet
+                              ? itineraryController.destinationPlace!.id ==
+                                        Navi4AllValues.userLocation
+                                    ? AppLocalizations.of(
+                                        context,
+                                      )!.origDestCurrentLocation
+                                    : itineraryController.destinationPlace!.name
+                              : '',
                         ),
                     excludeSemantics: true,
                     child: InkWell(
@@ -419,25 +501,26 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                           children: [
                             SizedBox(width: 12.0),
                             Icon(
-                              itineraryController.destinationPlace!.id ==
-                                      Navi4AllValues.userLocation
-                                  ? Icons.my_location
-                                  : Icons.place_rounded,
+                              Icons.place_rounded,
                               color: Theme.of(
                                 context,
                               ).textTheme.displayMedium?.color,
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                itineraryController.destinationPlace!.id ==
-                                        Navi4AllValues.userLocation
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.origDestCurrentLocation
-                                    : itineraryController
-                                          .destinationPlace!
-                                          .name,
+                                itineraryController.hasParametersSet
+                                    ? itineraryController
+                                                  .destinationPlace!
+                                                  .id ==
+                                              Navi4AllValues.userLocation
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.origDestCurrentLocation
+                                          : itineraryController
+                                                .destinationPlace!
+                                                .name
+                                    : '...',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

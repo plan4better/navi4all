@@ -4,6 +4,8 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:navi4all/core/theme/profile_mode.dart';
+import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/theme_controller.dart';
@@ -27,7 +29,12 @@ class _PlaceMapState extends State<PlaceMap> {
     _mapController.onSymbolTapped.clear();
 
     // Load custom marker icons
-    final bytes4 = await rootBundle.load('assets/place.png');
+    String assetMarkerPlace =
+        Provider.of<ThemeController>(context, listen: false).profileMode ==
+            ProfileMode.visionImpaired
+        ? Navi4AllValues.assetMarkerPlaceVisImp
+        : Navi4AllValues.assetMarkerPlaceGeneral;
+    final bytes4 = await rootBundle.load(assetMarkerPlace);
     final list4 = bytes4.buffer.asUint8List();
     _mapController.addImage("place.png", list4);
 
@@ -82,7 +89,7 @@ class _PlaceMapState extends State<PlaceMap> {
           widget.place.coordinates.lon,
         ),
         iconImage: "place.png",
-        iconSize: 1,
+        iconSize: 0.9,
       ),
     );
   }

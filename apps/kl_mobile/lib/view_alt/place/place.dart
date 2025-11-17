@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/favorites_controller.dart';
+import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
+import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/schemas/routing/coordinates.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:provider/provider.dart';
-import '../routing/route_options.dart';
+import '../itinerary/itinerary.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
-import 'package:navi4all/core/theme/colors.dart';
 
 class PlaceScreen extends StatefulWidget {
   const PlaceScreen({super.key});
@@ -24,8 +26,35 @@ class _PlaceScreenState extends State<PlaceScreen> {
     _checkIfFavorite(
       Provider.of<PlaceController>(context, listen: false).place!,
     );
+    _initializeItineraries();
 
     super.initState();
+  }
+
+  Future<void> _initializeItineraries() async {
+    // Initialize origin and destination places
+    Place originPlace = Place(
+      id: Navi4AllValues.userLocation,
+      name: '',
+      type: PlaceType.address,
+      description: '',
+      address: '',
+      coordinates: Coordinates(lat: 0.0, lon: 0.0),
+    );
+
+    Place destinationPlace = Provider.of<PlaceController>(
+      context,
+      listen: false,
+    ).place!;
+
+    // Set itinerary parameters
+    Provider.of<ItineraryController>(context, listen: false).setParameters(
+      context: context,
+      originPlace: originPlace,
+      destinationPlace: destinationPlace,
+      modes: [Mode.TRANSIT],
+      time: DateTime.now(),
+    );
   }
 
   Future<void> _checkIfFavorite(Place place) async {
@@ -63,7 +92,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                SizedBox(height: 64),
+                SizedBox(height: 128),
                 Semantics(
                   label: placeController.place!.name,
                   excludeSemantics: true,
@@ -99,12 +128,23 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       )!.addressInfoWalkingRoutesButtonSemantic,
                       style: AccessibleButtonStyle.red,
                       onTap: () {
+                        final itineraryController =
+                            Provider.of<ItineraryController>(
+                              context,
+                              listen: false,
+                            );
+                        itineraryController.setParameters(
+                          context: context,
+                          originPlace: itineraryController.originPlace!,
+                          destinationPlace:
+                              itineraryController.destinationPlace!,
+                          modes: [Mode.WALK],
+                          time: itineraryController.time!,
+                          isArrivalTime: itineraryController.isArrivalTime!,
+                        );
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => RouteOptionsScreen(
-                              mode: Mode.WALK,
-                              place: placeController.place!,
-                            ),
+                            builder: (context) => ItineraryScreen(),
                           ),
                         );
                       },
@@ -119,12 +159,23 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       )!.addressInfoPublicTransportRoutesButtonSemantic,
                       style: AccessibleButtonStyle.red,
                       onTap: () {
+                        final itineraryController =
+                            Provider.of<ItineraryController>(
+                              context,
+                              listen: false,
+                            );
+                        itineraryController.setParameters(
+                          context: context,
+                          originPlace: itineraryController.originPlace!,
+                          destinationPlace:
+                              itineraryController.destinationPlace!,
+                          modes: [Mode.TRANSIT],
+                          time: itineraryController.time!,
+                          isArrivalTime: itineraryController.isArrivalTime!,
+                        );
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => RouteOptionsScreen(
-                              mode: Mode.TRANSIT,
-                              place: placeController.place!,
-                            ),
+                            builder: (context) => ItineraryScreen(),
                           ),
                         );
                       },

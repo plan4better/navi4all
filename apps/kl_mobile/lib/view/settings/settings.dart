@@ -174,7 +174,7 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     ListTile(
                       leading: Icon(
-                        Icons.visibility_outlined,
+                        Icons.visibility_rounded,
                         color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
@@ -194,7 +194,7 @@ class SettingsScreen extends StatelessWidget {
                     Divider(color: Navi4AllColors.klPink, height: 0),
                     ListTile(
                       leading: Icon(
-                        Icons.play_circle_outline,
+                        Icons.play_circle_rounded,
                         color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
@@ -216,7 +216,7 @@ class SettingsScreen extends StatelessWidget {
                     Divider(color: Navi4AllColors.klPink, height: 0),
                     ListTile(
                       leading: Icon(
-                        Icons.feedback_outlined,
+                        Icons.feedback_rounded,
                         color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
@@ -238,7 +238,7 @@ class SettingsScreen extends StatelessWidget {
                     Divider(color: Navi4AllColors.klPink, height: 0),
                     ListTile(
                       leading: Icon(
-                        Icons.support_agent_outlined,
+                        Icons.support_agent_rounded,
                         color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(
@@ -256,7 +256,7 @@ class SettingsScreen extends StatelessWidget {
                     Divider(color: Navi4AllColors.klPink, height: 0),
                     ListTile(
                       leading: Icon(
-                        Icons.privacy_tip_outlined,
+                        Icons.privacy_tip_rounded,
                         color: Theme.of(context).textTheme.displayMedium?.color,
                       ),
                       title: Text(

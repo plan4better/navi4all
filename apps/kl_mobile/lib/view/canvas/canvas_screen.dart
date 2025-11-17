@@ -5,6 +5,7 @@ import 'package:navi4all/view/canvas/canvas_map.dart';
 import 'package:navi4all/view/canvas/canvas_sheet.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/view/itinerary/itinerary.dart';
+import 'package:navi4all/view/place/place.dart';
 import 'package:provider/provider.dart';
 
 class CanvasScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class CanvasScreen extends StatefulWidget {
 class _CanvasScreenState extends State<CanvasScreen> {
   final Map<CanvasControllerState, Widget> _overlayWidgets = {
     CanvasControllerState.home: Container(),
-    CanvasControllerState.place: Container(),
+    CanvasControllerState.place: PlaceSearchBar(),
     CanvasControllerState.itinerary: OrigDestPicker(),
     CanvasControllerState.navigating: Container(),
   };

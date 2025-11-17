@@ -1,6 +1,10 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:navi4all/core/theme/values.dart';
+import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/schemas/routing/coordinates.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
@@ -36,6 +40,7 @@ class ItineraryController extends ChangeNotifier {
       _isArrivalTime != null;
 
   void setParameters({
+    required BuildContext context,
     required Place originPlace,
     required Place destinationPlace,
     required List<Mode> modes,
@@ -48,20 +53,20 @@ class ItineraryController extends ChangeNotifier {
     _time = time;
     _isArrivalTime = isArrivalTime;
 
-    _refresh();
+    _refresh(context);
   }
 
-  void reset() {
+  void reset(BuildContext context) {
     _originPlace = null;
     _destinationPlace = null;
     _modes = null;
     _time = null;
     _isArrivalTime = null;
 
-    _refresh();
+    _refresh(context);
   }
 
-  Future<void> _refresh() async {
+  Future<void> _refresh(BuildContext context) async {
     _state = ItineraryControllerState.refreshing;
     _itineraries.clear();
     notifyListeners();
@@ -71,6 +76,47 @@ class ItineraryController extends ChangeNotifier {
       _state = ItineraryControllerState.idle;
       notifyListeners();
       return;
+    }
+
+    // Refresh user location if required
+    if (_originPlace!.id == Navi4AllValues.userLocation) {
+      Position? userLocation = await _getUserLocation(context);
+      if (userLocation != null) {
+        _originPlace = Place(
+          id: Navi4AllValues.userLocation,
+          name: AppLocalizations.of(context)!.origDestCurrentLocation,
+          type: PlaceType.address,
+          address: '',
+          description: '',
+          coordinates: Coordinates(
+            lat: userLocation.latitude,
+            lon: userLocation.longitude,
+          ),
+        );
+      } else {
+        reset(context);
+        return;
+      }
+    }
+
+    if (_destinationPlace!.id == Navi4AllValues.userLocation) {
+      Position? userLocation = await _getUserLocation(context);
+      if (userLocation != null) {
+        _destinationPlace = Place(
+          id: Navi4AllValues.userLocation,
+          name: AppLocalizations.of(context)!.origDestCurrentLocation,
+          type: PlaceType.address,
+          address: '',
+          description: '',
+          coordinates: Coordinates(
+            lat: userLocation.latitude,
+            lon: userLocation.longitude,
+          ),
+        );
+      } else {
+        reset(context);
+        return;
+      }
     }
 
     try {
@@ -88,13 +134,6 @@ class ItineraryController extends ChangeNotifier {
       // Update results
       _itineraries.addAll(results);
 
-      // Post-process results
-      /* _itineraries.sort((a, b) {
-        int durationCompare = a.duration.compareTo(b.duration);
-        if (durationCompare != 0) return durationCompare;
-        return a.legs.length.compareTo(b.legs.length);
-      }); */
-
       await Future.delayed(const Duration(milliseconds: 200));
     } catch (e) {
       _state = ItineraryControllerState.error;
@@ -104,6 +143,31 @@ class ItineraryController extends ChangeNotifier {
 
     _state = ItineraryControllerState.idle;
     notifyListeners();
+  }
+
+  Future<Position?> _getUserLocation(BuildContext context) async {
+    // Check location permission status
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.whileInUse &&
+        permission != LocationPermission.always) {
+      // User will need to enable permissions from app settings
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.userLocationDeniedSnackbarText,
+          ),
+        ),
+      );
+      return null;
+    }
+
+    // Fetch user location
+    return await Geolocator.getCurrentPosition();
   }
 }
 

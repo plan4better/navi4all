@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/theme_controller.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
@@ -8,6 +9,7 @@ import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/view/home/home.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:navi4all/core/theme/profile_mode.dart';
+import 'package:provider/provider.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -199,7 +201,13 @@ class _ProfileSelectionScreenState extends State<_ProfileSelectionScreen> {
                   selected: _selectedIndex == index,
                   onTap: () {
                     setState(() => _selectedIndex = index);
-                    PreferenceHelper.setProfileMode(ProfileMode.values[index]);
+                    PreferenceHelper.setProfileMode(
+                      ProfileMode.values[_selectedIndex],
+                    );
+                    Provider.of<ThemeController>(
+                      context,
+                      listen: false,
+                    ).setProfileMode(ProfileMode.values[_selectedIndex]);
                   },
                 ),
               ),
