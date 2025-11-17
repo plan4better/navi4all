@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
+import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/view/canvas/canvas_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/autocomplete_controller.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
-import 'package:navi4all/view/place/place.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -157,6 +157,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                     context,
                                     listen: false,
                                   ).setState(CanvasControllerState.place);
+                                  Provider.of<PlaceController>(
+                                    context,
+                                    listen: false,
+                                  ).setPlace(place);
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => CanvasScreen(),

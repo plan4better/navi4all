@@ -402,22 +402,22 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get navigationGettingDrivingDirections => 'Fahrtroute wird berechnet';
+  String get navigationGettingDirections => 'Wegbeschreibung wird erstellt';
 
   @override
   String get navigationNoRouteFound => 'Keine Route gefunden';
 
   @override
-  String get routingDisclaimerTitle => 'Attention';
+  String get routingDisclaimerTitle => 'Achtung';
 
   @override
-  String get routingDisclaimerMessage => 'Navigation guidance provided by this app is currently under beta testing and may be incorrect. Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.';
+  String get routingDisclaimerMessage => 'Die von dieser App bereitgestellte Navigationsanleitung befindet sich derzeit in der Beta-Testphase und kann fehlerhaft sein. Bitte seien Sie vorsichtig und überprüfen Sie die Routeninformationen selbst. Befolgen Sie immer die örtlichen Verkehrsregeln und -vorschriften und achten Sie auf die Straßenverhältnisse.';
 
   @override
-  String get routingDisclaimerCancelButton => 'Cancel';
+  String get routingDisclaimerCancelButton => 'Abbrechen';
 
   @override
-  String get routingDisclaimerAcceptButton => 'Continue';
+  String get routingDisclaimerAcceptButton => 'Fortfahren';
 
   @override
   String get errorUnableToFetchTravelTime => 'Reisezeit konnte nicht abgerufen werden, bitte versuchen Sie es später erneut.';

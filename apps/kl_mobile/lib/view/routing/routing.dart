@@ -979,7 +979,7 @@ class NavigationProcessingTile extends StatelessWidget {
         Icon(
           processingStatus == ProcessingStatus.error
               ? Icons.error_outline
-              : Icons.directions_car_filled_outlined,
+              : Icons.directions_outlined,
           size: 48,
           color: Navi4AllColors.klPink,
         ),
@@ -987,9 +987,7 @@ class NavigationProcessingTile extends StatelessWidget {
         Text(
           processingStatus == ProcessingStatus.error
               ? AppLocalizations.of(context)!.navigationNoRouteFound
-              : AppLocalizations.of(
-                  context,
-                )!.navigationGettingDrivingDirections,
+              : AppLocalizations.of(context)!.navigationGettingDirections,
           style: const TextStyle(fontSize: 18, color: Navi4AllColors.klPink),
         ),
       ],

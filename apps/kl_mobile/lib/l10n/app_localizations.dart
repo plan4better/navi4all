@@ -821,11 +821,11 @@ abstract class AppLocalizations {
   /// **'in {distance} kilometres'**
   String navigationStepDistanceToActionKilometres(String distance);
 
-  /// No description provided for @navigationGettingDrivingDirections.
+  /// No description provided for @navigationGettingDirections.
   ///
   /// In en, this message translates to:
-  /// **'Getting driving directions'**
-  String get navigationGettingDrivingDirections;
+  /// **'Getting directions'**
+  String get navigationGettingDirections;
 
   /// No description provided for @navigationNoRouteFound.
   ///

@@ -402,7 +402,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get navigationGettingDrivingDirections => 'Getting driving directions';
+  String get navigationGettingDirections => 'Getting directions';
 
   @override
   String get navigationNoRouteFound => 'No route found';
