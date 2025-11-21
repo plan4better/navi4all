@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/core/utils.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -13,8 +14,6 @@ class ItineraryWidget extends StatelessWidget {
     required this.itinerary,
     required this.onTap,
   });
-
-  String get _duration => '${(itinerary.duration / 60).round()} min';
 
   String get _startTime => DateFormat.Hm().format(itinerary.startTime);
 
@@ -34,7 +33,7 @@ class ItineraryWidget extends StatelessWidget {
       onTap: () => onTap(),
       child: Semantics(
         label: AppLocalizations.of(context)!.journeyOptionSemantic(
-          _duration,
+          TextFormatter.formatDurationText(itinerary.duration),
           _startTime,
           _endTime,
           _legSummaryDescription,
@@ -47,16 +46,13 @@ class ItineraryWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _duration,
+                  TextFormatter.formatDurationText(itinerary.duration),
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 20,
                   ),
                 ),
-                Text(
-                  '$_startTime - $_endTime',
-                  style: const TextStyle(fontSize: 16),
-                ),
+                Text('$_startTime - $_endTime'),
                 const SizedBox(height: 4),
                 Row(
                   children: itinerary.legs.map((legSummary) {
@@ -99,7 +95,9 @@ class ItineraryWidget extends StatelessWidget {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                '${(legSummary.duration / 60).round()} min',
+                                TextFormatter.formatDurationText(
+                                  legSummary.duration,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),

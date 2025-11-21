@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
+import 'package:navi4all/controllers/profile_controller.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/icons.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
+import 'package:navi4all/view/common/accessible_icon_button.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
+import 'package:navi4all/view/itinerary/itinerary_options.dart';
 import 'package:navi4all/view/routing/routing.dart';
 import 'package:navi4all/view/common/itinerary_widget.dart';
 import 'package:navi4all/view/search/search.dart';
@@ -27,6 +30,33 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     Mode.WALK: ModeIcons.get(Mode.WALK),
     Mode.TRANSIT: ModeIcons.get(Mode.TRANSIT),
   };
+  bool _isDefaultRoutingRequestConfig = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _registerListeners();
+  }
+
+  void _registerListeners() {
+    // Routing request config check
+    _checkIsDefaultRoutingRequestConfig();
+    Provider.of<ProfileController>(
+      context,
+      listen: false,
+    ).addListener(_checkIsDefaultRoutingRequestConfig);
+  }
+
+  Future<void> _checkIsDefaultRoutingRequestConfig() async {
+    final profileController = Provider.of<ProfileController>(
+      context,
+      listen: false,
+    );
+    _isDefaultRoutingRequestConfig =
+        await profileController.isDefaultRoutingRequestConfig;
+    setState(() {});
+  }
 
   Future<void> _showJourneyTimePicker() async {
     final TimeOfDay? newJourneyTime = await showTimePicker(
@@ -56,9 +86,38 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       context: context,
       originPlace: itineraryController.originPlace!,
       destinationPlace: itineraryController.destinationPlace!,
-      modes: itineraryController.modes!,
+      primaryMode: itineraryController.primaryMode!,
       time: updatedDateTime,
       isArrivalTime: itineraryController.isArrivalTime!,
+    );
+  }
+
+  Future<void> _showItineraryOptions() async {
+    var _ = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ItineraryOptions(
+          routingMode: Provider.of<ItineraryController>(
+            context,
+            listen: false,
+          ).primaryMode!,
+        ),
+      ),
+    );
+
+    ItineraryController itineraryController = Provider.of<ItineraryController>(
+      context,
+      listen: false,
+    );
+    if (!itineraryController.hasParametersSet) {
+      super.dispose();
+      return;
+    }
+    itineraryController.setParameters(
+      context: context,
+      originPlace: itineraryController.originPlace!,
+      destinationPlace: itineraryController.destinationPlace!,
+      time: itineraryController.time!,
+      primaryMode: itineraryController.primaryMode!,
     );
   }
 
@@ -85,49 +144,26 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                   onTap: _showJourneyTimePicker,
                 ),
                 Spacer(),
-                Ink(
-                  decoration: ShapeDecoration(
-                    shape: CircleBorder(),
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.tune_rounded,
-                      color: Theme.of(context).textTheme.displayMedium?.color,
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.featureComingSoonMessage,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                SizedBox(width: 8),
+                Consumer<ProfileController>(
+                  builder: (context, profileController, _) =>
+                      AccessibleIconButton(
+                        icon: Icons.tune_rounded,
+                        onTap: _showItineraryOptions,
+                        hasNotification: !_isDefaultRoutingRequestConfig,
+                      ),
                 ),
                 SizedBox(width: 8),
-                Ink(
-                  decoration: ShapeDecoration(
-                    shape: CircleBorder(),
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: Theme.of(context).textTheme.displayMedium?.color,
-                    ),
-                    onPressed: () {
-                      itineraryController.reset(context);
-                      Provider.of<PlaceController>(
-                        context,
-                        listen: false,
-                      ).reset();
-                      Navigator.of(context).pop();
-                    },
-                  ),
+                AccessibleIconButton(
+                  icon: Icons.close_rounded,
+                  onTap: () {
+                    itineraryController.reset(context);
+                    Provider.of<PlaceController>(
+                      context,
+                      listen: false,
+                    ).reset();
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             ),
@@ -136,7 +172,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
           DefaultTabController(
             length: _modes.length,
             initialIndex: itineraryController.hasParametersSet
-                ? _modes.keys.toList().indexOf(itineraryController.modes!.first)
+                ? _modes.keys.toList().indexOf(itineraryController.primaryMode!)
                 : 0,
             child: TabBar(
               onTap: (index) {
@@ -144,26 +180,31 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                   context: context,
                   originPlace: itineraryController.originPlace!,
                   destinationPlace: itineraryController.destinationPlace!,
-                  modes: [_modes.keys.toList()[index]],
+                  primaryMode: _modes.keys.toList()[index],
                   time: itineraryController.time!,
                   isArrivalTime: itineraryController.isArrivalTime!,
                 );
               },
               labelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Theme.of(context).textTheme.displayMedium?.color,
               unselectedLabelColor: Theme.of(
                 context,
               ).textTheme.displayMedium?.color,
               labelColor: Theme.of(context).textTheme.displayMedium?.color,
-              indicatorPadding: EdgeInsets.only(
-                bottom: 10.0,
-                left: 32.0,
-                right: 32.0,
+              indicatorPadding: EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 6.0,
               ),
               splashBorderRadius: BorderRadius.circular(16.0),
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               dividerHeight: 0.0,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(32.0),
+                border: Border.all(
+                  color: Theme.of(context).textTheme.displayMedium!.color!,
+                  width: 2.0,
+                ),
+              ),
               tabs: [
                 Tab(
                   icon: Icon(Icons.directions_walk_rounded),
@@ -327,7 +368,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
       context: context,
       originPlace: originPlace,
       destinationPlace: itineraryController.destinationPlace!,
-      modes: itineraryController.modes!,
+      primaryMode: itineraryController.primaryMode!,
       time: itineraryController.time!,
       isArrivalTime: itineraryController.isArrivalTime!,
     );
@@ -354,7 +395,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
       context: context,
       originPlace: itineraryController.originPlace!,
       destinationPlace: destinationPlace,
-      modes: itineraryController.modes!,
+      primaryMode: itineraryController.primaryMode!,
       time: itineraryController.time!,
       isArrivalTime: itineraryController.isArrivalTime!,
     );
@@ -372,7 +413,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
       context: context,
       originPlace: destinationPlace!,
       destinationPlace: originPlace!,
-      modes: itineraryController.modes!,
+      primaryMode: itineraryController.primaryMode!,
       time: itineraryController.time!,
       isArrivalTime: itineraryController.isArrivalTime!,
     );
@@ -385,7 +426,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
       child: Material(
         elevation: 4.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         child: Row(
           children: [
@@ -411,8 +452,8 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                     child: InkWell(
                       onTap: _onOriginTap,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24.0),
-                        topRight: Radius.circular(24.0),
+                        topLeft: Radius.circular(16.0),
+                        topRight: Radius.circular(16.0),
                       ),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -421,7 +462,7 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(24.0),
+                            top: Radius.circular(16.0),
                           ),
                         ),
                         child: Row(
@@ -487,14 +528,14 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                     child: InkWell(
                       onTap: _onDestinationTap,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(24.0),
-                        bottomRight: Radius.circular(24.0),
+                        bottomLeft: Radius.circular(16.0),
+                        bottomRight: Radius.circular(16.0),
                       ),
                       child: Container(
                         padding: const EdgeInsets.all(4.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(24.0),
+                            bottom: Radius.circular(16.0),
                           ),
                         ),
                         child: Row(
@@ -530,24 +571,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                               ),
                             ),
                             SizedBox(width: 16.0),
-                            Material(
-                              borderRadius: BorderRadius.circular(24.0),
-                              child: Ink(
-                                decoration: ShapeDecoration(
-                                  shape: CircleBorder(),
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(
-                                    Icons.swap_vert_outlined,
-                                    color: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium?.color,
-                                  ),
-                                  onPressed: _swapOriginDestination,
-                                ),
-                              ),
+                            AccessibleIconButton(
+                              icon: Icons.swap_vert_rounded,
+                              onTap: _swapOriginDestination,
                             ),
                           ],
                         ),

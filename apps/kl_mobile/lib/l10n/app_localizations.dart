@@ -892,6 +892,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change Profile'**
   String get settingsOptionChangeAppProfile;
+
+  /// No description provided for @modeBicycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bicycle'**
+  String get modeBicycle;
+
+  /// No description provided for @modeBus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get modeBus;
+
+  /// No description provided for @modeCableCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Cable Car'**
+  String get modeCableCar;
+
+  /// No description provided for @modeCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get modeCar;
+
+  /// No description provided for @modeCoach.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get modeCoach;
+
+  /// No description provided for @modeFerry.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferry'**
+  String get modeFerry;
+
+  /// No description provided for @modeFunicular.
+  ///
+  /// In en, this message translates to:
+  /// **'Funicular'**
+  String get modeFunicular;
+
+  /// No description provided for @modeGondola.
+  ///
+  /// In en, this message translates to:
+  /// **'Gondola'**
+  String get modeGondola;
+
+  /// No description provided for @modeRail.
+  ///
+  /// In en, this message translates to:
+  /// **'Train'**
+  String get modeRail;
+
+  /// No description provided for @modeSubway.
+  ///
+  /// In en, this message translates to:
+  /// **'U-Bahn'**
+  String get modeSubway;
+
+  /// No description provided for @modeTram.
+  ///
+  /// In en, this message translates to:
+  /// **'Tram'**
+  String get modeTram;
+
+  /// No description provided for @modeTransit.
+  ///
+  /// In en, this message translates to:
+  /// **'Transit'**
+  String get modeTransit;
+
+  /// No description provided for @modeWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk'**
+  String get modeWalk;
+
+  /// No description provided for @modeTrolleybus.
+  ///
+  /// In en, this message translates to:
+  /// **'Trolleybus'**
+  String get modeTrolleybus;
+
+  /// No description provided for @modeMonorail.
+  ///
+  /// In en, this message translates to:
+  /// **'Monorail'**
+  String get modeMonorail;
+
+  /// No description provided for @itineraryOptionsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey Options'**
+  String get itineraryOptionsScreenTitle;
+
+  /// No description provided for @itineraryOptionsScreenRoutingProfileItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing profile'**
+  String get itineraryOptionsScreenRoutingProfileItem;
+
+  /// No description provided for @itineraryOptionsScreenWalkingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Walking'**
+  String get itineraryOptionsScreenWalkingTitle;
+
+  /// No description provided for @itineraryOptionsScreenWalkingSpeedOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get itineraryOptionsScreenWalkingSpeedOption;
+
+  /// No description provided for @itineraryOptionsScreenWalkingAvoidOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid walking'**
+  String get itineraryOptionsScreenWalkingAvoidOption;
+
+  /// No description provided for @itineraryOptionsScreenModesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transit Modes'**
+  String get itineraryOptionsScreenModesTitle;
+
+  /// No description provided for @itineraryOptionsScreenBicycleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bicycle'**
+  String get itineraryOptionsScreenBicycleTitle;
+
+  /// No description provided for @itineraryOptionsScreenBicycleSpeedOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get itineraryOptionsScreenBicycleSpeedOption;
+
+  /// No description provided for @itineraryOptionsScreenApplyButtonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get itineraryOptionsScreenApplyButtonTitle;
+
+  /// No description provided for @itineraryOptionsScreenResetButtonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get itineraryOptionsScreenResetButtonTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

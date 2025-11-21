@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:navi4all/core/theme/profile_mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
+import 'package:navi4all/schemas/routing/request_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:navi4all/core/theme/base_map_style.dart';
 
@@ -11,6 +12,7 @@ String keyFavorites = "kl_favorites";
 String keyProfileMode = "kl_profile_mode";
 String keyThemeMode = "kl_theme_mode";
 String keyBaseMapStyle = "kl_base_map_style";
+String keyRoutingRequestConfig = "kl_routing_request_config";
 
 class PreferenceHelper {
   static Future<bool> isOnboardingComplete() async {
@@ -20,7 +22,7 @@ class PreferenceHelper {
 
   static Future<void> setOnboardingComplete(bool complete) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setBool(keyOnboardingComplete, complete);
+    await preferences.setBool(keyOnboardingComplete, complete);
   }
 
   static List<String> _getStoredFavorites(SharedPreferences preferences) =>
@@ -42,7 +44,7 @@ class PreferenceHelper {
 
     favorites.add(jsonEncode(place.toJson()));
 
-    preferences.setStringList(keyFavorites, favorites);
+    await preferences.setStringList(keyFavorites, favorites);
   }
 
   static Future<void> removeFavorite(String id) async {
@@ -54,7 +56,7 @@ class PreferenceHelper {
       return place.id == id;
     });
 
-    preferences.setStringList(keyFavorites, favorites);
+    await preferences.setStringList(keyFavorites, favorites);
   }
 
   static Future<bool> isFavorite(String id) async {
@@ -79,7 +81,7 @@ class PreferenceHelper {
 
   static Future<void> setProfileMode(ProfileMode mode) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString(keyProfileMode, mode.name);
+    await preferences.setString(keyProfileMode, mode.name);
   }
 
   static Future<ThemeMode> getThemeMode() async {
@@ -91,7 +93,7 @@ class PreferenceHelper {
 
   static Future<void> setThemeMode(ThemeMode mode) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString(keyThemeMode, mode.name);
+    await preferences.setString(keyThemeMode, mode.name);
   }
 
   static Future<BaseMapStyle> getBaseMapStyle() async {
@@ -103,6 +105,26 @@ class PreferenceHelper {
 
   static Future<void> setBaseMapStyle(BaseMapStyle style) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString(keyBaseMapStyle, style.name);
+    await preferences.setString(keyBaseMapStyle, style.name);
+  }
+
+  static Future<void> setRoutingRequestConfig(
+    RoutingRequestConfig config,
+  ) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString(
+      keyRoutingRequestConfig,
+      jsonEncode(config.toJson()),
+    );
+  }
+
+  static Future<RoutingRequestConfig?> getRoutingRequestConfig() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? configString = preferences.getString(keyRoutingRequestConfig);
+
+    if (configString != null) {
+      return RoutingRequestConfig.fromJson(jsonDecode(configString));
+    }
+    return null;
   }
 }

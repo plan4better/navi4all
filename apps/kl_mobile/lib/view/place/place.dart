@@ -6,6 +6,7 @@ import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/core/utils.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
+import 'package:navi4all/view/common/accessible_icon_button.dart';
 import 'package:navi4all/view/search/search.dart';
 // import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,11 @@ class _PlaceScreenState extends State<PlaceScreen> {
     _checkIfFavorite(
       Provider.of<PlaceController>(context, listen: false).place!,
     );
+
     _initializeItineraries();
+    Provider.of<PlaceController>(context, listen: false).addListener(() {
+      _initializeItineraries();
+    });
 
     super.initState();
   }
@@ -90,7 +95,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
       context: context,
       originPlace: originPlace,
       destinationPlace: destinationPlace,
-      modes: [Mode.TRANSIT],
+      primaryMode: Mode.TRANSIT,
       time: DateTime.now(),
     );
   }
@@ -137,41 +142,19 @@ class _PlaceScreenState extends State<PlaceScreen> {
                         ),
                       ),
                       SizedBox(width: 8),
-                      Ink(
-                        decoration: ShapeDecoration(
-                          shape: CircleBorder(),
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            _isFavorite ? Icons.star : Icons.star_border,
-                            color: Theme.of(
-                              context,
-                            ).textTheme.displayMedium?.color,
-                          ),
-                          onPressed: () => placeController.place != null
-                              ? _toggleFavorite(placeController.place!)
-                              : null,
-                        ),
+                      AccessibleIconButton(
+                        icon: _isFavorite ? Icons.star : Icons.star_border,
+                        onTap: () => placeController.place != null
+                            ? _toggleFavorite(placeController.place!)
+                            : null,
                       ),
                       SizedBox(width: 8),
-                      Ink(
-                        decoration: ShapeDecoration(
-                          shape: CircleBorder(),
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.close_rounded,
-                            color: Theme.of(
-                              context,
-                            ).textTheme.displayMedium?.color,
-                          ),
-                          onPressed: () {
-                            placeController.reset();
-                            Navigator.of(context).pop();
-                          },
-                        ),
+                      AccessibleIconButton(
+                        icon: Icons.close_rounded,
+                        onTap: () {
+                          placeController.reset();
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ],
                   ),
@@ -288,7 +271,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                   ),
                                   SizedBox(width: 6.0),
                                   Text(
-                                    getItineraryDistanceText(
+                                    TextFormatter.formatDistanceText(
                                       itineraryController.itineraries.first,
                                     ),
                                     maxLines: 1,
@@ -366,6 +349,17 @@ class _PlaceScreenState extends State<PlaceScreen> {
 class PlaceSearchBar extends StatelessWidget {
   const PlaceSearchBar({super.key});
 
+  Future<void> _search(BuildContext context) async {
+    Place? result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SearchScreen(isSecondarySearch: true),
+      ),
+    );
+    if (result != null) {
+      Provider.of<PlaceController>(context, listen: false).setPlace(result);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -377,11 +371,7 @@ class PlaceSearchBar extends StatelessWidget {
             elevation: 4,
             borderRadius: BorderRadius.circular(28),
             child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SearchScreen()),
-                );
-              },
+              onTap: () => _search(context),
               child: Container(
                 height: 56,
                 decoration: BoxDecoration(

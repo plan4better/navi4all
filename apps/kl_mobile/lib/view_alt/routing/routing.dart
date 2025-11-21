@@ -7,7 +7,6 @@ import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
-import 'package:navi4all/view/common/sliding_bottom_sheet.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/core/processing_status.dart';
@@ -465,14 +464,11 @@ class RoutingState extends State<RoutingScreen> {
             child: Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 16.0,
-                ),
+                padding: const EdgeInsets.all(16.0),
                 child: Material(
                   elevation: 4.0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Row(
                     children: [
@@ -495,8 +491,8 @@ class RoutingState extends State<RoutingScreen> {
                                     excludeSemantics: true,
                                     child: InkWell(
                                       borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(24.0),
-                                        topRight: Radius.circular(24.0),
+                                        topLeft: Radius.circular(16.0),
+                                        topRight: Radius.circular(16.0),
                                       ),
                                       onTap: null,
                                       child: Container(
@@ -506,23 +502,36 @@ class RoutingState extends State<RoutingScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(24.0),
+                                            top: Radius.circular(16.0),
                                           ),
                                         ),
                                         child: Row(
                                           children: [
                                             SizedBox(width: 8.0),
-                                            Icon(
-                                              _origin.id ==
-                                                      Navi4AllValues
-                                                          .userLocation
-                                                  ? Icons.my_location
-                                                  : Icons.place_rounded,
-                                              color: Theme.of(
-                                                context,
-                                              ).textTheme.displayMedium?.color,
+                                            Padding(
+                                              padding: const EdgeInsets.all(
+                                                2.0,
+                                              ),
+                                              child: Material(
+                                                elevation: 2.0,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                                child: Container(
+                                                  width: 20.0,
+                                                  height: 20.0,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Color(0xFF3685E2),
+                                                    border: Border.all(
+                                                      color: Navi4AllColors
+                                                          .klWhite,
+                                                      width: 3.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                            SizedBox(width: 16),
+                                            SizedBox(width: 12),
                                             Expanded(
                                               child: Text(
                                                 _origin.id ==
@@ -566,8 +575,8 @@ class RoutingState extends State<RoutingScreen> {
                               excludeSemantics: true,
                               child: InkWell(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(24.0),
-                                  bottomRight: Radius.circular(24.0),
+                                  bottomLeft: Radius.circular(16.0),
+                                  bottomRight: Radius.circular(16.0),
                                 ),
                                 onTap: null,
                                 child: Container(
@@ -577,25 +586,22 @@ class RoutingState extends State<RoutingScreen> {
                                   ),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(24.0),
+                                      bottom: Radius.circular(16.0),
                                     ),
                                   ),
                                   child: Row(
                                     children: [
                                       SizedBox(width: 8.0),
                                       Icon(
-                                        _destination.id ==
-                                                Navi4AllValues.userLocation
-                                            ? Icons.my_location
-                                            : _navigationStatus !=
-                                                  NavigationStatus.navigating
+                                        _navigationStatus !=
+                                                NavigationStatus.navigating
                                             ? Icons.place_rounded
                                             : Icons.navigation_rounded,
                                         color: Theme.of(
                                           context,
                                         ).textTheme.displayMedium?.color,
                                       ),
-                                      SizedBox(width: 16),
+                                      SizedBox(width: 12),
                                       Expanded(
                                         child: Text(
                                           _destination.id ==
@@ -720,14 +726,16 @@ class RoutingState extends State<RoutingScreen> {
                                     context,
                                   ).textTheme.displayMedium?.color,
                                 ),
-                                SizedBox(width: 8.0),
+                                SizedBox(width: 4.0),
                                 Text(
-                                  '${widget.itinerarySummary.duration ~/ 60} min',
+                                  TextFormatter.formatDurationText(
+                                    widget.itinerarySummary.duration,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 16),
                                 ),
-                                SizedBox(width: 6.0),
+                                SizedBox(width: 8.0),
                                 Icon(
                                   Icons.circle,
                                   size: 6,
@@ -735,9 +743,9 @@ class RoutingState extends State<RoutingScreen> {
                                     context,
                                   ).textTheme.displayMedium?.color,
                                 ),
-                                SizedBox(width: 6.0),
+                                SizedBox(width: 8.0),
                                 Text(
-                                  getItineraryDistanceText(
+                                  TextFormatter.formatDistanceText(
                                     widget.itinerarySummary,
                                   ),
                                   maxLines: 1,

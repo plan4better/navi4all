@@ -2,28 +2,34 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:navi4all/controllers/profile_controller.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
+import 'package:navi4all/schemas/routing/request_config.dart';
 import 'package:navi4all/services/routing.dart';
+import 'package:provider/provider.dart';
 
 class ItineraryController extends ChangeNotifier {
   final RoutingService _routingService = RoutingService();
 
   Place? _originPlace;
   Place? _destinationPlace;
-  List<Mode>? _modes;
+
   DateTime? _time;
   bool? _isArrivalTime;
+  Mode? _primaryMode;
+  RoutingRequestConfig? _routingRequestConfig;
 
   Place? get originPlace => _originPlace;
   Place? get destinationPlace => _destinationPlace;
-  List<Mode>? get modes => _modes;
   DateTime? get time => _time;
   bool? get isArrivalTime => _isArrivalTime;
+  Mode? get primaryMode => _primaryMode;
+  RoutingRequestConfig? get routingRequestConfig => _routingRequestConfig;
 
   final List<ItinerarySummary> _itineraries = [];
   ItineraryControllerState _state = ItineraryControllerState.idle;
@@ -35,7 +41,8 @@ class ItineraryController extends ChangeNotifier {
   bool get hasParametersSet =>
       _originPlace != null &&
       _destinationPlace != null &&
-      _modes != null &&
+      _primaryMode != null &&
+      _routingRequestConfig != null &&
       _time != null &&
       _isArrivalTime != null;
 
@@ -43,14 +50,18 @@ class ItineraryController extends ChangeNotifier {
     required BuildContext context,
     required Place originPlace,
     required Place destinationPlace,
-    required List<Mode> modes,
     required DateTime time,
+    required Mode primaryMode,
     bool isArrivalTime = false,
   }) {
     _originPlace = originPlace;
     _destinationPlace = destinationPlace;
-    _modes = modes;
     _time = time;
+    _primaryMode = primaryMode;
+    _routingRequestConfig = Provider.of<ProfileController>(
+      context,
+      listen: false,
+    ).routingRequestConfig;
     _isArrivalTime = isArrivalTime;
 
     _refresh(context);
@@ -59,7 +70,7 @@ class ItineraryController extends ChangeNotifier {
   void reset(BuildContext context) {
     _originPlace = null;
     _destinationPlace = null;
-    _modes = null;
+    _routingRequestConfig = null;
     _time = null;
     _isArrivalTime = null;
 
@@ -127,8 +138,14 @@ class ItineraryController extends ChangeNotifier {
         destinationLat: _destinationPlace!.coordinates.lat,
         destinationLon: _destinationPlace!.coordinates.lon,
         time: _time!,
-        transportModes: _modes!.map((mode) => mode.name).toList(),
+        transportModes: _primaryMode! == Mode.TRANSIT
+            ? _routingRequestConfig!.transitModes.map((e) => e.name).toList()
+            : [_primaryMode!.name],
         timeIsArrival: _isArrivalTime!,
+        walkingSpeed: _routingRequestConfig!.walkingSpeed,
+        walkingAvoid: _routingRequestConfig!.walkingAvoid,
+        bicycleSpeed: _routingRequestConfig!.bicycleSpeed,
+        accessible: _routingRequestConfig!.accessible,
       );
 
       // Update results

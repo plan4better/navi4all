@@ -52,7 +52,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
       context: context,
       originPlace: originPlace,
       destinationPlace: destinationPlace,
-      modes: [Mode.TRANSIT],
+      primaryMode: Mode.TRANSIT,
       time: DateTime.now(),
     );
   }
@@ -138,7 +138,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           originPlace: itineraryController.originPlace!,
                           destinationPlace:
                               itineraryController.destinationPlace!,
-                          modes: [Mode.WALK],
+                          primaryMode: Mode.WALK,
                           time: itineraryController.time!,
                           isArrivalTime: itineraryController.isArrivalTime!,
                         );
@@ -169,7 +169,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           originPlace: itineraryController.originPlace!,
                           destinationPlace:
                               itineraryController.destinationPlace!,
-                          modes: [Mode.TRANSIT],
+                          primaryMode: Mode.TRANSIT,
                           time: itineraryController.time!,
                           isArrivalTime: itineraryController.isArrivalTime!,
                         );

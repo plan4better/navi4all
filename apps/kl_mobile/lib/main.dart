@@ -4,6 +4,7 @@ import 'package:navi4all/controllers/canvas_controller.dart';
 import 'package:navi4all/controllers/favorites_controller.dart';
 import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
+import 'package:navi4all/controllers/profile_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/theme_controller.dart';
 // import 'package:navi4all/core/config.dart';
@@ -39,6 +40,7 @@ class Navi4AllApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeController(context)),
+        ChangeNotifierProvider(create: (_) => ProfileController()),
         ChangeNotifierProvider(create: (_) => FavoritesController(context)),
         ChangeNotifierProvider(create: (_) => CanvasController()),
         ChangeNotifierProvider(create: (_) => PlaceController()),

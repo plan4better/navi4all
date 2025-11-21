@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
+import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
+import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/view/canvas/canvas_map.dart';
 import 'package:navi4all/view/canvas/canvas_sheet.dart';
 import 'package:navi4all/view/common/accessible_button.dart';

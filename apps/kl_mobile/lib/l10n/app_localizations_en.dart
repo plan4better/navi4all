@@ -436,4 +436,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsOptionChangeAppProfile => 'Change Profile';
+
+  @override
+  String get modeBicycle => 'Bicycle';
+
+  @override
+  String get modeBus => 'Bus';
+
+  @override
+  String get modeCableCar => 'Cable Car';
+
+  @override
+  String get modeCar => 'Car';
+
+  @override
+  String get modeCoach => 'Coach';
+
+  @override
+  String get modeFerry => 'Ferry';
+
+  @override
+  String get modeFunicular => 'Funicular';
+
+  @override
+  String get modeGondola => 'Gondola';
+
+  @override
+  String get modeRail => 'Train';
+
+  @override
+  String get modeSubway => 'U-Bahn';
+
+  @override
+  String get modeTram => 'Tram';
+
+  @override
+  String get modeTransit => 'Transit';
+
+  @override
+  String get modeWalk => 'Walk';
+
+  @override
+  String get modeTrolleybus => 'Trolleybus';
+
+  @override
+  String get modeMonorail => 'Monorail';
+
+  @override
+  String get itineraryOptionsScreenTitle => 'Journey Options';
+
+  @override
+  String get itineraryOptionsScreenRoutingProfileItem => 'Routing profile';
+
+  @override
+  String get itineraryOptionsScreenWalkingTitle => 'Walking';
+
+  @override
+  String get itineraryOptionsScreenWalkingSpeedOption => 'Speed';
+
+  @override
+  String get itineraryOptionsScreenWalkingAvoidOption => 'Avoid walking';
+
+  @override
+  String get itineraryOptionsScreenModesTitle => 'Transit Modes';
+
+  @override
+  String get itineraryOptionsScreenBicycleTitle => 'Bicycle';
+
+  @override
+  String get itineraryOptionsScreenBicycleSpeedOption => 'Speed';
+
+  @override
+  String get itineraryOptionsScreenApplyButtonTitle => 'Apply';
+
+  @override
+  String get itineraryOptionsScreenResetButtonTitle => 'Reset';
 }

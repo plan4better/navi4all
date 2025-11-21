@@ -2,26 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 
 enum Mode {
-  AIRPLANE,
   BICYCLE,
   BUS,
   CABLE_CAR,
   CAR,
   COACH,
   FERRY,
-  FLEX,
   FUNICULAR,
   GONDOLA,
   RAIL,
-  SCOOTER,
   SUBWAY,
   TRAM,
-  CARPOOL,
-  TAXI,
   TRANSIT,
   WALK,
   TROLLEYBUS,
   MONORAIL,
+}
+
+String getModeTextMapping(Mode mode, BuildContext context) {
+  switch (mode) {
+    case Mode.BICYCLE:
+      return AppLocalizations.of(context)!.modeBicycle;
+    case Mode.BUS:
+      return AppLocalizations.of(context)!.modeBus;
+    case Mode.CABLE_CAR:
+      return AppLocalizations.of(context)!.modeCableCar;
+    case Mode.CAR:
+      return AppLocalizations.of(context)!.modeCar;
+    case Mode.COACH:
+      return AppLocalizations.of(context)!.modeCoach;
+    case Mode.FERRY:
+      return AppLocalizations.of(context)!.modeFerry;
+    case Mode.FUNICULAR:
+      return AppLocalizations.of(context)!.modeFunicular;
+    case Mode.GONDOLA:
+      return AppLocalizations.of(context)!.modeGondola;
+    case Mode.RAIL:
+      return AppLocalizations.of(context)!.modeRail;
+    case Mode.SUBWAY:
+      return AppLocalizations.of(context)!.modeSubway;
+    case Mode.TRAM:
+      return AppLocalizations.of(context)!.modeTram;
+    case Mode.TRANSIT:
+      return AppLocalizations.of(context)!.modeTransit;
+    case Mode.WALK:
+      return AppLocalizations.of(context)!.modeWalk;
+    case Mode.TROLLEYBUS:
+      return AppLocalizations.of(context)!.modeTrolleybus;
+    case Mode.MONORAIL:
+      return AppLocalizations.of(context)!.modeMonorail;
+  }
 }
 
 enum RelativeDirection {

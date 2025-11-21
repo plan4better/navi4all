@@ -436,4 +436,79 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsOptionChangeAppProfile => 'Profil ändern';
+
+  @override
+  String get modeBicycle => 'Fahrrad';
+
+  @override
+  String get modeBus => 'Bus';
+
+  @override
+  String get modeCableCar => 'Seilbahn';
+
+  @override
+  String get modeCar => 'Auto';
+
+  @override
+  String get modeCoach => 'Reisebus';
+
+  @override
+  String get modeFerry => 'Fähre';
+
+  @override
+  String get modeFunicular => 'Standseilbahn';
+
+  @override
+  String get modeGondola => 'Gondel';
+
+  @override
+  String get modeRail => 'Zug';
+
+  @override
+  String get modeSubway => 'U-Bahn';
+
+  @override
+  String get modeTram => 'Tram';
+
+  @override
+  String get modeTransit => 'ÖV';
+
+  @override
+  String get modeWalk => 'Zu Fuß';
+
+  @override
+  String get modeTrolleybus => 'Oberleitungsbus';
+
+  @override
+  String get modeMonorail => 'Einschienenbahn';
+
+  @override
+  String get itineraryOptionsScreenTitle => 'Routeeinstellungen';
+
+  @override
+  String get itineraryOptionsScreenRoutingProfileItem => 'Routing-Profil';
+
+  @override
+  String get itineraryOptionsScreenWalkingTitle => 'Zu Fuß';
+
+  @override
+  String get itineraryOptionsScreenWalkingSpeedOption => 'Gehgeschwindigkeit';
+
+  @override
+  String get itineraryOptionsScreenWalkingAvoidOption => 'Zu Fuß vermeiden';
+
+  @override
+  String get itineraryOptionsScreenModesTitle => 'Verkehrsmittel auswählen';
+
+  @override
+  String get itineraryOptionsScreenBicycleTitle => 'Fahrrad';
+
+  @override
+  String get itineraryOptionsScreenBicycleSpeedOption => 'Geschwindigkeit';
+
+  @override
+  String get itineraryOptionsScreenApplyButtonTitle => 'Anwenden';
+
+  @override
+  String get itineraryOptionsScreenResetButtonTitle => 'Zurücksetzen';
 }

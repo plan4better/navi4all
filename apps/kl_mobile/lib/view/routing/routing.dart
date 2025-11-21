@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:navi4all/view/common/accessible_icon_button.dart';
 // import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 // import 'package:navi4all/core/analytics/events.dart';
@@ -522,52 +523,25 @@ class RoutingState extends State<RoutingScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 8),
-                                Ink(
-                                  decoration: ShapeDecoration(
-                                    shape: CircleBorder(),
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.tertiary,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      _audioStatus == AudioStatus.muted
-                                          ? Icons.volume_off
-                                          : Icons.volume_up,
-                                      color: Theme.of(
-                                        context,
-                                      ).textTheme.displayMedium?.color,
-                                    ),
-                                    onPressed: () => _toggleAudioState(),
-                                  ),
+                                AccessibleIconButton(
+                                  icon: _audioStatus == AudioStatus.muted
+                                      ? Icons.volume_off
+                                      : Icons.volume_up,
+                                  onTap: () => _toggleAudioState(),
                                 ),
                                 SizedBox(width: 8),
-                                Ink(
-                                  decoration: ShapeDecoration(
-                                    shape: CircleBorder(),
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.tertiary,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.close_rounded,
-                                      color: Theme.of(
-                                        context,
-                                      ).textTheme.displayMedium?.color,
-                                    ),
-                                    onPressed: () {
-                                      _positionStream?.drain();
-                                      _positionStreamSubscription?.cancel();
-                                      _positionStream = null;
-                                      _positionStreamSubscription = null;
-                                      setState(() {
-                                        _navigationStatus =
-                                            NavigationStatus.idle;
-                                      });
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
+                                AccessibleIconButton(
+                                  icon: Icons.close_rounded,
+                                  onTap: () {
+                                    _positionStream?.drain();
+                                    _positionStreamSubscription?.cancel();
+                                    _positionStream = null;
+                                    _positionStreamSubscription = null;
+                                    setState(() {
+                                      _navigationStatus = NavigationStatus.idle;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
                                 ),
                               ],
                             ),
@@ -584,14 +558,16 @@ class RoutingState extends State<RoutingScreen> {
                                       context,
                                     ).textTheme.displayMedium?.color,
                                   ),
-                                  SizedBox(width: 8.0),
+                                  SizedBox(width: 4.0),
                                   Text(
-                                    '${widget.itinerarySummary.duration ~/ 60} min',
+                                    TextFormatter.formatDurationText(
+                                      widget.itinerarySummary.duration,
+                                    ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(fontSize: 16),
                                   ),
-                                  SizedBox(width: 6.0),
+                                  SizedBox(width: 8.0),
                                   Icon(
                                     Icons.circle,
                                     size: 6,
@@ -599,9 +575,9 @@ class RoutingState extends State<RoutingScreen> {
                                       context,
                                     ).textTheme.displayMedium?.color,
                                   ),
-                                  SizedBox(width: 6.0),
+                                  SizedBox(width: 8.0),
                                   Text(
-                                    getItineraryDistanceText(
+                                    TextFormatter.formatDistanceText(
                                       widget.itinerarySummary,
                                     ),
                                     maxLines: 1,
@@ -642,7 +618,7 @@ class RoutingState extends State<RoutingScreen> {
                 child: Material(
                   elevation: 4.0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Row(
                     children: [

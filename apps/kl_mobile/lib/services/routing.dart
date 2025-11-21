@@ -13,7 +13,10 @@ class RoutingService extends APIService {
     required DateTime time,
     bool timeIsArrival = false,
     required List<String> transportModes,
-    bool accessible = false,
+    required double walkingSpeed,
+    required bool walkingAvoid,
+    required double bicycleSpeed,
+    required bool accessible,
     int numItineraries = 3,
   }) async {
     Response response = await apiClient.post(
@@ -26,6 +29,8 @@ class RoutingService extends APIService {
         'time': DateFormat('HH:mm:ss').format(time),
         'time_is_arrival': timeIsArrival,
         'transport_modes': transportModes,
+        'walk': {'speed': walkingSpeed, 'avoid': walkingAvoid},
+        'bicycle': {'speed': bicycleSpeed},
         'accessible': accessible,
         'num_itineraries': numItineraries,
       },
