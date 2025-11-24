@@ -6,7 +6,8 @@ import 'package:navi4all/schemas/routing/request_config.dart';
 
 class ProfileController extends ChangeNotifier {
   RoutingRequestConfig _routingRequestConfig =
-      Settings.defaultRoutingRequestConfigs[ProfileMode.general]!;
+      Settings.routingRequestConfigs[Settings.defaultRoutingProfiles[ProfileMode
+          .general]!]!;
 
   ProfileController() {
     _initialize();
@@ -25,7 +26,8 @@ class ProfileController extends ChangeNotifier {
 
     ProfileMode profileMode = await PreferenceHelper.getProfileMode();
     setRoutingRequestConfig(
-      Settings.defaultRoutingRequestConfigs[profileMode]!,
+      Settings.routingRequestConfigs[Settings
+          .defaultRoutingProfiles[profileMode]!]!,
     );
   }
 
@@ -38,33 +40,35 @@ class ProfileController extends ChangeNotifier {
 
   Future<void> resetRoutingRequestConfig() async {
     ProfileMode profileMode = await PreferenceHelper.getProfileMode();
-    RoutingRequestConfig defaultConfig =
-        Settings.defaultRoutingRequestConfigs[profileMode]!;
+    RoutingRequestConfig defaultConfig = Settings
+        .routingRequestConfigs[Settings.defaultRoutingProfiles[profileMode]!]!;
 
     setRoutingRequestConfig(defaultConfig);
   }
 
-  Future<bool> get isDefaultRoutingRequestConfig async {
-    ProfileMode profileMode = await PreferenceHelper.getProfileMode();
-    RoutingRequestConfig defaultConfig =
-        Settings.defaultRoutingRequestConfigs[profileMode]!;
+  RoutingProfile? getAssociatedRoutingProfile() {
+    for (var entry in Settings.routingRequestConfigs.entries) {
+      // Check individual fields for equality
+      bool isDefault = true;
+      isDefault &=
+          _routingRequestConfig.walkingSpeed == entry.value.walkingSpeed;
+      isDefault &=
+          _routingRequestConfig.walkingAvoid == entry.value.walkingAvoid;
+      isDefault &=
+          _routingRequestConfig.transitModes.length ==
+              entry.value.transitModes.length &&
+          _routingRequestConfig.transitModes.every(
+            (mode) => entry.value.transitModes.contains(mode),
+          );
+      isDefault &=
+          _routingRequestConfig.bicycleSpeed == entry.value.bicycleSpeed;
+      isDefault &= _routingRequestConfig.accessible == entry.value.accessible;
 
-    // Check inidividual fields for equality
-    bool isDefault = true;
-    isDefault &=
-        _routingRequestConfig.walkingSpeed == defaultConfig.walkingSpeed;
-    isDefault &=
-        _routingRequestConfig.walkingAvoid == defaultConfig.walkingAvoid;
-    isDefault &=
-        _routingRequestConfig.transitModes.length ==
-            defaultConfig.transitModes.length &&
-        _routingRequestConfig.transitModes.every(
-          (mode) => defaultConfig.transitModes.contains(mode),
-        );
-    isDefault &=
-        _routingRequestConfig.bicycleSpeed == defaultConfig.bicycleSpeed;
-    isDefault &= _routingRequestConfig.accessible == defaultConfig.accessible;
+      if (isDefault) {
+        return entry.key;
+      }
+    }
 
-    return isDefault;
+    return null;
   }
 }

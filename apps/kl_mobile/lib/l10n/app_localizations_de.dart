@@ -489,6 +489,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get itineraryOptionsScreenRoutingProfileItem => 'Routing-Profil';
 
   @override
+  String get itineraryOptionsScreenRoutingProfileItemHint => 'Profil auswählen';
+
+  @override
   String get itineraryOptionsScreenWalkingTitle => 'Zu Fuß';
 
   @override
@@ -511,4 +514,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get itineraryOptionsScreenResetButtonTitle => 'Zurücksetzen';
+
+  @override
+  String get routingProfileLabelStandard => 'Standard';
+
+  @override
+  String get routingProfileLabelVisionImpairment => 'Sehbehinderung';
+
+  @override
+  String get routingProfileLabelWheelchair => 'Rollstuhl';
+
+  @override
+  String get routingProfileLabelRollator => 'Rollator';
+
+  @override
+  String get routingProfileLabelSlightWalkingDisability => 'Leichte Gehbehinderung';
+
+  @override
+  String get routingProfileLabelModerateWalkingDisability => 'Mittlere Gehbehinderung';
+
+  @override
+  String get routingProfileLabelSevereWalkingDisability => 'Schwere Gehbehinderung';
+
+  @override
+  String get routingProfileLabelStroller => 'Kinderwagen';
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/view/itinerary/itinerary.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
+import 'package:navi4all/view/itinerary/itinerary_options.dart';
+import 'package:provider/provider.dart';
 
 class ItineraryScreen extends StatefulWidget {
   const ItineraryScreen({super.key});
@@ -11,6 +14,19 @@ class ItineraryScreen extends StatefulWidget {
 }
 
 class _ItineraryScreenState extends State<ItineraryScreen> {
+  Future<void> _showItineraryOptions() async {
+    var _ = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ItineraryOptions(
+          routingMode: Provider.of<ItineraryController>(
+            context,
+            listen: false,
+          ).primaryMode!,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(
@@ -32,7 +48,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 context,
               )!.routeOptionsRouteSettingsButton,
               style: AccessibleButtonStyle.pink,
-              onTap: null,
+              onTap: _showItineraryOptions,
             ),
             SizedBox(height: 16),
             AccessibleButton(

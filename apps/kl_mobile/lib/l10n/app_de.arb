@@ -282,6 +282,7 @@
     "modeMonorail": "Einschienenbahn",
     "itineraryOptionsScreenTitle": "Routeeinstellungen",
     "itineraryOptionsScreenRoutingProfileItem": "Routing-Profil",
+    "itineraryOptionsScreenRoutingProfileItemHint": "Profil auswählen",
     "itineraryOptionsScreenWalkingTitle": "Zu Fuß",
     "itineraryOptionsScreenWalkingSpeedOption": "Gehgeschwindigkeit",
     "itineraryOptionsScreenWalkingAvoidOption": "Zu Fuß vermeiden",
@@ -289,5 +290,13 @@
     "itineraryOptionsScreenBicycleTitle": "Fahrrad",
     "itineraryOptionsScreenBicycleSpeedOption": "Geschwindigkeit",
     "itineraryOptionsScreenApplyButtonTitle": "Anwenden",
-    "itineraryOptionsScreenResetButtonTitle": "Zurücksetzen"
+    "itineraryOptionsScreenResetButtonTitle": "Zurücksetzen",
+    "routingProfileLabelStandard": "Standard",
+    "routingProfileLabelVisionImpairment": "Sehbehinderung",
+    "routingProfileLabelWheelchair": "Rollstuhl",
+    "routingProfileLabelRollator": "Rollator",
+    "routingProfileLabelSlightWalkingDisability": "Leichte Gehbehinderung",
+    "routingProfileLabelModerateWalkingDisability": "Mittlere Gehbehinderung",
+    "routingProfileLabelSevereWalkingDisability": "Schwere Gehbehinderung",
+    "routingProfileLabelStroller": "Kinderwagen"
 }

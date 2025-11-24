@@ -486,7 +486,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itineraryOptionsScreenTitle => 'Journey Options';
 
   @override
-  String get itineraryOptionsScreenRoutingProfileItem => 'Routing profile';
+  String get itineraryOptionsScreenRoutingProfileItem => 'Routing Profile';
+
+  @override
+  String get itineraryOptionsScreenRoutingProfileItemHint => 'Select a profile';
 
   @override
   String get itineraryOptionsScreenWalkingTitle => 'Walking';
@@ -511,4 +514,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itineraryOptionsScreenResetButtonTitle => 'Reset';
+
+  @override
+  String get routingProfileLabelStandard => 'Standard';
+
+  @override
+  String get routingProfileLabelVisionImpairment => 'Vision Impairment';
+
+  @override
+  String get routingProfileLabelWheelchair => 'Wheelchair';
+
+  @override
+  String get routingProfileLabelRollator => 'Rollator';
+
+  @override
+  String get routingProfileLabelSlightWalkingDisability => 'Slight Walking Disability';
+
+  @override
+  String get routingProfileLabelModerateWalkingDisability => 'Moderate Walking Disability';
+
+  @override
+  String get routingProfileLabelSevereWalkingDisability => 'Severe Walking Disability';
+
+  @override
+  String get routingProfileLabelStroller => 'Stroller';
 }

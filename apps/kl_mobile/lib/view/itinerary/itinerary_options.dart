@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/profile_controller.dart';
+import 'package:navi4all/core/config.dart';
 import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/core/theme/labels.dart';
+import 'package:navi4all/core/theme/profile_mode.dart';
 import 'package:navi4all/core/utils.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
@@ -49,6 +52,7 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
               Expanded(
                 child: ListView(
                   children: [
+                    _WidgetRoutingProfileOptions(),
                     _WidgetWalkOptions(),
                     _WidgetTransitOptions(),
                     _WidgetBicycleOptions(),
@@ -59,6 +63,96 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _WidgetRoutingProfileOptions extends StatefulWidget {
+  @override
+  State<_WidgetRoutingProfileOptions> createState() =>
+      _WidgetRoutingProfileOptionsState();
+}
+
+class _WidgetRoutingProfileOptionsState
+    extends State<_WidgetRoutingProfileOptions> {
+  void _setRoutingProfile(RoutingProfile? profile) {
+    if (profile == null) return;
+
+    Provider.of<ProfileController>(
+      context,
+      listen: false,
+    ).setRoutingRequestConfig(Settings.routingRequestConfigs[profile]!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 32),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            AppLocalizations.of(
+              context,
+            )!.itineraryOptionsScreenRoutingProfileItem,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Theme.of(context).textTheme.displayMedium!.color,
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32.0),
+              border: Border.all(color: Navi4AllColors.klPink, width: 1.25),
+            ),
+            child: Consumer<ProfileController>(
+              builder: (context, profileController, _) =>
+                  DropdownButton<RoutingProfile>(
+                    dropdownColor: Theme.of(context).colorScheme.tertiary,
+                    underline: Container(),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    borderRadius: BorderRadius.circular(32.0),
+                    isExpanded: true,
+                    value: profileController.getAssociatedRoutingProfile(),
+                    items: List.generate(
+                      Settings.routingRequestConfigs.length,
+                      (index) {
+                        final routingProfile = Settings
+                            .routingRequestConfigs
+                            .keys
+                            .elementAt(index);
+                        return DropdownMenuItem<RoutingProfile>(
+                          value: routingProfile,
+                          child: Text(
+                            Navi4AllLabels.getRoutingProfileLabel(
+                              context,
+                              routingProfile,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).textTheme.displayMedium!.color,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    onChanged: _setRoutingProfile,
+                  ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

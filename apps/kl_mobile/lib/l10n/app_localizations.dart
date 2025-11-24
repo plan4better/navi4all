@@ -992,8 +992,14 @@ abstract class AppLocalizations {
   /// No description provided for @itineraryOptionsScreenRoutingProfileItem.
   ///
   /// In en, this message translates to:
-  /// **'Routing profile'**
+  /// **'Routing Profile'**
   String get itineraryOptionsScreenRoutingProfileItem;
+
+  /// No description provided for @itineraryOptionsScreenRoutingProfileItemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a profile'**
+  String get itineraryOptionsScreenRoutingProfileItemHint;
 
   /// No description provided for @itineraryOptionsScreenWalkingTitle.
   ///
@@ -1042,6 +1048,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get itineraryOptionsScreenResetButtonTitle;
+
+  /// No description provided for @routingProfileLabelStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get routingProfileLabelStandard;
+
+  /// No description provided for @routingProfileLabelVisionImpairment.
+  ///
+  /// In en, this message translates to:
+  /// **'Vision Impairment'**
+  String get routingProfileLabelVisionImpairment;
+
+  /// No description provided for @routingProfileLabelWheelchair.
+  ///
+  /// In en, this message translates to:
+  /// **'Wheelchair'**
+  String get routingProfileLabelWheelchair;
+
+  /// No description provided for @routingProfileLabelRollator.
+  ///
+  /// In en, this message translates to:
+  /// **'Rollator'**
+  String get routingProfileLabelRollator;
+
+  /// No description provided for @routingProfileLabelSlightWalkingDisability.
+  ///
+  /// In en, this message translates to:
+  /// **'Slight Walking Disability'**
+  String get routingProfileLabelSlightWalkingDisability;
+
+  /// No description provided for @routingProfileLabelModerateWalkingDisability.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate Walking Disability'**
+  String get routingProfileLabelModerateWalkingDisability;
+
+  /// No description provided for @routingProfileLabelSevereWalkingDisability.
+  ///
+  /// In en, this message translates to:
+  /// **'Severe Walking Disability'**
+  String get routingProfileLabelSevereWalkingDisability;
+
+  /// No description provided for @routingProfileLabelStroller.
+  ///
+  /// In en, this message translates to:
+  /// **'Stroller'**
+  String get routingProfileLabelStroller;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

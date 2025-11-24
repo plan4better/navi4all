@@ -30,33 +30,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     Mode.WALK: ModeIcons.get(Mode.WALK),
     Mode.TRANSIT: ModeIcons.get(Mode.TRANSIT),
   };
-  bool _isDefaultRoutingRequestConfig = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _registerListeners();
-  }
-
-  void _registerListeners() {
-    // Routing request config check
-    _checkIsDefaultRoutingRequestConfig();
-    Provider.of<ProfileController>(
-      context,
-      listen: false,
-    ).addListener(_checkIsDefaultRoutingRequestConfig);
-  }
-
-  Future<void> _checkIsDefaultRoutingRequestConfig() async {
-    final profileController = Provider.of<ProfileController>(
-      context,
-      listen: false,
-    );
-    _isDefaultRoutingRequestConfig =
-        await profileController.isDefaultRoutingRequestConfig;
-    setState(() {});
-  }
 
   Future<void> _showJourneyTimePicker() async {
     final TimeOfDay? newJourneyTime = await showTimePicker(
@@ -150,7 +123,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                       AccessibleIconButton(
                         icon: Icons.tune_rounded,
                         onTap: _showItineraryOptions,
-                        hasNotification: !_isDefaultRoutingRequestConfig,
+                        hasNotification:
+                            profileController.getAssociatedRoutingProfile() ==
+                            null,
                       ),
                 ),
                 SizedBox(width: 8),

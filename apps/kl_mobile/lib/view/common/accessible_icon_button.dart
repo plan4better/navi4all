@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:navi4all/core/theme/colors.dart';
 
 class AccessibleIconButton extends StatelessWidget {
   final IconData icon;
