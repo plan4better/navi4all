@@ -280,15 +280,38 @@
     "modeWalk": "Zu Fuß",
     "modeTrolleybus": "Oberleitungsbus",
     "modeMonorail": "Einschienenbahn",
-    "itineraryOptionsScreenTitle": "Routeeinstellungen",
+    "itineraryOptionsScreenTitle": "Routeneinstellungen",
+    "itineraryOptionsScreenDepartureTimeTitle": "Abfahrtszeit",
     "itineraryOptionsScreenRoutingProfileItem": "Routing-Profil",
     "itineraryOptionsScreenRoutingProfileItemHint": "Profil auswählen",
     "itineraryOptionsScreenWalkingTitle": "Zu Fuß",
-    "itineraryOptionsScreenWalkingSpeedOption": "Gehgeschwindigkeit",
+    "itineraryOptionsScreenWalkingSpeedOption": "Geschwindigkeit",
+    "itineraryOptionsScreenWalkingSpeedOptionSemantic": "Geschwindigkeit zu Fuß. Aktuell {speed}.",
+    "@itineraryOptionsScreenWalkingSpeedOptionSemantic": {
+        "placeholders": {
+            "speed": {
+                "type": "String"
+            }
+        }
+    },
+    "itineraryOptionsScreenWalkingSpeedIncrementSemantic": "Erhöhe die Geschwindigkeit",
+    "itineraryOptionsScreenWalkingSpeedDecrementSemantic": "Verringere die Geschwindigkeit",
     "itineraryOptionsScreenWalkingAvoidOption": "Zu Fuß vermeiden",
+    "itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic": "Aktiviert",
+    "itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic": "Deaktiviert",
+    "itineraryOptionsScreenWalkingAvoidOptionSemantic": "Zu Fuß vermeiden Option, {status}.",
+    "@itineraryOptionsScreenWalkingAvoidOptionSemantic": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            }
+        }
+    },
     "itineraryOptionsScreenModesTitle": "Verkehrsmittel auswählen",
     "itineraryOptionsScreenBicycleTitle": "Fahrrad",
     "itineraryOptionsScreenBicycleSpeedOption": "Geschwindigkeit",
+    "itineraryOptionsScreenBicycleSpeedIncrementSemantic": "Erhöhe die Geschwindigkeit",
+    "itineraryOptionsScreenBicycleSpeedDecrementSemantic": "Verringere die Geschwindigkeit",
     "itineraryOptionsScreenApplyButtonTitle": "Anwenden",
     "itineraryOptionsScreenResetButtonTitle": "Zurücksetzen",
     "routingProfileLabelStandard": "Standard",
@@ -298,5 +321,6 @@
     "routingProfileLabelSlightWalkingDisability": "Leichte Gehbehinderung",
     "routingProfileLabelModerateWalkingDisability": "Mittlere Gehbehinderung",
     "routingProfileLabelSevereWalkingDisability": "Schwere Gehbehinderung",
-    "routingProfileLabelStroller": "Kinderwagen"
+    "routingProfileLabelStroller": "Kinderwagen",
+    "altModeButtonDone": "Fertig"
 }

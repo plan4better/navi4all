@@ -10,7 +10,7 @@ class Navi4AllColors {
   static const Color klBlack = Color(0xFF000000);
   static const Color klWhite = Color(0xFFFFFFFF);
 
-  static const Color maSurfaceLight = Color(0xFFFFFFFF);
+  static const Color maSurfaceLight = Color(0xFFFAFAFA);
   static const Color maSurfaceDark = Color(0xFF1F262C);
 
   static const Color maSecondaryLight = Color(0xFFFFFFFF);

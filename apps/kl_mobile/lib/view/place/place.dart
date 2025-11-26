@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
 import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
+import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/core/utils.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
@@ -347,12 +348,15 @@ class _PlaceScreenState extends State<PlaceScreen> {
 }
 
 class PlaceSearchBar extends StatelessWidget {
-  const PlaceSearchBar({super.key});
+  final bool altMode;
+
+  const PlaceSearchBar({super.key, required this.altMode});
 
   Future<void> _search(BuildContext context) async {
     Place? result = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const SearchScreen(isSecondarySearch: true),
+        builder: (context) =>
+            SearchScreen(isSecondarySearch: true, altMode: altMode),
       ),
     );
     if (result != null) {
@@ -376,7 +380,9 @@ class PlaceSearchBar extends StatelessWidget {
                 height: 56,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(32),
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: !altMode
+                      ? Theme.of(context).colorScheme.secondary
+                      : Navi4AllColors.klLightRed,
                 ),
                 child: Row(
                   children: [

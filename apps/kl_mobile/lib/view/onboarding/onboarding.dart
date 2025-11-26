@@ -3,7 +3,7 @@ import 'package:navi4all/controllers/theme_controller.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/core/theme/colors.dart';
-import 'package:navi4all/view_alt/home/home.dart' as home_alt;
+import 'package:navi4all/view/alt/home/home.dart' as home_alt;
 import 'package:navi4all/view/common/accessible_selector.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/view/home/home.dart';

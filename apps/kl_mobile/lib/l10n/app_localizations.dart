@@ -326,13 +326,13 @@ abstract class AppLocalizations {
   /// No description provided for @addressInfoSaveAddressButton.
   ///
   /// In en, this message translates to:
-  /// **'Favourite Address'**
+  /// **'Favourite'**
   String get addressInfoSaveAddressButton;
 
   /// No description provided for @addressInfoRemoveAddressButton.
   ///
   /// In en, this message translates to:
-  /// **'Unfavourite Address'**
+  /// **'Unfavourite'**
   String get addressInfoRemoveAddressButton;
 
   /// No description provided for @routeOptionsRouteSettingsButton.
@@ -989,6 +989,12 @@ abstract class AppLocalizations {
   /// **'Journey Options'**
   String get itineraryOptionsScreenTitle;
 
+  /// No description provided for @itineraryOptionsScreenDepartureTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure Time'**
+  String get itineraryOptionsScreenDepartureTimeTitle;
+
   /// No description provided for @itineraryOptionsScreenRoutingProfileItem.
   ///
   /// In en, this message translates to:
@@ -1013,11 +1019,47 @@ abstract class AppLocalizations {
   /// **'Speed'**
   String get itineraryOptionsScreenWalkingSpeedOption;
 
+  /// No description provided for @itineraryOptionsScreenWalkingSpeedOptionSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Walking speed. Currently {speed}.'**
+  String itineraryOptionsScreenWalkingSpeedOptionSemantic(String speed);
+
+  /// No description provided for @itineraryOptionsScreenWalkingSpeedIncrementSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase walking speed'**
+  String get itineraryOptionsScreenWalkingSpeedIncrementSemantic;
+
+  /// No description provided for @itineraryOptionsScreenWalkingSpeedDecrementSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease walking speed'**
+  String get itineraryOptionsScreenWalkingSpeedDecrementSemantic;
+
   /// No description provided for @itineraryOptionsScreenWalkingAvoidOption.
   ///
   /// In en, this message translates to:
   /// **'Avoid walking'**
   String get itineraryOptionsScreenWalkingAvoidOption;
+
+  /// No description provided for @itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic;
+
+  /// No description provided for @itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic;
+
+  /// No description provided for @itineraryOptionsScreenWalkingAvoidOptionSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid walking option, {status}.'**
+  String itineraryOptionsScreenWalkingAvoidOptionSemantic(String status);
 
   /// No description provided for @itineraryOptionsScreenModesTitle.
   ///
@@ -1036,6 +1078,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Speed'**
   String get itineraryOptionsScreenBicycleSpeedOption;
+
+  /// No description provided for @itineraryOptionsScreenBicycleSpeedIncrementSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase bicycle speed'**
+  String get itineraryOptionsScreenBicycleSpeedIncrementSemantic;
+
+  /// No description provided for @itineraryOptionsScreenBicycleSpeedDecrementSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease bicycle speed'**
+  String get itineraryOptionsScreenBicycleSpeedDecrementSemantic;
 
   /// No description provided for @itineraryOptionsScreenApplyButtonTitle.
   ///
@@ -1096,6 +1150,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stroller'**
   String get routingProfileLabelStroller;
+
+  /// No description provided for @altModeButtonDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get altModeButtonDone;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

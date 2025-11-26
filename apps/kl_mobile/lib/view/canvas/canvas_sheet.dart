@@ -4,7 +4,7 @@ import 'package:navi4all/view/canvas/sliding_bottom_sheet.dart';
 import 'package:navi4all/view/itinerary/itinerary.dart';
 import 'package:navi4all/view/place/place.dart';
 import 'package:provider/provider.dart';
-import 'package:navi4all/view_alt/place/place.dart' as alt_place;
+import 'package:navi4all/view/alt/place/place.dart' as alt_place;
 
 class CanvasSheet extends StatefulWidget {
   final bool altMode;

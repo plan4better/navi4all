@@ -125,10 +125,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressInfoPublicTransportRoutesButtonSemantic => 'Find public transport route options.';
 
   @override
-  String get addressInfoSaveAddressButton => 'Favourite Address';
+  String get addressInfoSaveAddressButton => 'Favourite';
 
   @override
-  String get addressInfoRemoveAddressButton => 'Unfavourite Address';
+  String get addressInfoRemoveAddressButton => 'Unfavourite';
 
   @override
   String get routeOptionsRouteSettingsButton => 'Route Settings';
@@ -486,6 +486,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itineraryOptionsScreenTitle => 'Journey Options';
 
   @override
+  String get itineraryOptionsScreenDepartureTimeTitle => 'Departure Time';
+
+  @override
   String get itineraryOptionsScreenRoutingProfileItem => 'Routing Profile';
 
   @override
@@ -498,7 +501,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itineraryOptionsScreenWalkingSpeedOption => 'Speed';
 
   @override
+  String itineraryOptionsScreenWalkingSpeedOptionSemantic(String speed) {
+    return 'Walking speed. Currently $speed.';
+  }
+
+  @override
+  String get itineraryOptionsScreenWalkingSpeedIncrementSemantic => 'Increase walking speed';
+
+  @override
+  String get itineraryOptionsScreenWalkingSpeedDecrementSemantic => 'Decrease walking speed';
+
+  @override
   String get itineraryOptionsScreenWalkingAvoidOption => 'Avoid walking';
+
+  @override
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic => 'On';
+
+  @override
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic => 'Off';
+
+  @override
+  String itineraryOptionsScreenWalkingAvoidOptionSemantic(String status) {
+    return 'Avoid walking option, $status.';
+  }
 
   @override
   String get itineraryOptionsScreenModesTitle => 'Transit Modes';
@@ -508,6 +533,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itineraryOptionsScreenBicycleSpeedOption => 'Speed';
+
+  @override
+  String get itineraryOptionsScreenBicycleSpeedIncrementSemantic => 'Increase bicycle speed';
+
+  @override
+  String get itineraryOptionsScreenBicycleSpeedDecrementSemantic => 'Decrease bicycle speed';
 
   @override
   String get itineraryOptionsScreenApplyButtonTitle => 'Apply';
@@ -538,4 +569,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingProfileLabelStroller => 'Stroller';
+
+  @override
+  String get altModeButtonDone => 'Done';
 }

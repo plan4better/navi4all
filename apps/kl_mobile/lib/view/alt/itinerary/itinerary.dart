@@ -18,6 +18,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     var _ = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ItineraryOptions(
+          altMode: true,
           routingMode: Provider.of<ItineraryController>(
             context,
             listen: false,
@@ -34,7 +35,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         child: Column(
           children: [
-            OrigDestPicker(),
+            OrigDestPicker(altMode: true),
             const SizedBox(height: 8),
             Expanded(
               child: ItineraryList(
@@ -57,6 +58,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               onTap: () =>
                   Navigator.of(context).popUntil((route) => route.isFirst),
             ),
+            SizedBox(height: 16),
           ],
         ),
       ),

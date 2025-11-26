@@ -45,8 +45,8 @@
     "addressInfoWalkingRoutesButtonSemantic": "Find walking route options.",
     "addressInfoPublicTransportRoutesButton": "Public Transport",
     "addressInfoPublicTransportRoutesButtonSemantic": "Find public transport route options.",
-    "addressInfoSaveAddressButton": "Favourite Address",
-    "addressInfoRemoveAddressButton": "Unfavourite Address",
+    "addressInfoSaveAddressButton": "Favourite",
+    "addressInfoRemoveAddressButton": "Unfavourite",
     "routeOptionsRouteSettingsButton": "Route Settings",
     "routeOptionsSaveRouteButton": "Save Route",
     "origDestPickerSwapButtonSemantic": "Swap origin and destination.",
@@ -281,14 +281,37 @@
     "modeTrolleybus": "Trolleybus",
     "modeMonorail": "Monorail",
     "itineraryOptionsScreenTitle": "Journey Options",
+    "itineraryOptionsScreenDepartureTimeTitle": "Departure Time",
     "itineraryOptionsScreenRoutingProfileItem": "Routing Profile",
     "itineraryOptionsScreenRoutingProfileItemHint": "Select a profile",
     "itineraryOptionsScreenWalkingTitle": "Walking",
     "itineraryOptionsScreenWalkingSpeedOption": "Speed",
+    "itineraryOptionsScreenWalkingSpeedOptionSemantic": "Walking speed. Currently {speed}.",
+    "@itineraryOptionsScreenWalkingSpeedOptionSemantic": {
+        "placeholders": {
+            "speed": {
+                "type": "String"
+            }
+        }
+    },
+    "itineraryOptionsScreenWalkingSpeedIncrementSemantic": "Increase walking speed",
+    "itineraryOptionsScreenWalkingSpeedDecrementSemantic": "Decrease walking speed",
     "itineraryOptionsScreenWalkingAvoidOption": "Avoid walking",
+    "itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic": "On",
+    "itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic": "Off",
+    "itineraryOptionsScreenWalkingAvoidOptionSemantic": "Avoid walking option, {status}.",
+    "@itineraryOptionsScreenWalkingAvoidOptionSemantic": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            }
+        }
+    },
     "itineraryOptionsScreenModesTitle": "Transit Modes",
     "itineraryOptionsScreenBicycleTitle": "Bicycle",
     "itineraryOptionsScreenBicycleSpeedOption": "Speed",
+    "itineraryOptionsScreenBicycleSpeedIncrementSemantic": "Increase bicycle speed",
+    "itineraryOptionsScreenBicycleSpeedDecrementSemantic": "Decrease bicycle speed",
     "itineraryOptionsScreenApplyButtonTitle": "Apply",
     "itineraryOptionsScreenResetButtonTitle": "Reset",
     "routingProfileLabelStandard": "Standard",
@@ -298,5 +321,6 @@
     "routingProfileLabelSlightWalkingDisability": "Slight Walking Disability",
     "routingProfileLabelModerateWalkingDisability": "Moderate Walking Disability",
     "routingProfileLabelSevereWalkingDisability": "Severe Walking Disability",
-    "routingProfileLabelStroller": "Stroller"
+    "routingProfileLabelStroller": "Stroller",
+    "altModeButtonDone": "Done"
 }

@@ -16,7 +16,7 @@ import 'package:navi4all/view/routing/routing.dart';
 import 'package:navi4all/view/common/itinerary_widget.dart';
 import 'package:navi4all/view/search/search.dart';
 import 'package:provider/provider.dart';
-import 'package:navi4all/view_alt/routing/routing.dart' as routing_alt;
+import 'package:navi4all/view/alt/routing/routing.dart' as routing_alt;
 
 class ItineraryScreen extends StatefulWidget {
   const ItineraryScreen({super.key});
@@ -69,6 +69,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     var _ = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ItineraryOptions(
+          altMode: false,
           routingMode: Provider.of<ItineraryController>(
             context,
             listen: false,
@@ -174,11 +175,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               dividerHeight: 0.0,
               indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(32.0),
-                border: Border.all(
-                  color: Theme.of(context).textTheme.displayMedium!.color!,
-                  width: 2.0,
-                ),
+                borderRadius: BorderRadius.circular(16.0),
+                border: Border.all(color: Navi4AllColors.klPink, width: 2.0),
               ),
               tabs: [
                 Tab(
@@ -315,7 +313,9 @@ class ProgressWidget extends StatelessWidget {
 }
 
 class OrigDestPicker extends StatefulWidget {
-  const OrigDestPicker({super.key});
+  final bool altMode;
+
+  const OrigDestPicker({super.key, required this.altMode});
 
   @override
   State<StatefulWidget> createState() => _OrigDestPickerState();
@@ -325,8 +325,11 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
   Future<void> _onOriginTap() async {
     Place? originPlace = await Navigator.of(context).push(
       MaterialPageRoute<Place>(
-        builder: (context) =>
-            SearchScreen(isOriginPlaceSearch: true, isSecondarySearch: true),
+        builder: (context) => SearchScreen(
+          isOriginPlaceSearch: true,
+          isSecondarySearch: true,
+          altMode: widget.altMode,
+        ),
       ),
     );
 
@@ -352,8 +355,11 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
   Future<void> _onDestinationTap() async {
     Place? destinationPlace = await Navigator.of(context).push(
       MaterialPageRoute<Place>(
-        builder: (context) =>
-            SearchScreen(isOriginPlaceSearch: false, isSecondarySearch: true),
+        builder: (context) => SearchScreen(
+          isOriginPlaceSearch: false,
+          isSecondarySearch: true,
+          altMode: widget.altMode,
+        ),
       ),
     );
 
@@ -400,6 +406,9 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
       child: Material(
         elevation: 4.0,
+        color: !widget.altMode
+            ? Theme.of(context).colorScheme.surface
+            : Navi4AllColors.klLightRed,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),

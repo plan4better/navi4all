@@ -483,7 +483,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get modeMonorail => 'Einschienenbahn';
 
   @override
-  String get itineraryOptionsScreenTitle => 'Routeeinstellungen';
+  String get itineraryOptionsScreenTitle => 'Routeneinstellungen';
+
+  @override
+  String get itineraryOptionsScreenDepartureTimeTitle => 'Abfahrtszeit';
 
   @override
   String get itineraryOptionsScreenRoutingProfileItem => 'Routing-Profil';
@@ -495,10 +498,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String get itineraryOptionsScreenWalkingTitle => 'Zu Fuß';
 
   @override
-  String get itineraryOptionsScreenWalkingSpeedOption => 'Gehgeschwindigkeit';
+  String get itineraryOptionsScreenWalkingSpeedOption => 'Geschwindigkeit';
+
+  @override
+  String itineraryOptionsScreenWalkingSpeedOptionSemantic(String speed) {
+    return 'Geschwindigkeit zu Fuß. Aktuell $speed.';
+  }
+
+  @override
+  String get itineraryOptionsScreenWalkingSpeedIncrementSemantic => 'Erhöhe die Geschwindigkeit';
+
+  @override
+  String get itineraryOptionsScreenWalkingSpeedDecrementSemantic => 'Verringere die Geschwindigkeit';
 
   @override
   String get itineraryOptionsScreenWalkingAvoidOption => 'Zu Fuß vermeiden';
+
+  @override
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic => 'Aktiviert';
+
+  @override
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic => 'Deaktiviert';
+
+  @override
+  String itineraryOptionsScreenWalkingAvoidOptionSemantic(String status) {
+    return 'Zu Fuß vermeiden Option, $status.';
+  }
 
   @override
   String get itineraryOptionsScreenModesTitle => 'Verkehrsmittel auswählen';
@@ -508,6 +533,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get itineraryOptionsScreenBicycleSpeedOption => 'Geschwindigkeit';
+
+  @override
+  String get itineraryOptionsScreenBicycleSpeedIncrementSemantic => 'Erhöhe die Geschwindigkeit';
+
+  @override
+  String get itineraryOptionsScreenBicycleSpeedDecrementSemantic => 'Verringere die Geschwindigkeit';
 
   @override
   String get itineraryOptionsScreenApplyButtonTitle => 'Anwenden';
@@ -538,4 +569,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get routingProfileLabelStroller => 'Kinderwagen';
+
+  @override
+  String get altModeButtonDone => 'Fertig';
 }

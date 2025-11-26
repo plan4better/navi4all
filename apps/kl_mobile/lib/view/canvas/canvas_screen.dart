@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
-import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
-import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/view/canvas/canvas_map.dart';
 import 'package:navi4all/view/canvas/canvas_sheet.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
@@ -20,12 +18,19 @@ class CanvasScreen extends StatefulWidget {
 }
 
 class _CanvasScreenState extends State<CanvasScreen> {
-  final Map<CanvasControllerState, Widget> _overlayWidgets = {
-    CanvasControllerState.home: Container(),
-    CanvasControllerState.place: PlaceSearchBar(),
-    CanvasControllerState.itinerary: OrigDestPicker(),
-    CanvasControllerState.navigating: Container(),
-  };
+  late final Map<CanvasControllerState, Widget> _overlayWidgets;
+
+  @override
+  void initState() {
+    _overlayWidgets = {
+      CanvasControllerState.home: Container(),
+      CanvasControllerState.place: PlaceSearchBar(altMode: widget.altMode),
+      CanvasControllerState.itinerary: OrigDestPicker(altMode: widget.altMode),
+      CanvasControllerState.navigating: Container(),
+    };
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,23 +43,25 @@ class _CanvasScreenState extends State<CanvasScreen> {
             builder: (context, canvasController, _) =>
                 SafeArea(child: _overlayWidgets[canvasController.state]!),
           ),
-          widget.altMode
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 32.0),
-                    child: AccessibleButton(
-                      label: AppLocalizations.of(
-                        context,
-                      )!.commonHomeScreenButton,
-                      style: AccessibleButtonStyle.pink,
-                      onTap: () => Navigator.of(
-                        context,
-                      ).popUntil((route) => route.isFirst),
+          SafeArea(
+            child: widget.altMode
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 32.0),
+                      child: AccessibleButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.commonHomeScreenButton,
+                        style: AccessibleButtonStyle.pink,
+                        onTap: () => Navigator.of(
+                          context,
+                        ).popUntil((route) => route.isFirst),
+                      ),
                     ),
-                  ),
-                )
-              : SizedBox.shrink(),
+                  )
+                : SizedBox.shrink(),
+          ),
         ],
       ),
     );

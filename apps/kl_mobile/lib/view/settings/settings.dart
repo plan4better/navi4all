@@ -25,6 +25,7 @@ class SettingsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setStateDialog) => Dialog(
@@ -40,7 +41,9 @@ class SettingsScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      AppLocalizations.of(context)!.homeChangeBaseMapTitle,
+                      AppLocalizations.of(
+                        context,
+                      )!.onboardingProfileSelectionTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/controllers/profile_controller.dart';
 import 'package:navi4all/core/config.dart';
 import 'package:navi4all/core/theme/colors.dart';
@@ -8,13 +10,20 @@ import 'package:navi4all/core/utils.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/request_config.dart';
+import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:navi4all/view/common/accessible_icon_button.dart';
+import 'package:navi4all/view/common/sheet_button.dart';
 import 'package:provider/provider.dart';
 
 class ItineraryOptions extends StatefulWidget {
+  final bool altMode;
   final Mode routingMode;
 
-  const ItineraryOptions({super.key, required this.routingMode});
+  const ItineraryOptions({
+    super.key,
+    required this.altMode,
+    required this.routingMode,
+  });
 
   @override
   State<ItineraryOptions> createState() => _ItineraryOptionsState();
@@ -38,6 +47,9 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
                     onTap: () {
                       Navigator.of(context).pop();
                     },
+                    semanticLabel: AppLocalizations.of(
+                      context,
+                    )!.commonBackButtonSemantic,
                   ),
                   SizedBox(width: 16),
                   Text(
@@ -52,10 +64,28 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
               Expanded(
                 child: ListView(
                   children: [
+                    widget.altMode
+                        ? _WidgetDepartureTimeOptions()
+                        : SizedBox.shrink(),
                     _WidgetRoutingProfileOptions(),
                     _WidgetWalkOptions(),
                     _WidgetTransitOptions(),
-                    _WidgetBicycleOptions(),
+                    // TODO: Enable bicycle options
+                    // _WidgetBicycleOptions(),
+                    SizedBox(height: 32),
+                    widget.altMode
+                        ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child: AccessibleButton(
+                              label: AppLocalizations.of(
+                                context,
+                              )!.altModeButtonDone,
+                              style: AccessibleButtonStyle.pink,
+                              onTap: () => Navigator.of(context).pop(),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    widget.altMode ? SizedBox(height: 8) : SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -63,6 +93,84 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _WidgetDepartureTimeOptions extends StatelessWidget {
+  Future<void> _showJourneyTimePicker(BuildContext context) async {
+    final TimeOfDay? newJourneyTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(
+        Provider.of<ItineraryController>(context, listen: false).time!,
+      ),
+    );
+
+    if (newJourneyTime == null) {
+      return;
+    }
+
+    final itineraryController = Provider.of<ItineraryController>(
+      context,
+      listen: false,
+    );
+    final DateTime currentDateTime = itineraryController.time!;
+    final DateTime updatedDateTime = DateTime(
+      currentDateTime.year,
+      currentDateTime.month,
+      currentDateTime.day,
+      newJourneyTime.hour,
+      newJourneyTime.minute,
+    );
+    itineraryController.setParameters(
+      context: context,
+      originPlace: itineraryController.originPlace!,
+      destinationPlace: itineraryController.destinationPlace!,
+      primaryMode: itineraryController.primaryMode!,
+      time: updatedDateTime,
+      isArrivalTime: itineraryController.isArrivalTime!,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 32),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            AppLocalizations.of(
+              context,
+            )!.itineraryOptionsScreenDepartureTimeTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Theme.of(context).textTheme.displayMedium!.color,
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Consumer<ItineraryController>(
+            builder: (context, itineraryController, _) => SheetButton(
+              icon: Icons.schedule_outlined,
+              label: itineraryController.hasParametersSet
+                  ? AppLocalizations.of(context)!.itineraryDepartureTime(
+                      DateFormat(
+                        DateFormat.HOUR24_MINUTE,
+                      ).format(itineraryController.time!),
+                    )
+                  : '...',
+              onTap: () => _showJourneyTimePicker(context),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -111,7 +219,7 @@ class _WidgetRoutingProfileOptionsState
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32.0),
-              border: Border.all(color: Navi4AllColors.klPink, width: 1.25),
+              border: Border.all(color: Navi4AllColors.klPink, width: 2.0),
             ),
             child: Consumer<ProfileController>(
               builder: (context, profileController, _) =>
@@ -202,63 +310,94 @@ class _WidgetWalkOptionsState extends State<_WidgetWalkOptions> {
           SizedBox(height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              AppLocalizations.of(context)!.itineraryOptionsScreenWalkingTitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Theme.of(context).textTheme.displayMedium!.color,
+            child: Semantics(
+              excludeSemantics: true,
+              child: Text(
+                AppLocalizations.of(
+                  context,
+                )!.itineraryOptionsScreenWalkingTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.displayMedium!.color,
+                ),
               ),
             ),
           ),
           SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(
+          Semantics(
+            label: AppLocalizations.of(context)!
+                .itineraryOptionsScreenWalkingSpeedOptionSemantic(
+                  TextFormatter.formatSpeedText(
+                    profileController.routingRequestConfig.walkingSpeed,
+                  ),
+                ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Semantics(
+                      excludeSemantics: true,
+                      child: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.itineraryOptionsScreenWalkingSpeedOption,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium!.color,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  AccessibleIconButton(
+                    icon: Icons.remove_rounded,
+                    onTap: () => _changeSpeed(
+                      profileController.routingRequestConfig,
+                      -1,
+                    ),
+                    semanticLabel: AppLocalizations.of(
                       context,
-                    )!.itineraryOptionsScreenWalkingSpeedOption,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    )!.itineraryOptionsScreenWalkingSpeedDecrementSemantic,
+                  ),
+                  SizedBox(width: 8),
+                  SizedBox(
+                    width: 64.0,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      child: Text(
+                        TextFormatter.formatSpeedText(
+                          profileController.routingRequestConfig.walkingSpeed,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(
+                            context,
+                          ).textTheme.displayMedium!.color,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Spacer(),
-                SizedBox(width: 8),
-                AccessibleIconButton(
-                  icon: Icons.remove_rounded,
-                  onTap: () =>
-                      _changeSpeed(profileController.routingRequestConfig, -1),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    TextFormatter.formatSpeedText(
-                      profileController.routingRequestConfig.walkingSpeed,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.displayMedium!.color,
-                    ),
+                  SizedBox(width: 8),
+                  AccessibleIconButton(
+                    icon: Icons.add_rounded,
+                    onTap: () =>
+                        _changeSpeed(profileController.routingRequestConfig, 1),
+                    semanticLabel: AppLocalizations.of(
+                      context,
+                    )!.itineraryOptionsScreenWalkingSpeedIncrementSemantic,
                   ),
-                ),
-                SizedBox(width: 8),
-                AccessibleIconButton(
-                  icon: Icons.add_rounded,
-                  onTap: () =>
-                      _changeSpeed(profileController.routingRequestConfig, 1),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           SizedBox(height: 8),
@@ -271,6 +410,16 @@ class _WidgetWalkOptionsState extends State<_WidgetWalkOptions> {
             onChanged: (bool value) {
               _setAvoidValue(profileController.routingRequestConfig, value);
             },
+            semanticLabel: AppLocalizations.of(context)!
+                .itineraryOptionsScreenWalkingAvoidOptionSemantic(
+                  profileController.routingRequestConfig.walkingAvoid
+                      ? AppLocalizations.of(
+                          context,
+                        )!.itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic
+                      : AppLocalizations.of(
+                          context,
+                        )!.itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic,
+                ),
           ),
         ],
       ),
@@ -337,6 +486,7 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
+            semanticLabel: getModeTextMapping(Mode.BUS, context),
           ),
           _SwitchTile(
             icon: Icons.tram_outlined,
@@ -352,6 +502,7 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
+            semanticLabel: getModeTextMapping(Mode.TRAM, context),
           ),
           _SwitchTile(
             icon: Icons.subway_outlined,
@@ -367,6 +518,7 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
+            semanticLabel: getModeTextMapping(Mode.SUBWAY, context),
           ),
           _SwitchTile(
             icon: Icons.train_outlined,
@@ -382,6 +534,7 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
+            semanticLabel: getModeTextMapping(Mode.RAIL, context),
           ),
         ],
       ),
@@ -457,6 +610,9 @@ class _WidgetBicycleOptionsState extends State<_WidgetBicycleOptions> {
                   icon: Icons.remove_rounded,
                   onTap: () =>
                       _changeSpeed(profileController.routingRequestConfig, -1),
+                  semanticLabel: AppLocalizations.of(
+                    context,
+                  )!.itineraryOptionsScreenBicycleSpeedDecrementSemantic,
                 ),
                 SizedBox(width: 8),
                 Expanded(
@@ -478,6 +634,9 @@ class _WidgetBicycleOptionsState extends State<_WidgetBicycleOptions> {
                   icon: Icons.add_rounded,
                   onTap: () =>
                       _changeSpeed(profileController.routingRequestConfig, 1),
+                  semanticLabel: AppLocalizations.of(
+                    context,
+                  )!.itineraryOptionsScreenBicycleSpeedIncrementSemantic,
                 ),
               ],
             ),
@@ -495,12 +654,14 @@ class _SwitchTile extends StatelessWidget {
   final String title;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final String semanticLabel;
 
   const _SwitchTile({
     this.icon,
     required this.title,
     required this.value,
     required this.onChanged,
+    required this.semanticLabel,
   });
 
   @override
@@ -518,22 +679,29 @@ class _SwitchTile extends StatelessWidget {
                 ),
               if (icon != null) SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.displayMedium!.color,
-                    fontSize: 14.0,
+                child: Semantics(
+                  excludeSemantics: true,
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                      fontSize: 14.0,
+                    ),
                   ),
                 ),
               ),
-              Switch(
-                value: value,
-                onChanged: onChanged,
-                activeTrackColor: Theme.of(
-                  context,
-                ).textTheme.displayMedium!.color,
+              Semantics(
+                label: semanticLabel,
+                enabled: value,
+                child: Switch(
+                  value: value,
+                  onChanged: onChanged,
+                  activeTrackColor: Theme.of(
+                    context,
+                  ).textTheme.displayMedium!.color,
+                ),
               ),
             ],
           ),

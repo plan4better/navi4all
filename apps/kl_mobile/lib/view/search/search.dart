@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/view/canvas/canvas_screen.dart';
+import 'package:navi4all/view/common/accessible_button.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/autocomplete_controller.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
@@ -121,16 +122,6 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                       ),
-                      /* IconButton(
-                        icon: Icon(
-                          Icons.mic,
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                          semanticLabel: AppLocalizations.of(
-                            context,
-                          )!.commonMicButtonSemantic,
-                        ),
-                        onPressed: null,
-                      ), */
                     ],
                   ),
                 ),
@@ -216,12 +207,21 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                 const Spacer(),
-                /*AccessibleButton(
-                  label: AppLocalizations.of(context)!.commonHomeScreenButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: () =>
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                ),*/
+                widget.altMode
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: AccessibleButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.commonHomeScreenButton,
+                          style: AccessibleButtonStyle.pink,
+                          onTap: () => Navigator.of(
+                            context,
+                          ).popUntil((route) => route.isFirst),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                widget.altMode ? SizedBox(height: 8) : SizedBox.shrink(),
               ],
             ),
           ),
@@ -250,26 +250,35 @@ class _SearchSuggestion extends StatelessWidget {
         excludeSemantics: true,
         child: Container(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                place.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              const Icon(
+                Icons.location_on_rounded,
+                color: Navi4AllColors.klPink,
               ),
-              place.locality != null
-                  ? Text(
-                      place.locality!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12),
-                    )
-                  : const SizedBox.shrink(),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    place.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  place.locality != null
+                      ? Text(
+                          place.locality!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12),
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
             ],
           ),
         ),
