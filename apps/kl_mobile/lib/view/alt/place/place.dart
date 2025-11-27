@@ -85,116 +85,133 @@ class _PlaceScreenState extends State<PlaceScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Consumer<PlaceController>(
-        builder: (context, placeController, _) => Padding(
-          padding: const EdgeInsets.all(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                SizedBox(height: 128),
-                Semantics(
-                  label: placeController.place!.name,
-                  excludeSemantics: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          placeController.place!.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
+      child: Semantics(
+        focused: true,
+        label: AppLocalizations.of(context)!.placeScreenSemantic(
+          Provider.of<PlaceController>(context, listen: false).place!.name,
+          Provider.of<PlaceController>(
+            context,
+            listen: false,
+          ).place!.description,
+        ),
+        child: Consumer<PlaceController>(
+          builder: (context, placeController, _) => Padding(
+            padding: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  SizedBox(height: 128),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      child: Text(
+                        placeController.place!.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
                         ),
                       ),
-                      Text(
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      child: Text(
                         placeController.place!.description,
                         style: const TextStyle(fontSize: 16),
                       ),
+                    ),
+                  ),
+                  SizedBox(height: 64),
+                  Column(
+                    children: [
+                      AccessibleButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.addressInfoWalkingRoutesButton,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.addressInfoWalkingRoutesButtonSemantic,
+                        style: AccessibleButtonStyle.red,
+                        onTap: () {
+                          final itineraryController =
+                              Provider.of<ItineraryController>(
+                                context,
+                                listen: false,
+                              );
+                          itineraryController.setParameters(
+                            context: context,
+                            originPlace: itineraryController.originPlace!,
+                            destinationPlace:
+                                itineraryController.destinationPlace!,
+                            primaryMode: Mode.WALK,
+                            time: itineraryController.time!,
+                            isArrivalTime: itineraryController.isArrivalTime!,
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ItineraryScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      AccessibleButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.addressInfoPublicTransportRoutesButton,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.addressInfoPublicTransportRoutesButtonSemantic,
+                        style: AccessibleButtonStyle.red,
+                        onTap: () {
+                          final itineraryController =
+                              Provider.of<ItineraryController>(
+                                context,
+                                listen: false,
+                              );
+                          itineraryController.setParameters(
+                            context: context,
+                            originPlace: itineraryController.originPlace!,
+                            destinationPlace:
+                                itineraryController.destinationPlace!,
+                            primaryMode: Mode.TRANSIT,
+                            time: itineraryController.time!,
+                            isArrivalTime: itineraryController.isArrivalTime!,
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ItineraryScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      AccessibleButton(
+                        label: !_isFavorite
+                            ? AppLocalizations.of(
+                                context,
+                              )!.addressInfoSaveAddressButton
+                            : AppLocalizations.of(
+                                context,
+                              )!.addressInfoRemoveAddressButton,
+                        semanticLabel: !_isFavorite
+                            ? AppLocalizations.of(
+                                context,
+                              )!.addressInfoSaveAddressButton
+                            : AppLocalizations.of(
+                                context,
+                              )!.addressInfoRemoveAddressButton,
+                        style: AccessibleButtonStyle.pink,
+                        onTap: () => _toggleFavorite(placeController.place!),
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(height: 64),
-                Column(
-                  children: [
-                    AccessibleButton(
-                      label: AppLocalizations.of(
-                        context,
-                      )!.addressInfoWalkingRoutesButton,
-                      semanticLabel: AppLocalizations.of(
-                        context,
-                      )!.addressInfoWalkingRoutesButtonSemantic,
-                      style: AccessibleButtonStyle.red,
-                      onTap: () {
-                        final itineraryController =
-                            Provider.of<ItineraryController>(
-                              context,
-                              listen: false,
-                            );
-                        itineraryController.setParameters(
-                          context: context,
-                          originPlace: itineraryController.originPlace!,
-                          destinationPlace:
-                              itineraryController.destinationPlace!,
-                          primaryMode: Mode.WALK,
-                          time: itineraryController.time!,
-                          isArrivalTime: itineraryController.isArrivalTime!,
-                        );
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ItineraryScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    AccessibleButton(
-                      label: AppLocalizations.of(
-                        context,
-                      )!.addressInfoPublicTransportRoutesButton,
-                      semanticLabel: AppLocalizations.of(
-                        context,
-                      )!.addressInfoPublicTransportRoutesButtonSemantic,
-                      style: AccessibleButtonStyle.red,
-                      onTap: () {
-                        final itineraryController =
-                            Provider.of<ItineraryController>(
-                              context,
-                              listen: false,
-                            );
-                        itineraryController.setParameters(
-                          context: context,
-                          originPlace: itineraryController.originPlace!,
-                          destinationPlace:
-                              itineraryController.destinationPlace!,
-                          primaryMode: Mode.TRANSIT,
-                          time: itineraryController.time!,
-                          isArrivalTime: itineraryController.isArrivalTime!,
-                        );
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ItineraryScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    AccessibleButton(
-                      label: !_isFavorite
-                          ? AppLocalizations.of(
-                              context,
-                            )!.addressInfoSaveAddressButton
-                          : AppLocalizations.of(
-                              context,
-                            )!.addressInfoRemoveAddressButton,
-                      style: AccessibleButtonStyle.pink,
-                      onTap: () => _toggleFavorite(placeController.place!),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

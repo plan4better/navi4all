@@ -21,6 +21,7 @@ class SheetButton extends StatelessWidget {
     return Semantics(
       label: semanticLabel,
       excludeSemantics: semanticLabel != null,
+      button: true,
       child: Material(
         color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(32),

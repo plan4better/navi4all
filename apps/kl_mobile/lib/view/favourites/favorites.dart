@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/view/canvas/canvas_screen.dart';
 import 'package:navi4all/view/common/accessible_button.dart';
+import 'package:navi4all/view/common/accessible_icon_button.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/favorites_controller.dart';
 import 'package:navi4all/core/theme/colors.dart';
@@ -28,15 +30,47 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 64),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  AppLocalizations.of(context)!.favouritesTitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+              SizedBox(height: 16),
+              !widget.altMode ? SizedBox(height: 32) : SizedBox.shrink(),
+              Row(
+                children: [
+                  widget.altMode
+                      ? Semantics(
+                          sortKey: OrdinalSortKey(1),
+                          child: AccessibleIconButton(
+                            icon: Icons.arrow_back_rounded,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            semanticLabel: AppLocalizations.of(
+                              context,
+                            )!.commonBackButtonSemantic,
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  SizedBox(width: 16),
+                  Semantics(
+                    excludeSemantics: true,
+                    focused: true,
+                    sortKey: OrdinalSortKey(0),
+                    label: AppLocalizations.of(context)!
+                        .favoritesScreenSemantic(
+                          Provider.of<FavoritesController>(
+                            context,
+                            listen: false,
+                          ).favorites.length,
+                        ),
+                    child: Text(
+                      AppLocalizations.of(context)!.favouritesTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               Consumer<FavoritesController>(

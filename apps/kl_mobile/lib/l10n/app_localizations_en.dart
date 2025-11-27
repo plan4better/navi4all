@@ -116,13 +116,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressInfoWalkingRoutesButton => 'Walking';
 
   @override
-  String get addressInfoWalkingRoutesButtonSemantic => 'Find walking route options.';
+  String get addressInfoWalkingRoutesButtonSemantic => 'Find walking routes.';
 
   @override
   String get addressInfoPublicTransportRoutesButton => 'Public Transport';
 
   @override
-  String get addressInfoPublicTransportRoutesButtonSemantic => 'Find public transport route options.';
+  String get addressInfoPublicTransportRoutesButtonSemantic => 'Find public transport routes.';
 
   @override
   String get addressInfoSaveAddressButton => 'Favourite';
@@ -141,12 +141,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String origDestPickerOriginSemantic(String origin) {
-    return 'Origin: $origin. Tap to change.';
+    return 'Origin: $origin.';
   }
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Destination: $destination. Tap to change.';
+    return 'Destination: $destination.';
   }
 
   @override
@@ -224,7 +224,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String searchResultSemantic(String name, String locality) {
-    return 'Search result: $name, $locality.';
+    return 'Result: $name, $locality.';
   }
 
   @override
@@ -382,7 +382,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String itineraryDepartureTime(String time) {
-    return 'Depart at $time';
+    return 'Depart $time';
   }
 
   @override
@@ -483,7 +483,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get modeMonorail => 'Monorail';
 
   @override
-  String get itineraryOptionsScreenTitle => 'Journey Options';
+  String get itineraryOptionsScreenTitle => 'Route Settings';
+
+  @override
+  String get itineraryOptionsScreenSemantic => 'Route settings screen';
 
   @override
   String get itineraryOptionsScreenDepartureTimeTitle => 'Departure Time';
@@ -515,10 +518,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itineraryOptionsScreenWalkingAvoidOption => 'Avoid walking';
 
   @override
-  String get itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic => 'On';
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic => 'Enabled';
 
   @override
-  String get itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic => 'Off';
+  String get itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic => 'Disabled';
 
   @override
   String itineraryOptionsScreenWalkingAvoidOptionSemantic(String status) {
@@ -572,4 +575,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get altModeButtonDone => 'Done';
+
+  @override
+  String get homeScreenSemantic => 'Home screen';
+
+  @override
+  String favoritesScreenSemantic(int count) {
+    return 'Favorites screen. With $count favorites.';
+  }
+
+  @override
+  String placeScreenSemantic(String name, String description) {
+    return '$name, in $description.';
+  }
+
+  @override
+  String get settingsScreenSemantic => 'Settings screen';
+
+  @override
+  String get placeScreenSearchBarSemantic => 'Search for another location.';
+
+  @override
+  String searchScreenSearchFieldSemantic(String input) {
+    return 'Search field. Input: $input.';
+  }
+
+  @override
+  String get itinerariesScreenSemantic => 'Journeys screen.';
+
+  @override
+  String get routingScreenSemantic => 'Navigation screen.';
+
+  @override
+  String get routingScreenExitRoutingButtonSemantic => 'Exit navigation.';
 }

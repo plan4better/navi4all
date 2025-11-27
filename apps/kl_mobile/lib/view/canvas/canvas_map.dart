@@ -91,11 +91,18 @@ class _CanvasMapState extends State<CanvasMap> {
       listen: false,
     ).originPlace!;
 
+    String originColor =
+        Theme.of(context).textTheme.displayMedium?.color!
+            .toARGB32()
+            .toRadixString(16)
+            .substring(2) ??
+        "000000";
+
     await _mapController.addCircle(
       CircleOptions(
         geometry: LatLng(place.coordinates.lat, place.coordinates.lon),
         circleRadius: 6.0,
-        circleColor: "#3685E2",
+        circleColor: "#$originColor",
         circleStrokeColor: "#FFFFFF",
         circleStrokeWidth: 2.0,
       ),

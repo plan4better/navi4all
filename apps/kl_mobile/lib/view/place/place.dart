@@ -371,41 +371,46 @@ class PlaceSearchBar extends StatelessWidget {
         alignment: Alignment.topCenter,
         child: Padding(
           padding: const EdgeInsets.only(top: 32, left: 16, right: 16),
-          child: Material(
-            elevation: 4,
-            borderRadius: BorderRadius.circular(28),
-            child: InkWell(
-              onTap: () => _search(context),
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  color: !altMode
-                      ? Theme.of(context).colorScheme.secondary
-                      : Navi4AllColors.klLightRed,
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(width: 24),
-                    Icon(
-                      Icons.search,
-                      color: Theme.of(context).textTheme.displayMedium?.color,
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Consumer<PlaceController>(
-                        builder: (context, placeController, _) => Text(
-                          placeController.place != null
-                              ? placeController.place!.name
-                              : AppLocalizations.of(
-                                  context,
-                                )!.homeSearchButtonHint,
-                          style: const TextStyle(fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
+          child: Semantics(
+            button: true,
+            excludeSemantics: true,
+            label: AppLocalizations.of(context)!.placeScreenSearchBarSemantic,
+            child: Material(
+              elevation: 4,
+              borderRadius: BorderRadius.circular(28),
+              child: InkWell(
+                onTap: () => _search(context),
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(32),
+                    color: !altMode
+                        ? Theme.of(context).colorScheme.secondary
+                        : Navi4AllColors.klLightRed,
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 24),
+                      Icon(
+                        Icons.search,
+                        color: Theme.of(context).textTheme.displayMedium?.color,
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Consumer<PlaceController>(
+                          builder: (context, placeController, _) => Text(
+                            placeController.place != null
+                                ? placeController.place!.name
+                                : AppLocalizations.of(
+                                    context,
+                                  )!.homeSearchButtonHint,
+                            style: const TextStyle(fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

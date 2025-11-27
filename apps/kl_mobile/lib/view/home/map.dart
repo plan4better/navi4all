@@ -330,36 +330,4 @@ class _HomeMapState extends State<HomeMap> {
       ],
     );
   }
-
-  void _updateMarkers() {
-    _mapController.clearCircles();
-
-    List<CircleOptions> circles = [];
-    for (var site in _parkingSites) {
-      String markerColor = "#3685E2";
-      if (!site["has_realtime_data"]) {
-        markerColor = "#3685E2";
-      } else if (site["disabled_parking_available"]) {
-        markerColor = "#089161";
-      } else {
-        markerColor = "#F4B1A4";
-      }
-
-      circles.add(
-        CircleOptions(
-          geometry: site["coordinates"],
-          circleColor: markerColor,
-          circleRadius: 6.0,
-          circleStrokeWidth: 1.0,
-          circleStrokeColor: "#FFFFFF",
-        ),
-      );
-    }
-
-    _mapController.addCircles(circles).then((symbols) {
-      for (int i = 0; i < symbols.length; i++) {
-        _symbolIdToSite[symbols[i].id] = _parkingSites[i];
-      }
-    });
-  }
 }

@@ -7,6 +7,7 @@ import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
+import 'package:navi4all/view/common/accessible_icon_button.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/core/processing_status.dart';
@@ -89,11 +90,12 @@ class RoutingState extends State<RoutingScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    AppLocalizations.of(context)!.routingDisclaimerMessage,
-                    style: TextStyle(fontSize: 14),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      AppLocalizations.of(context)!.routingDisclaimerMessage,
+                      style: TextStyle(fontSize: 14),
+                    ),
                   ),
                 ),
                 SizedBox(height: 32),
@@ -458,341 +460,375 @@ class RoutingState extends State<RoutingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Material(
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _navigationStatus != NavigationStatus.navigating
-                                ? Semantics(
-                                    label: AppLocalizations.of(context)!
-                                        .origDestPickerOriginSemantic(
-                                          _origin.id ==
-                                                  Navi4AllValues.userLocation
-                                              ? AppLocalizations.of(
-                                                  context,
-                                                )!.origDestCurrentLocation
-                                              : _origin.name,
-                                        ),
-                                    excludeSemantics: true,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(16.0),
-                                        topRight: Radius.circular(16.0),
-                                      ),
-                                      onTap: null,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0,
-                                          vertical: 4.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(16.0),
+      body: Semantics(
+        focused: true,
+        label: AppLocalizations.of(context)!.routingScreenSemantic,
+        child: Column(
+          children: [
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Material(
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _navigationStatus != NavigationStatus.navigating
+                                  ? Semantics(
+                                      label: AppLocalizations.of(context)!
+                                          .origDestPickerOriginSemantic(
+                                            _origin.id ==
+                                                    Navi4AllValues.userLocation
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.origDestCurrentLocation
+                                                : _origin.name,
                                           ),
+                                      excludeSemantics: true,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0),
                                         ),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(width: 8.0),
-                                            Padding(
-                                              padding: const EdgeInsets.all(
-                                                2.0,
-                                              ),
-                                              child: Material(
-                                                elevation: 2.0,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                                child: Container(
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Color(0xFF3685E2),
-                                                    border: Border.all(
-                                                      color: Navi4AllColors
-                                                          .klWhite,
-                                                      width: 3.0,
+                                        onTap: null,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0,
+                                            vertical: 4.0,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(16.0),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(width: 8.0),
+                                              Padding(
+                                                padding: const EdgeInsets.all(
+                                                  2.0,
+                                                ),
+                                                child: Material(
+                                                  elevation: 2.0,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        12.0,
+                                                      ),
+                                                  child: Container(
+                                                    width: 20.0,
+                                                    height: 20.0,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Theme.of(context)
+                                                          .textTheme
+                                                          .displayMedium
+                                                          ?.color,
+                                                      border: Border.all(
+                                                        color: Navi4AllColors
+                                                            .klWhite,
+                                                        width: 3.0,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text(
-                                                _origin.id ==
-                                                        Navi4AllValues
-                                                            .userLocation
-                                                    ? AppLocalizations.of(
-                                                        context,
-                                                      )!.origDestCurrentLocation
-                                                    : _origin.name,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 16.0,
+                                              SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  _origin.id ==
+                                                          Navi4AllValues
+                                                              .userLocation
+                                                      ? AppLocalizations.of(
+                                                          context,
+                                                        )!.origDestCurrentLocation
+                                                      : _origin.name,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 16.0,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: 8.0),
-                                            SizedBox(width: 48.0, height: 48.0),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : SizedBox.shrink(),
-                            _navigationStatus != NavigationStatus.navigating
-                                ? Divider(
-                                    height: 0,
-                                    color: Navi4AllColors.klPink,
-                                  )
-                                : SizedBox.shrink(),
-                            Semantics(
-                              label: AppLocalizations.of(context)!
-                                  .origDestPickerDestinationSemantic(
-                                    _destination.id ==
-                                            Navi4AllValues.userLocation
-                                        ? AppLocalizations.of(
-                                            context,
-                                          )!.origDestCurrentLocation
-                                        : _destination.name,
-                                  ),
-                              excludeSemantics: true,
-                              child: InkWell(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                ),
-                                onTap: null,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                    vertical: 4.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(16.0),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(width: 8.0),
-                                      Icon(
-                                        _navigationStatus !=
-                                                NavigationStatus.navigating
-                                            ? Icons.place_rounded
-                                            : Icons.navigation_rounded,
-                                        color: Theme.of(
-                                          context,
-                                        ).textTheme.displayMedium?.color,
-                                      ),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          _destination.id ==
-                                                  Navi4AllValues.userLocation
-                                              ? AppLocalizations.of(
-                                                  context,
-                                                )!.origDestCurrentLocation
-                                              : _destination.name,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
+                                              SizedBox(width: 8.0),
+                                              SizedBox(
+                                                width: 48.0,
+                                                height: 48.0,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 8.0),
-                                      SizedBox(width: 48.0, height: 48.0),
-                                    ],
+                                    )
+                                  : SizedBox.shrink(),
+                              _navigationStatus != NavigationStatus.navigating
+                                  ? Divider(
+                                      height: 0,
+                                      color: Navi4AllColors.klPink,
+                                    )
+                                  : SizedBox.shrink(),
+                              Semantics(
+                                label: AppLocalizations.of(context)!
+                                    .origDestPickerDestinationSemantic(
+                                      _destination.id ==
+                                              Navi4AllValues.userLocation
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.origDestCurrentLocation
+                                          : _destination.name,
+                                    ),
+                                excludeSemantics: true,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(16.0),
+                                    bottomRight: Radius.circular(16.0),
+                                  ),
+                                  onTap: null,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                      vertical: 4.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.vertical(
+                                        bottom: Radius.circular(16.0),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(width: 8.0),
+                                        Icon(
+                                          _navigationStatus !=
+                                                  NavigationStatus.navigating
+                                              ? Icons.place_rounded
+                                              : Icons.navigation_rounded,
+                                          color: Theme.of(
+                                            context,
+                                          ).textTheme.displayMedium?.color,
+                                        ),
+                                        SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            _destination.id ==
+                                                    Navi4AllValues.userLocation
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.origDestCurrentLocation
+                                                : _destination.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        SizedBox(width: 48.0, height: 48.0),
+                                      ],
+                                    ),
                                   ),
                                 ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SheetButton(
+                                    icon:
+                                        _navigationStatus ==
+                                            NavigationStatus.idle
+                                        ? Icons.play_arrow
+                                        : _navigationStatus ==
+                                              NavigationStatus.navigating
+                                        ? Icons.pause
+                                        : _navigationStatus ==
+                                              NavigationStatus.arrived
+                                        ? Icons.check
+                                        : Icons.play_arrow,
+                                    label:
+                                        _navigationStatus ==
+                                            NavigationStatus.idle
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationStartButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.navigating
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationPauseButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.arrived
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationDoneButton
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationResumeButton,
+                                    onTap: () => _toggleNavigationState(),
+                                    semanticLabel:
+                                        _navigationStatus ==
+                                            NavigationStatus.idle
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationStartButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.navigating
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationPauseButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.arrived
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationDoneButton
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationResumeButton,
+                                    shrinkWrap: false,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                AccessibleIconButton(
+                                  icon: _audioStatus == AudioStatus.muted
+                                      ? Icons.volume_off
+                                      : Icons.volume_up,
+                                  semanticLabel:
+                                      _audioStatus == AudioStatus.muted
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.routeNavigationMuteButtonUnmuteText
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.routeNavigationMuteButtonMuteText,
+                                  onTap: _toggleAudioState,
+                                ),
+                                SizedBox(width: 8),
+                                AccessibleIconButton(
+                                  icon: Icons.close,
+                                  semanticLabel: AppLocalizations.of(
+                                    context,
+                                  )!.routingScreenExitRoutingButtonSemantic,
+                                  onTap: () {
+                                    _positionStream?.drain();
+                                    _positionStreamSubscription?.cancel();
+                                    _positionStream = null;
+                                    _positionStreamSubscription = null;
+                                    setState(() {
+                                      _navigationStatus = NavigationStatus.idle;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.place_rounded,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
+                                  ),
+                                  SizedBox(width: 4.0),
+                                  Text(
+                                    TextFormatter.formatDurationText(
+                                      widget.itinerarySummary.duration,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Icon(
+                                    Icons.circle,
+                                    size: 6,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium?.color,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    TextFormatter.formatDistanceText(
+                                      widget.itinerarySummary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
+                      Divider(height: 0, color: Navi4AllColors.klPink),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Flexible(
-                                flex: 3,
-                                child: SheetButton(
-                                  icon:
-                                      _navigationStatus == NavigationStatus.idle
-                                      ? Icons.play_arrow
-                                      : _navigationStatus ==
-                                            NavigationStatus.navigating
-                                      ? Icons.pause
-                                      : _navigationStatus ==
-                                            NavigationStatus.arrived
-                                      ? Icons.check
-                                      : Icons.play_arrow,
-                                  label:
-                                      _navigationStatus == NavigationStatus.idle
-                                      ? AppLocalizations.of(
-                                          context,
-                                        )!.routingScreenNavigationStartButton
-                                      : _navigationStatus ==
-                                            NavigationStatus.navigating
-                                      ? AppLocalizations.of(
-                                          context,
-                                        )!.routingScreenNavigationPauseButton
-                                      : _navigationStatus ==
-                                            NavigationStatus.arrived
-                                      ? AppLocalizations.of(
-                                          context,
-                                        )!.routingScreenNavigationDoneButton
-                                      : AppLocalizations.of(
-                                          context,
-                                        )!.routingScreenNavigationResumeButton,
-                                  onTap: () => _toggleNavigationState(),
-                                  shrinkWrap: false,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Flexible(
-                                flex: 1,
-                                child: SheetButton(
-                                  icon: _audioStatus == AudioStatus.muted
-                                      ? Icons.volume_off
-                                      : Icons.volume_up,
-                                  onTap: () => _toggleAudioState(),
-                                  shrinkWrap: false,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.close,
-                                  size: 28,
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.displayMedium?.color,
-                                ),
-                                onPressed: () {
-                                  _positionStream?.drain();
-                                  _positionStreamSubscription?.cancel();
-                                  _positionStream = null;
-                                  _positionStreamSubscription = null;
-                                  setState(() {
-                                    _navigationStatus = NavigationStatus.idle;
-                                  });
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.place_rounded,
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.displayMedium?.color,
-                                ),
-                                SizedBox(width: 4.0),
-                                Text(
-                                  TextFormatter.formatDurationText(
-                                    widget.itinerarySummary.duration,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                SizedBox(width: 8.0),
-                                Icon(
-                                  Icons.circle,
-                                  size: 6,
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.displayMedium?.color,
-                                ),
-                                SizedBox(width: 8.0),
-                                Text(
-                                  TextFormatter.formatDistanceText(
-                                    widget.itinerarySummary,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(height: 0, color: Navi4AllColors.klPink),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                ListView.separated(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  itemCount: _getInstructionTiles.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      _getInstructionTiles[index],
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(
-                        height: 1,
-                        color: Navi4AllColors.klPink,
-                        indent: 16,
-                        endIndent: 16,
-                      ),
-                ),
-                _processingStatus == ProcessingStatus.processing ||
-                        _processingStatus == ProcessingStatus.error
-                    ? Center(
-                        child: NavigationProcessingTile(
-                          processingStatus: _processingStatus,
-                        ),
-                      )
-                    : SizedBox.shrink(),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: Stack(
+                children: [
+                  ListView.separated(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: _getInstructionTiles.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        _getInstructionTiles[index],
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(
+                          height: 1,
+                          color: Navi4AllColors.klPink,
+                          indent: 16,
+                          endIndent: 16,
+                        ),
+                  ),
+                  _processingStatus == ProcessingStatus.processing ||
+                          _processingStatus == ProcessingStatus.error
+                      ? Center(
+                          child: NavigationProcessingTile(
+                            processingStatus: _processingStatus,
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -838,50 +874,55 @@ class ItineraryLegStepTile extends StatelessWidget {
     color: isActive
         ? Theme.of(context).colorScheme.tertiary
         : Theme.of(context).colorScheme.surface,
-    child: Row(
-      children: [
-        Icon(
-          getRelativeDirectionIconMapping(step.relativeDirection),
-          color: Navi4AllColors.klPink,
-          size: 32,
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                getRelativeDirectionTextMapping(
-                  step.relativeDirection,
-                  context,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              _streetName != null
-                  ? Text(
-                      _streetName!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 16),
-                    )
-                  : SizedBox.shrink(),
-              _distance(context) != null
-                  ? Text(
-                      _distance(context)!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 14),
-                    )
-                  : SizedBox.shrink(),
-            ],
+    child: Semantics(
+      excludeSemantics: true,
+      label:
+          '${_distance(context) != null ? _distance(context)! + ', ' : ''}${_streetName != null ? _streetName! + ', ' : ''}${getRelativeDirectionTextMapping(step.relativeDirection, context)}',
+      child: Row(
+        children: [
+          Icon(
+            getRelativeDirectionIconMapping(step.relativeDirection),
+            color: Navi4AllColors.klPink,
+            size: 32,
           ),
-        ),
-      ],
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  getRelativeDirectionTextMapping(
+                    step.relativeDirection,
+                    context,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                _streetName != null
+                    ? Text(
+                        _streetName!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 16),
+                      )
+                    : SizedBox.shrink(),
+                _distance(context) != null
+                    ? Text(
+                        _distance(context)!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 14),
+                      )
+                    : SizedBox.shrink(),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

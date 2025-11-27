@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Navi4AllColors {
-  static const Color klRed = Color(0xFFD82028);
+  static const Color klRed = Color(0xFFBF1C23);
   static const Color klDarkRed = Color(0xFF851419);
   static const Color klLightRed = Color(0xFFFFEDEB);
   static const Color klPink = Color(0xFFFFB3AD);

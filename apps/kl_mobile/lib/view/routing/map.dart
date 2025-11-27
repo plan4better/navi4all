@@ -158,6 +158,13 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   Future<void> _drawOrigin() async {
+    String originColor =
+        Theme.of(context).textTheme.displayMedium?.color!
+            .toARGB32()
+            .toRadixString(16)
+            .substring(2) ??
+        "000000";
+
     await _mapController.addCircle(
       CircleOptions(
         geometry: LatLng(
@@ -165,7 +172,7 @@ class _RoutingMapState extends State<RoutingMap> {
           _journeyPoints.first.longitude,
         ),
         circleRadius: 6.0,
-        circleColor: "#3685E2",
+        circleColor: "#$originColor",
         circleStrokeColor: "#FFFFFF",
         circleStrokeWidth: 2.0,
       ),

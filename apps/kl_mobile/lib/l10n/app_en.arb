@@ -42,15 +42,15 @@
         }
     },
     "addressInfoWalkingRoutesButton": "Walking",
-    "addressInfoWalkingRoutesButtonSemantic": "Find walking route options.",
+    "addressInfoWalkingRoutesButtonSemantic": "Find walking routes.",
     "addressInfoPublicTransportRoutesButton": "Public Transport",
-    "addressInfoPublicTransportRoutesButtonSemantic": "Find public transport route options.",
+    "addressInfoPublicTransportRoutesButtonSemantic": "Find public transport routes.",
     "addressInfoSaveAddressButton": "Favourite",
     "addressInfoRemoveAddressButton": "Unfavourite",
     "routeOptionsRouteSettingsButton": "Route Settings",
     "routeOptionsSaveRouteButton": "Save Route",
     "origDestPickerSwapButtonSemantic": "Swap origin and destination.",
-    "origDestPickerOriginSemantic": "Origin: {origin}. Tap to change.",
+    "origDestPickerOriginSemantic": "Origin: {origin}.",
     "@origDestPickerOriginSemantic": {
         "placeholders": {
             "origin": {
@@ -58,7 +58,7 @@
             }
         }
     },
-    "origDestPickerDestinationSemantic": "Destination: {destination}. Tap to change.",
+    "origDestPickerDestinationSemantic": "Destination: {destination}.",
     "@origDestPickerDestinationSemantic": {
         "placeholders": {
             "destination": {
@@ -165,7 +165,7 @@
     "routeNavigationStopButton": "Stop",
     "errorUnableToFetchItineraries": "Unable to fetch itineraries.",
     "errorNoItinerariesFound": "No itineraries found for the selected origin and destination.",
-    "searchResultSemantic": "Search result: {name}, {locality}.",
+    "searchResultSemantic": "Result: {name}, {locality}.",
     "@searchResultSemantic": {
         "placeholders": {
             "name": {
@@ -227,7 +227,7 @@
     "navigationRelativeDirectionExitStation": "Exit station",
     "navigationRelativeDirectionFollowSigns": "Follow signs",
     "navigationRelativeDirectionArrive": "Arrive",
-    "itineraryDepartureTime": "Depart at {time}",
+    "itineraryDepartureTime": "Depart {time}",
     "@itineraryDepartureTime": {
         "placeholders": {
             "time": {
@@ -280,7 +280,8 @@
     "modeWalk": "Walk",
     "modeTrolleybus": "Trolleybus",
     "modeMonorail": "Monorail",
-    "itineraryOptionsScreenTitle": "Journey Options",
+    "itineraryOptionsScreenTitle": "Route Settings",
+    "itineraryOptionsScreenSemantic": "Route settings screen",
     "itineraryOptionsScreenDepartureTimeTitle": "Departure Time",
     "itineraryOptionsScreenRoutingProfileItem": "Routing Profile",
     "itineraryOptionsScreenRoutingProfileItemHint": "Select a profile",
@@ -297,8 +298,8 @@
     "itineraryOptionsScreenWalkingSpeedIncrementSemantic": "Increase walking speed",
     "itineraryOptionsScreenWalkingSpeedDecrementSemantic": "Decrease walking speed",
     "itineraryOptionsScreenWalkingAvoidOption": "Avoid walking",
-    "itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic": "On",
-    "itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic": "Off",
+    "itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic": "Enabled",
+    "itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic": "Disabled",
     "itineraryOptionsScreenWalkingAvoidOptionSemantic": "Avoid walking option, {status}.",
     "@itineraryOptionsScreenWalkingAvoidOptionSemantic": {
         "placeholders": {
@@ -322,5 +323,38 @@
     "routingProfileLabelModerateWalkingDisability": "Moderate Walking Disability",
     "routingProfileLabelSevereWalkingDisability": "Severe Walking Disability",
     "routingProfileLabelStroller": "Stroller",
-    "altModeButtonDone": "Done"
+    "altModeButtonDone": "Done",
+    "homeScreenSemantic": "Home screen",
+    "favoritesScreenSemantic": "Favorites screen. With {count} favorites.",
+    "@favoritesScreenSemantic": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "placeScreenSemantic": "{name}, in {description}.",
+    "@placeScreenSemantic": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "description": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsScreenSemantic": "Settings screen",
+    "placeScreenSearchBarSemantic": "Search for another location.",
+    "searchScreenSearchFieldSemantic": "Search field. Input: {input}.",
+    "@searchScreenSearchFieldSemantic": {
+        "placeholders": {
+            "input": {
+                "type": "String"
+            }
+        }
+    },
+    "itinerariesScreenSemantic": "Journeys screen.",
+    "routingScreenSemantic": "Navigation screen.",
+    "routingScreenExitRoutingButtonSemantic": "Exit navigation."
 }

@@ -171,11 +171,12 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 horizontal: 24.0,
                 vertical: 6.0,
               ),
-              splashBorderRadius: BorderRadius.circular(16.0),
+              splashBorderRadius: BorderRadius.circular(32.0),
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               dividerHeight: 0.0,
               indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(32.0),
+                color: Theme.of(context).colorScheme.tertiary,
                 border: Border.all(color: Navi4AllColors.klPink, width: 2.0),
               ),
               tabs: [
@@ -419,60 +420,65 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Semantics(
-                    label: itineraryController.hasParametersSet
-                        ? AppLocalizations.of(
-                            context,
-                          )!.origDestPickerOriginSemantic(
-                            itineraryController.originPlace!.id ==
-                                    Navi4AllValues.userLocation
-                                ? AppLocalizations.of(
-                                    context,
-                                  )!.origDestCurrentLocation
-                                : itineraryController.originPlace!.name,
-                          )
-                        : '',
-                    excludeSemantics: true,
-                    child: InkWell(
-                      onTap: _onOriginTap,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.0),
-                        topRight: Radius.circular(16.0),
+                  InkWell(
+                    onTap: _onOriginTap,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 4.0,
                       ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 4.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(16.0),
                         ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16.0),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 8.0),
-                            Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Material(
-                                elevation: 2.0,
-                                borderRadius: BorderRadius.circular(12.0),
-                                child: Container(
-                                  width: 20.0,
-                                  height: 20.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF3685E2),
-                                    border: Border.all(
-                                      color: Navi4AllColors.klWhite,
-                                      width: 3.0,
-                                    ),
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Material(
+                              elevation: 2.0,
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Container(
+                                width: 20.0,
+                                height: 20.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium?.color,
+                                  border: Border.all(
+                                    color: Navi4AllColors.klWhite,
+                                    width: 3.0,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12),
-                            Expanded(
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Semantics(
+                              label: itineraryController.hasParametersSet
+                                  ? AppLocalizations.of(
+                                      context,
+                                    )!.origDestPickerOriginSemantic(
+                                      itineraryController.originPlace!.id ==
+                                              Navi4AllValues.userLocation
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.origDestCurrentLocation
+                                          : itineraryController
+                                                .originPlace!
+                                                .name,
+                                    )
+                                  : '',
+                              button: true,
+                              excludeSemantics: true,
                               child: Text(
                                 itineraryController.hasParametersSet
                                     ? itineraryController.originPlace!.id ==
@@ -489,50 +495,55 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                 style: TextStyle(fontSize: 16.0),
                               ),
                             ),
-                            SizedBox(width: 48.0, height: 48.0),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 48.0, height: 48.0),
+                        ],
                       ),
                     ),
                   ),
                   Divider(height: 0, color: Navi4AllColors.klPink),
-                  Semantics(
-                    label: AppLocalizations.of(context)!
-                        .origDestPickerDestinationSemantic(
-                          itineraryController.hasParametersSet
-                              ? itineraryController.destinationPlace!.id ==
-                                        Navi4AllValues.userLocation
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.origDestCurrentLocation
-                                    : itineraryController.destinationPlace!.name
-                              : '',
+                  InkWell(
+                    onTap: _onDestinationTap,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(16.0),
                         ),
-                    excludeSemantics: true,
-                    child: InkWell(
-                      onTap: _onDestinationTap,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(16.0),
-                        bottomRight: Radius.circular(16.0),
                       ),
-                      child: Container(
-                        padding: const EdgeInsets.all(4.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(16.0),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 12.0),
+                          Icon(
+                            Icons.place_rounded,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.displayMedium?.color,
                           ),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 12.0),
-                            Icon(
-                              Icons.place_rounded,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.displayMedium?.color,
-                            ),
-                            SizedBox(width: 12),
-                            Expanded(
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Semantics(
+                              label: AppLocalizations.of(context)!
+                                  .origDestPickerDestinationSemantic(
+                                    itineraryController.hasParametersSet
+                                        ? itineraryController
+                                                      .destinationPlace!
+                                                      .id ==
+                                                  Navi4AllValues.userLocation
+                                              ? AppLocalizations.of(
+                                                  context,
+                                                )!.origDestCurrentLocation
+                                              : itineraryController
+                                                    .destinationPlace!
+                                                    .name
+                                        : '',
+                                  ),
+                              button: true,
+                              excludeSemantics: true,
                               child: Text(
                                 itineraryController.hasParametersSet
                                     ? itineraryController
@@ -554,13 +565,16 @@ class _OrigDestPickerState extends State<OrigDestPicker> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 16.0),
-                            AccessibleIconButton(
-                              icon: Icons.swap_vert_rounded,
-                              onTap: _swapOriginDestination,
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 16.0),
+                          AccessibleIconButton(
+                            icon: Icons.swap_vert_rounded,
+                            semanticLabel: AppLocalizations.of(
+                              context,
+                            )!.origDestPickerSwapButtonSemantic,
+                            onTap: _swapOriginDestination,
+                          ),
+                        ],
                       ),
                     ),
                   ),

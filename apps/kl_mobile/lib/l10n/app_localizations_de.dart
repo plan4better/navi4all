@@ -141,12 +141,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String origDestPickerOriginSemantic(String origin) {
-    return 'Startort: $origin. Tippen Sie, um zu ändern.';
+    return 'Startort: $origin.';
   }
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Zielort: $destination. Tippen Sie, um zu ändern.';
+    return 'Zielort: $destination.';
   }
 
   @override
@@ -224,7 +224,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String searchResultSemantic(String name, String locality) {
-    return 'Suchergebnis: $name, $locality.';
+    return 'Ergebnis: $name, $locality.';
   }
 
   @override
@@ -486,6 +486,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get itineraryOptionsScreenTitle => 'Routeneinstellungen';
 
   @override
+  String get itineraryOptionsScreenSemantic => 'Routeneinstellungen Bildschirm';
+
+  @override
   String get itineraryOptionsScreenDepartureTimeTitle => 'Abfahrtszeit';
 
   @override
@@ -572,4 +575,37 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get altModeButtonDone => 'Fertig';
+
+  @override
+  String get homeScreenSemantic => 'Startbildschirm';
+
+  @override
+  String favoritesScreenSemantic(int count) {
+    return 'Favoritenbildschirm. Mit $count Favoriten.';
+  }
+
+  @override
+  String placeScreenSemantic(String name, String description) {
+    return '$name, in $description.';
+  }
+
+  @override
+  String get settingsScreenSemantic => 'Einstellungsbildschirm';
+
+  @override
+  String get placeScreenSearchBarSemantic => 'Suche nach einem anderen Ort.';
+
+  @override
+  String searchScreenSearchFieldSemantic(String input) {
+    return 'Suchfeld. Eingabe: $input.';
+  }
+
+  @override
+  String get itinerariesScreenSemantic => 'Reisebildschirm.';
+
+  @override
+  String get routingScreenSemantic => 'Navigationsbildschirm.';
+
+  @override
+  String get routingScreenExitRoutingButtonSemantic => 'Navigation beenden.';
 }

@@ -308,7 +308,7 @@ abstract class AppLocalizations {
   /// No description provided for @addressInfoWalkingRoutesButtonSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Find walking route options.'**
+  /// **'Find walking routes.'**
   String get addressInfoWalkingRoutesButtonSemantic;
 
   /// No description provided for @addressInfoPublicTransportRoutesButton.
@@ -320,7 +320,7 @@ abstract class AppLocalizations {
   /// No description provided for @addressInfoPublicTransportRoutesButtonSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Find public transport route options.'**
+  /// **'Find public transport routes.'**
   String get addressInfoPublicTransportRoutesButtonSemantic;
 
   /// No description provided for @addressInfoSaveAddressButton.
@@ -356,13 +356,13 @@ abstract class AppLocalizations {
   /// No description provided for @origDestPickerOriginSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Origin: {origin}. Tap to change.'**
+  /// **'Origin: {origin}.'**
   String origDestPickerOriginSemantic(String origin);
 
   /// No description provided for @origDestPickerDestinationSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Destination: {destination}. Tap to change.'**
+  /// **'Destination: {destination}.'**
   String origDestPickerDestinationSemantic(String destination);
 
   /// No description provided for @journeyOptionSemantic.
@@ -482,7 +482,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchResultSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Search result: {name}, {locality}.'**
+  /// **'Result: {name}, {locality}.'**
   String searchResultSemantic(String name, String locality);
 
   /// No description provided for @origDestCurrentLocation.
@@ -794,7 +794,7 @@ abstract class AppLocalizations {
   /// No description provided for @itineraryDepartureTime.
   ///
   /// In en, this message translates to:
-  /// **'Depart at {time}'**
+  /// **'Depart {time}'**
   String itineraryDepartureTime(String time);
 
   /// No description provided for @itineraryModeTabWalking.
@@ -986,8 +986,14 @@ abstract class AppLocalizations {
   /// No description provided for @itineraryOptionsScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'Journey Options'**
+  /// **'Route Settings'**
   String get itineraryOptionsScreenTitle;
+
+  /// No description provided for @itineraryOptionsScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Route settings screen'**
+  String get itineraryOptionsScreenSemantic;
 
   /// No description provided for @itineraryOptionsScreenDepartureTimeTitle.
   ///
@@ -1046,13 +1052,13 @@ abstract class AppLocalizations {
   /// No description provided for @itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic.
   ///
   /// In en, this message translates to:
-  /// **'On'**
+  /// **'Enabled'**
   String get itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic;
 
   /// No description provided for @itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Off'**
+  /// **'Disabled'**
   String get itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic;
 
   /// No description provided for @itineraryOptionsScreenWalkingAvoidOptionSemantic.
@@ -1156,6 +1162,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get altModeButtonDone;
+
+  /// No description provided for @homeScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Home screen'**
+  String get homeScreenSemantic;
+
+  /// No description provided for @favoritesScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites screen. With {count} favorites.'**
+  String favoritesScreenSemantic(int count);
+
+  /// No description provided for @placeScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, in {description}.'**
+  String placeScreenSemantic(String name, String description);
+
+  /// No description provided for @settingsScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings screen'**
+  String get settingsScreenSemantic;
+
+  /// No description provided for @placeScreenSearchBarSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for another location.'**
+  String get placeScreenSearchBarSemantic;
+
+  /// No description provided for @searchScreenSearchFieldSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Search field. Input: {input}.'**
+  String searchScreenSearchFieldSemantic(String input);
+
+  /// No description provided for @itinerariesScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Journeys screen.'**
+  String get itinerariesScreenSemantic;
+
+  /// No description provided for @routingScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation screen.'**
+  String get routingScreenSemantic;
+
+  /// No description provided for @routingScreenExitRoutingButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit navigation.'**
+  String get routingScreenExitRoutingButtonSemantic;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

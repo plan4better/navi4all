@@ -131,12 +131,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (states.contains(WidgetState.selected)) {
                                 return const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
                                 );
                               }
                               return const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 12,
                               );
                             }),
                         backgroundColor: _pageIndex == 0

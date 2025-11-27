@@ -96,11 +96,12 @@ class RoutingState extends State<RoutingScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    AppLocalizations.of(context)!.routingDisclaimerMessage,
-                    style: TextStyle(fontSize: 14),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      AppLocalizations.of(context)!.routingDisclaimerMessage,
+                      style: TextStyle(fontSize: 14),
+                    ),
                   ),
                 ),
                 SizedBox(height: 32),
@@ -671,7 +672,10 @@ class RoutingState extends State<RoutingScreen> {
                                                   height: 20.0,
                                                   decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    color: Color(0xFF3685E2),
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .displayMedium
+                                                        ?.color,
                                                     border: Border.all(
                                                       color: Navi4AllColors
                                                           .klWhite,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:intl/intl.dart';
 import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/controllers/profile_controller.dart';
@@ -42,21 +43,34 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
               SizedBox(height: 16),
               Row(
                 children: [
-                  AccessibleIconButton(
-                    icon: Icons.arrow_back_rounded,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    semanticLabel: AppLocalizations.of(
-                      context,
-                    )!.commonBackButtonSemantic,
+                  Semantics(
+                    sortKey: OrdinalSortKey(1),
+                    child: AccessibleIconButton(
+                      icon: Icons.arrow_back_rounded,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      semanticLabel: AppLocalizations.of(
+                        context,
+                      )!.commonBackButtonSemantic,
+                    ),
                   ),
                   SizedBox(width: 16),
-                  Text(
-                    AppLocalizations.of(context)!.itineraryOptionsScreenTitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Semantics(
+                    sortKey: OrdinalSortKey(0),
+                    label: AppLocalizations.of(
+                      context,
+                    )!.itineraryOptionsScreenSemantic,
+                    excludeSemantics: true,
+                    child: Text(
+                      AppLocalizations.of(context)!.itineraryOptionsScreenTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -68,7 +82,7 @@ class _ItineraryOptionsState extends State<ItineraryOptions> {
                         ? _WidgetDepartureTimeOptions()
                         : SizedBox.shrink(),
                     _WidgetRoutingProfileOptions(),
-                    _WidgetWalkOptions(),
+                    _WidgetWalkingOptions(),
                     _WidgetTransitOptions(),
                     // TODO: Enable bicycle options
                     // _WidgetBicycleOptions(),
@@ -265,40 +279,39 @@ class _WidgetRoutingProfileOptionsState
   }
 }
 
-class _WidgetWalkOptions extends StatefulWidget {
-  @override
-  State<_WidgetWalkOptions> createState() => _WidgetWalkOptionsState();
-}
-
-class _WidgetWalkOptionsState extends State<_WidgetWalkOptions> {
+class _WidgetWalkingOptions extends StatelessWidget {
   final double _minSpeed = 1;
   final double _maxSpeed = 10;
 
-  void _changeSpeed(RoutingRequestConfig routingRequestConfig, double delta) {
-    setState(() {
-      if ((routingRequestConfig.walkingSpeed + delta) >= _minSpeed &&
-          (routingRequestConfig.walkingSpeed + delta) <= _maxSpeed) {
-        Provider.of<ProfileController>(
-          context,
-          listen: false,
-        ).setRoutingRequestConfig(
-          routingRequestConfig.copyWith(
-            walkingSpeed: routingRequestConfig.walkingSpeed + delta,
-          ),
-        );
-      }
-    });
-  }
-
-  void _setAvoidValue(RoutingRequestConfig routingRequestConfig, bool value) {
-    setState(() {
+  void _changeSpeed(
+    BuildContext context,
+    RoutingRequestConfig routingRequestConfig,
+    double delta,
+  ) {
+    if ((routingRequestConfig.walkingSpeed + delta) >= _minSpeed &&
+        (routingRequestConfig.walkingSpeed + delta) <= _maxSpeed) {
       Provider.of<ProfileController>(
         context,
         listen: false,
       ).setRoutingRequestConfig(
-        routingRequestConfig.copyWith(walkingAvoid: value),
+        routingRequestConfig.copyWith(
+          walkingSpeed: routingRequestConfig.walkingSpeed + delta,
+        ),
       );
-    });
+    }
+  }
+
+  void _setAvoidValue(
+    BuildContext context,
+    RoutingRequestConfig routingRequestConfig,
+    bool value,
+  ) {
+    Provider.of<ProfileController>(
+      context,
+      listen: false,
+    ).setRoutingRequestConfig(
+      routingRequestConfig.copyWith(walkingAvoid: value),
+    );
   }
 
   @override
@@ -359,6 +372,7 @@ class _WidgetWalkOptionsState extends State<_WidgetWalkOptions> {
                   AccessibleIconButton(
                     icon: Icons.remove_rounded,
                     onTap: () => _changeSpeed(
+                      context,
                       profileController.routingRequestConfig,
                       -1,
                     ),
@@ -390,8 +404,11 @@ class _WidgetWalkOptionsState extends State<_WidgetWalkOptions> {
                   SizedBox(width: 8),
                   AccessibleIconButton(
                     icon: Icons.add_rounded,
-                    onTap: () =>
-                        _changeSpeed(profileController.routingRequestConfig, 1),
+                    onTap: () => _changeSpeed(
+                      context,
+                      profileController.routingRequestConfig,
+                      1,
+                    ),
                     semanticLabel: AppLocalizations.of(
                       context,
                     )!.itineraryOptionsScreenWalkingSpeedIncrementSemantic,
@@ -408,18 +425,12 @@ class _WidgetWalkOptionsState extends State<_WidgetWalkOptions> {
             )!.itineraryOptionsScreenWalkingAvoidOption,
             value: profileController.routingRequestConfig.walkingAvoid,
             onChanged: (bool value) {
-              _setAvoidValue(profileController.routingRequestConfig, value);
+              _setAvoidValue(
+                context,
+                profileController.routingRequestConfig,
+                value,
+              );
             },
-            semanticLabel: AppLocalizations.of(context)!
-                .itineraryOptionsScreenWalkingAvoidOptionSemantic(
-                  profileController.routingRequestConfig.walkingAvoid
-                      ? AppLocalizations.of(
-                          context,
-                        )!.itineraryOptionsScreenWalkingAvoidOptionStatusEnabledSemantic
-                      : AppLocalizations.of(
-                          context,
-                        )!.itineraryOptionsScreenWalkingAvoidOptionStatusDisabledSemantic,
-                ),
           ),
         ],
       ),
@@ -486,7 +497,6 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
-            semanticLabel: getModeTextMapping(Mode.BUS, context),
           ),
           _SwitchTile(
             icon: Icons.tram_outlined,
@@ -502,7 +512,6 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
-            semanticLabel: getModeTextMapping(Mode.TRAM, context),
           ),
           _SwitchTile(
             icon: Icons.subway_outlined,
@@ -518,7 +527,6 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
-            semanticLabel: getModeTextMapping(Mode.SUBWAY, context),
           ),
           _SwitchTile(
             icon: Icons.train_outlined,
@@ -534,7 +542,6 @@ class _WidgetTransitOptions extends StatelessWidget {
                 value,
               );
             },
-            semanticLabel: getModeTextMapping(Mode.RAIL, context),
           ),
         ],
       ),
@@ -654,60 +661,62 @@ class _SwitchTile extends StatelessWidget {
   final String title;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final String semanticLabel;
 
   const _SwitchTile({
     this.icon,
     required this.title,
     required this.value,
     required this.onChanged,
-    required this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Row(
-            children: [
-              if (icon != null)
-                Icon(
-                  icon,
-                  color: Theme.of(context).textTheme.displayMedium!.color,
-                ),
-              if (icon != null) SizedBox(width: 8),
-              Expanded(
-                child: Semantics(
-                  excludeSemantics: true,
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+    return Semantics(
+      label: title,
+      toggled: value,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: () => onChanged(!value),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 4.0,
+              ),
+              child: Row(
+                children: [
+                  if (icon != null)
+                    Icon(
+                      icon,
                       color: Theme.of(context).textTheme.displayMedium!.color,
-                      fontSize: 14.0,
+                    ),
+                  if (icon != null) SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.displayMedium!.color,
+                        fontSize: 14.0,
+                      ),
                     ),
                   ),
-                ),
+                  Switch(
+                    value: value,
+                    onChanged: onChanged,
+                    activeTrackColor: Theme.of(
+                      context,
+                    ).textTheme.displayMedium!.color,
+                  ),
+                ],
               ),
-              Semantics(
-                label: semanticLabel,
-                enabled: value,
-                child: Switch(
-                  value: value,
-                  onChanged: onChanged,
-                  activeTrackColor: Theme.of(
-                    context,
-                  ).textTheme.displayMedium!.color,
-                ),
-              ),
-            ],
-          ),
+            ),
+            Divider(height: 0, color: Navi4AllColors.klPink),
+          ],
         ),
-        Divider(height: 0, color: Navi4AllColors.klPink),
-      ],
+      ),
     );
   }
 }

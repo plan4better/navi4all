@@ -31,35 +31,39 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        child: Column(
-          children: [
-            OrigDestPicker(altMode: true),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ItineraryList(
-                scrollController: ScrollController(),
-                altMode: true,
+      child: Semantics(
+        focused: true,
+        label: AppLocalizations.of(context)!.itinerariesScreenSemantic,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: Column(
+            children: [
+              OrigDestPicker(altMode: true),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ItineraryList(
+                  scrollController: ScrollController(),
+                  altMode: true,
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            AccessibleButton(
-              label: AppLocalizations.of(
-                context,
-              )!.routeOptionsRouteSettingsButton,
-              style: AccessibleButtonStyle.pink,
-              onTap: _showItineraryOptions,
-            ),
-            SizedBox(height: 16),
-            AccessibleButton(
-              label: AppLocalizations.of(context)!.commonHomeScreenButton,
-              style: AccessibleButtonStyle.pink,
-              onTap: () =>
-                  Navigator.of(context).popUntil((route) => route.isFirst),
-            ),
-            SizedBox(height: 16),
-          ],
+              SizedBox(height: 16),
+              AccessibleButton(
+                label: AppLocalizations.of(
+                  context,
+                )!.routeOptionsRouteSettingsButton,
+                style: AccessibleButtonStyle.pink,
+                onTap: _showItineraryOptions,
+              ),
+              SizedBox(height: 16),
+              AccessibleButton(
+                label: AppLocalizations.of(context)!.commonHomeScreenButton,
+                style: AccessibleButtonStyle.pink,
+                onTap: () =>
+                    Navigator.of(context).popUntil((route) => route.isFirst),
+              ),
+              SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     ),

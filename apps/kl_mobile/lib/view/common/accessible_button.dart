@@ -19,8 +19,9 @@ class AccessibleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: semanticLabel,
-      excludeSemantics: semanticLabel != null,
+      label: semanticLabel ?? label,
+      button: true,
+      excludeSemantics: true,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(

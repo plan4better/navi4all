@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:navi4all/controllers/canvas_controller.dart';
 import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/view/canvas/canvas_screen.dart';
@@ -79,28 +80,38 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Theme.of(
-                            context,
-                          ).textTheme.displayMedium?.color,
-                          semanticLabel: AppLocalizations.of(
-                            context,
-                          )!.commonBackButtonSemantic,
+                      Semantics(
+                        sortKey: OrdinalSortKey(1),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.displayMedium?.color,
+                            semanticLabel: AppLocalizations.of(
+                              context,
+                            )!.commonBackButtonSemantic,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
-                        onPressed: () => Navigator.of(context).pop(),
                       ),
                       Expanded(
                         child: Semantics(
-                          label: widget.isOriginPlaceSearch
-                              ? AppLocalizations.of(
-                                  context,
-                                )!.searchTextFieldOriginHintSemantic
+                          label: autocompleteController.searchQuery.isEmpty
+                              ? widget.isOriginPlaceSearch
+                                    ? AppLocalizations.of(
+                                        context,
+                                      )!.searchTextFieldOriginHintSemantic
+                                    : AppLocalizations.of(
+                                        context,
+                                      )!.searchTextFieldDestinationHintSemantic
                               : AppLocalizations.of(
                                   context,
-                                )!.searchTextFieldDestinationHintSemantic,
+                                )!.searchScreenSearchFieldSemantic(
+                                  autocompleteController.searchQuery,
+                                ),
                           excludeSemantics: true,
+                          sortKey: OrdinalSortKey(0),
                           child: TextField(
                             controller: _controller,
                             focusNode: _focusNode,

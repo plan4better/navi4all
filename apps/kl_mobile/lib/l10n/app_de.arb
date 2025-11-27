@@ -50,7 +50,7 @@
     "routeOptionsRouteSettingsButton": "Routeneinstellungen",
     "routeOptionsSaveRouteButton": "Route speichern",
     "origDestPickerSwapButtonSemantic": "Start- und Zielort tauschen",
-    "origDestPickerOriginSemantic": "Startort: {origin}. Tippen Sie, um zu ändern.",
+    "origDestPickerOriginSemantic": "Startort: {origin}.",
     "@origDestPickerOriginSemantic": {
         "placeholders": {
             "origin": {
@@ -58,7 +58,7 @@
             }
         }
     },
-    "origDestPickerDestinationSemantic": "Zielort: {destination}. Tippen Sie, um zu ändern.",
+    "origDestPickerDestinationSemantic": "Zielort: {destination}.",
     "@origDestPickerDestinationSemantic": {
         "placeholders": {
             "destination": {
@@ -165,7 +165,7 @@
     "routeNavigationStopButton": "Ende",
     "errorUnableToFetchItineraries": "Routen konnten nicht abgerufen werden.",
     "errorNoItinerariesFound": "Keine Routen für den ausgewählten Start- und Zielort gefunden.",
-    "searchResultSemantic": "Suchergebnis: {name}, {locality}.",
+    "searchResultSemantic": "Ergebnis: {name}, {locality}.",
     "@searchResultSemantic": {
         "placeholders": {
             "name": {
@@ -281,6 +281,7 @@
     "modeTrolleybus": "Oberleitungsbus",
     "modeMonorail": "Einschienenbahn",
     "itineraryOptionsScreenTitle": "Routeneinstellungen",
+    "itineraryOptionsScreenSemantic": "Routeneinstellungen Bildschirm",
     "itineraryOptionsScreenDepartureTimeTitle": "Abfahrtszeit",
     "itineraryOptionsScreenRoutingProfileItem": "Routing-Profil",
     "itineraryOptionsScreenRoutingProfileItemHint": "Profil auswählen",
@@ -322,5 +323,38 @@
     "routingProfileLabelModerateWalkingDisability": "Mittlere Gehbehinderung",
     "routingProfileLabelSevereWalkingDisability": "Schwere Gehbehinderung",
     "routingProfileLabelStroller": "Kinderwagen",
-    "altModeButtonDone": "Fertig"
+    "altModeButtonDone": "Fertig",
+    "homeScreenSemantic": "Startbildschirm",
+    "favoritesScreenSemantic": "Favoritenbildschirm. Mit {count} Favoriten.",
+    "@favoritesScreenSemantic": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "placeScreenSemantic": "{name}, in {description}.",
+    "@placeScreenSemantic": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "description": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsScreenSemantic": "Einstellungsbildschirm",
+    "placeScreenSearchBarSemantic": "Suche nach einem anderen Ort.",
+    "searchScreenSearchFieldSemantic": "Suchfeld. Eingabe: {input}.",
+    "@searchScreenSearchFieldSemantic": {
+        "placeholders": {
+            "input": {
+                "type": "String"
+            }
+        }
+    },
+    "itinerariesScreenSemantic": "Reisebildschirm.",
+    "routingScreenSemantic": "Navigationsbildschirm.",
+    "routingScreenExitRoutingButtonSemantic": "Navigation beenden."
 }
