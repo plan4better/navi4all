@@ -17,6 +17,10 @@ class AutocompleteController extends ChangeNotifier {
   final List<Place> _searchResults = [];
   final List<Place> _recentSearches = [];
 
+  AutocompleteController() {
+    _refreshRecentSearches();
+  }
+
   SearchControllerState get state => _state;
   UnmodifiableListView<Place> get searchResults =>
       UnmodifiableListView(_searchResults);
@@ -34,16 +38,19 @@ class AutocompleteController extends ChangeNotifier {
     await PreferenceHelper.addRecentSearch(place);
 
     // Update local recent searches list
-    _recentSearches.clear();
-    _recentSearches.addAll(await PreferenceHelper.getRecentSearches());
-
-    notifyListeners();
+    await _refreshRecentSearches();
   }
 
   void reset() {
     _searchQuery = '';
     _searchTimestamp = null;
     _searchResults.clear();
+    notifyListeners();
+  }
+
+  Future<void> _refreshRecentSearches() async {
+    _recentSearches.clear();
+    _recentSearches.addAll(await PreferenceHelper.getRecentSearches());
     notifyListeners();
   }
 
