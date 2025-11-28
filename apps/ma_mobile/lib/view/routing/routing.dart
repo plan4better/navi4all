@@ -783,7 +783,9 @@ class RoutingState extends State<RoutingScreen> {
                                       ),
                                       SizedBox(width: 8.0),
                                       Text(
-                                        '${_itineraries.first.duration ~/ 60} min',
+                                        TextFormatter.formatDurationText(
+                                          _itineraries.first.duration,
+                                        ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -801,7 +803,7 @@ class RoutingState extends State<RoutingScreen> {
                                       ),
                                       SizedBox(width: 6.0),
                                       Text(
-                                        getItineraryDistanceText(
+                                        TextFormatter.formatDistanceText(
                                           _itineraries.first,
                                         ),
                                         maxLines: 1,
@@ -1017,11 +1019,15 @@ class ItineraryLegStepTile extends StatelessWidget {
       return AppLocalizations.of(
         context,
       )!.navigationStepDistanceToActionKilometres(
-        (distanceToStep! / 1000).toStringAsFixed(1),
+        TextFormatter.formatKilometersDistanceFromMeters(
+          distanceToStep!,
+        ).toString().replaceAll('.', ','),
       );
     } else {
       return AppLocalizations.of(context)!.navigationStepDistanceToActionMetres(
-        distanceToStep!.round().toString(),
+        TextFormatter.formatMetersDistanceFromMeters(
+          distanceToStep!,
+        ).toString(),
       );
     }
   }

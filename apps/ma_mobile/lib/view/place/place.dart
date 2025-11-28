@@ -366,7 +366,7 @@ class PlaceListItem extends StatelessWidget {
             ),
             SizedBox(width: 16),
             Text(
-              getOccupancyText(context, parkingSite),
+              TextFormatter.getOccupancyText(context, parkingSite),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

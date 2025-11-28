@@ -319,7 +319,9 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                   ),
                                   SizedBox(width: 8.0),
                                   Text(
-                                    '${_itineraries.first.duration ~/ 60} min',
+                                    TextFormatter.formatDurationText(
+                                      _itineraries.first.duration,
+                                    ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -337,7 +339,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                   ),
                                   SizedBox(width: 6.0),
                                   Text(
-                                    getItineraryDistanceText(
+                                    TextFormatter.formatDistanceText(
                                       _itineraries.first,
                                     ),
                                     maxLines: 1,
@@ -377,7 +379,10 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              getOccupancyText(context, widget.parkingLocation),
+                              TextFormatter.getOccupancyText(
+                                context,
+                                widget.parkingLocation,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(

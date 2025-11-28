@@ -178,7 +178,10 @@ class _FavouritesListItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        getOccupancyText(context, parkingLocation),
+                        TextFormatter.getOccupancyText(
+                          context,
+                          parkingLocation,
+                        ),
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
