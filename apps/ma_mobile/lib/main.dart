@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:smartroots/controllers/autocomplete_controller.dart';
 import 'package:smartroots/controllers/availability_controller.dart';
 import 'package:smartroots/controllers/favourites_controller.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
@@ -39,6 +40,7 @@ class SmartRootsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeController(context)),
         ChangeNotifierProvider(create: (_) => FavouritesController(context)),
         ChangeNotifierProvider(create: (_) => AvailabilityController()),
+        ChangeNotifierProvider(create: (_) => AutocompleteController()),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(

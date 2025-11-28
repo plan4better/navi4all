@@ -264,5 +264,6 @@
     "availabilityChangeDialogTitle": "Parkplatz Belegt",
     "availabilityChangeDialogMessage": "Dieser Parkplatz ist jetzt belegt.\nMöchten Sie in der Nähe nach alternativen Plätzen suchen?",
     "availabilityChangeDialogCancelButton": "Nein",
-    "availabilityChangeDialogConfirmButton": "Ja"
+    "availabilityChangeDialogConfirmButton": "Ja",
+    "searchScreenErrorNoSuggestions": "Keine Ergebnisse gefunden. Versuchen Sie, nach anderen Orten, Adressen oder Verkehrsstationen zu suchen."
 }

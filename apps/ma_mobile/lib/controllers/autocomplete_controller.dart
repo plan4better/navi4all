@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:smartroots/core/persistence/preference_helper.dart';
 import 'package:smartroots/schemas/routing/coordinates.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/services/geocoding.dart';
@@ -14,15 +15,36 @@ class AutocompleteController extends ChangeNotifier {
   String _searchQuery = '';
   DateTime? _searchTimestamp;
   final List<Place> _searchResults = [];
+  final List<Place> _recentSearches = [];
 
   SearchControllerState get state => _state;
   UnmodifiableListView<Place> get searchResults =>
       UnmodifiableListView(_searchResults);
+  UnmodifiableListView<Place> get recentSearches =>
+      UnmodifiableListView(_recentSearches);
   String get searchQuery => _searchQuery;
 
   void updateSearchQuery(String query) {
     _searchQuery = query;
     _refresh();
+  }
+
+  Future<void> addRecentSearch(Place place) async {
+    // Add place to recent searches
+    await PreferenceHelper.addRecentSearch(place);
+
+    // Update local recent searches list
+    _recentSearches.clear();
+    _recentSearches.addAll(await PreferenceHelper.getRecentSearches());
+
+    notifyListeners();
+  }
+
+  void reset() {
+    _searchQuery = '';
+    _searchTimestamp = null;
+    _searchResults.clear();
+    notifyListeners();
   }
 
   Future<void> _refresh() async {

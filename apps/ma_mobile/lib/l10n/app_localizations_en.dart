@@ -455,4 +455,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availabilityChangeDialogConfirmButton => 'Yes';
+
+  @override
+  String get searchScreenErrorNoSuggestions => 'No results found. Try searching for other places, addresses or transit stations.';
 }

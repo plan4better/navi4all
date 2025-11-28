@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/theme/base_map_style.dart';
 import 'package:smartroots/schemas/poi/parking_type.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 
 String keyOnboardingComplete = "ma_onboarding_complete";
 String keyFavoriteParkingSpots = "ma_favorite_parking_spots";
 String keyFavoriteParkingSites = "ma_favorite_parking_sites";
 String keyThemeMode = "ma_theme_mode";
 String keyBaseMapStyle = "ma_base_map_style";
+String keyRecentSearches = "ma_recent_searches";
 
 class PreferenceHelper {
   static Future<bool> isOnboardingComplete() async {
@@ -162,5 +167,40 @@ class PreferenceHelper {
   static Future<void> setBaseMapStyle(BaseMapStyle style) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString(keyBaseMapStyle, style.name);
+  }
+
+  static Future<void> addRecentSearch(Place place) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> recentSearches =
+        preferences.getStringList(keyRecentSearches) ?? [];
+
+    // Remove existing entry if it exists
+    recentSearches.removeWhere((item) {
+      Place existingPlace = Place.fromJson(jsonDecode(item));
+      return existingPlace.id == place.id;
+    });
+
+    // Add to the beginning of the list
+    recentSearches.insert(0, jsonEncode(place.toJson()));
+
+    // Retain a limited number of recent searches
+    if (recentSearches.length > Settings.numRecentSearchesRetained) {
+      recentSearches = recentSearches.sublist(
+        0,
+        Settings.numRecentSearchesRetained,
+      );
+    }
+
+    await preferences.setStringList(keyRecentSearches, recentSearches);
+  }
+
+  static Future<List<Place>> getRecentSearches() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> recentSearches =
+        preferences.getStringList(keyRecentSearches) ?? [];
+
+    return recentSearches
+        .map((item) => Place.fromJson(jsonDecode(item)))
+        .toList();
   }
 }

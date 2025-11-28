@@ -934,6 +934,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yes'**
   String get availabilityChangeDialogConfirmButton;
+
+  /// No description provided for @searchScreenErrorNoSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found. Try searching for other places, addresses or transit stations.'**
+  String get searchScreenErrorNoSuggestions;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

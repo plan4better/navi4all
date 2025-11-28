@@ -264,5 +264,6 @@
     "availabilityChangeDialogTitle": "Parking Occupied",
     "availabilityChangeDialogMessage": "This parking spot is now occupied.\nWould you like to find alternative spots nearby?",
     "availabilityChangeDialogCancelButton": "No",
-    "availabilityChangeDialogConfirmButton": "Yes" 
+    "availabilityChangeDialogConfirmButton": "Yes",
+    "searchScreenErrorNoSuggestions": "No results found. Try searching for other places, addresses or transit stations."
 }

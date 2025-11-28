@@ -243,7 +243,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeSearchButtonHint => 'Hier suchen';
 
   @override
-  String get homeChangeBaseMapTitle => 'Map Style';
+  String get homeChangeBaseMapTitle => 'Kartenstil';
 
   @override
   String get homeBaseMapStyleTitleLight => 'Hell';
@@ -455,4 +455,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get availabilityChangeDialogConfirmButton => 'Ja';
+
+  @override
+  String get searchScreenErrorNoSuggestions => 'Keine Ergebnisse gefunden. Versuchen Sie, nach anderen Orten, Adressen oder Verkehrsstationen zu suchen.';
 }

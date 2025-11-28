@@ -26,8 +26,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void initState() {
-    super.initState();
     _focusNode.requestFocus();
+    Provider.of<AutocompleteController>(context, listen: false).reset();
+    super.initState();
   }
 
   @override
@@ -37,179 +38,214 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
+  Future<void> _onSuggestionTap(Place place) async {
+    // Close keyboard
+    _focusNode.unfocus();
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    // Navigate away from search screen
+    if (widget.isSecondarySearch) {
+      Navigator.of(context).pop(place);
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => PlaceScreen(place: place)),
+      );
+    }
+
+    // Write selected place to recent searches
+    await Future.delayed(const Duration(milliseconds: 250));
+    await Provider.of<AutocompleteController>(
+      context,
+      listen: false,
+    ).addRecentSearch(place);
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     resizeToAvoidBottomInset: false,
     body: SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-        child: ChangeNotifierProvider(
-          create: (_) => AutocompleteController(),
-          child: Consumer<AutocompleteController>(
-            builder: (context, autocompleteController, _) => Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiary,
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(32),
-                      topRight: const Radius.circular(32),
-                      bottomLeft:
-                          autocompleteController.searchResults.isNotEmpty
-                          ? const Radius.circular(0)
-                          : const Radius.circular(32),
-                      bottomRight:
-                          autocompleteController.searchResults.isNotEmpty
-                          ? const Radius.circular(0)
-                          : const Radius.circular(32),
-                    ),
-                    border: autocompleteController.searchResults.isNotEmpty
-                        ? const Border(
-                            bottom: BorderSide(
-                              color: SmartRootsColors.maBlue,
-                              width: 1.5,
-                            ),
-                          )
-                        : null,
+        child: Consumer<AutocompleteController>(
+          builder: (context, autocompleteController, _) => Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(32),
+                    topRight: const Radius.circular(32),
+                    bottomLeft: autocompleteController.searchResults.isNotEmpty
+                        ? const Radius.circular(0)
+                        : const Radius.circular(32),
+                    bottomRight: autocompleteController.searchResults.isNotEmpty
+                        ? const Radius.circular(0)
+                        : const Radius.circular(32),
                   ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                          semanticLabel: AppLocalizations.of(
-                            context,
-                          )!.commonBackButtonSemantic,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      Expanded(
-                        child: Semantics(
-                          label: widget.isOriginPlaceSearch
-                              ? AppLocalizations.of(
-                                  context,
-                                )!.searchTextFieldOriginHintSemantic
-                              : AppLocalizations.of(
-                                  context,
-                                )!.searchTextFieldDestinationHintSemantic,
-                          excludeSemantics: true,
-                          child: TextField(
-                            controller: _controller,
-                            focusNode: _focusNode,
-                            decoration: InputDecoration(
-                              hintText: AppLocalizations.of(
-                                context,
-                              )!.searchTextFieldHint,
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 16,
-                              ),
-                            ),
-                            style: const TextStyle(fontSize: 16),
-                            onChanged: (value) =>
-                                Provider.of<AutocompleteController>(
-                                  context,
-                                  listen: false,
-                                ).updateSearchQuery(value.trim()),
+                  border: autocompleteController.searchResults.isNotEmpty
+                      ? const Border(
+                          bottom: BorderSide(
+                            color: SmartRootsColors.maBlue,
+                            width: 1.5,
                           ),
-                        ),
-                      ),
-                      /* IconButton(
-                        icon: Icon(
-                          Icons.mic,
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                          semanticLabel: AppLocalizations.of(
-                            context,
-                          )!.commonMicButtonSemantic,
-                        ),
-                        onPressed: null,
-                      ), */
-                    ],
-                  ),
+                        )
+                      : null,
                 ),
-                autocompleteController.searchResults.isNotEmpty
-                    ? const SizedBox.shrink()
-                    : const SizedBox(height: 32),
-                autocompleteController.searchResults.isNotEmpty
-                    ? Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.tertiary,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(32),
-                            bottomRight: Radius.circular(32),
-                          ),
-                        ),
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final place =
-                                autocompleteController.searchResults[index];
-                            return _SearchSuggestion(
-                              place: place,
-                              onTap: () {
-                                if (widget.isSecondarySearch) {
-                                  Navigator.of(context).pop(place);
-                                } else {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PlaceScreen(place: place),
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider(
-                              height: 1,
-                              indent: 12,
-                              endIndent: 12,
-                              color: SmartRootsColors.maBlue,
-                            );
-                          },
-                          itemCount:
-                              autocompleteController.searchResults.length,
-                        ),
-                      )
-                    : Semantics(
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.commonBackButtonSemantic,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    Expanded(
+                      child: Semantics(
+                        label: widget.isOriginPlaceSearch
+                            ? AppLocalizations.of(
+                                context,
+                              )!.searchTextFieldOriginHintSemantic
+                            : AppLocalizations.of(
+                                context,
+                              )!.searchTextFieldDestinationHintSemantic,
                         excludeSemantics: true,
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.search_rounded,
-                              size: 96,
-                              color: SmartRootsColors.maBlue,
-                            ),
-                            SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                              ),
-                              child: Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.searchScreenPrompt,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: SmartRootsColors.maBlue,
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: TextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(
+                              context,
+                            )!.searchTextFieldHint,
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          style: const TextStyle(fontSize: 16),
+                          onChanged: (value) =>
+                              Provider.of<AutocompleteController>(
+                                context,
+                                listen: false,
+                              ).updateSearchQuery(value.trim()),
                         ),
                       ),
-                const Spacer(),
-                /*AccessibleButton(
-                  label: AppLocalizations.of(context)!.commonHomeScreenButton,
-                  style: AccessibleButtonStyle.pink,
-                  onTap: () =>
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                ),*/
-              ],
-            ),
+                    ),
+                    /* IconButton(
+                      icon: Icon(
+                        Icons.mic,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.commonMicButtonSemantic,
+                      ),
+                      onPressed: null,
+                    ), */
+                  ],
+                ),
+              ),
+              autocompleteController.searchResults.isNotEmpty
+                  ? const SizedBox.shrink()
+                  : const SizedBox(height: 32),
+              autocompleteController.searchQuery.isEmpty &&
+                      autocompleteController.recentSearches.isNotEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final place =
+                              autocompleteController.recentSearches[index];
+                          return _SearchSuggestion(
+                            place: place,
+                            isRecentSearch: true,
+                            onTap: () => _onSuggestionTap(place),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider(
+                            height: 1,
+                            indent: 12,
+                            endIndent: 12,
+                            color: SmartRootsColors.maBlue,
+                          );
+                        },
+                        itemCount: autocompleteController.recentSearches.length,
+                      ),
+                    )
+                  : autocompleteController.searchQuery.isNotEmpty &&
+                        autocompleteController.searchResults.isNotEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(32),
+                          bottomRight: Radius.circular(32),
+                        ),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final place =
+                              autocompleteController.searchResults[index];
+                          return _SearchSuggestion(
+                            place: place,
+                            onTap: () => _onSuggestionTap(place),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider(
+                            height: 1,
+                            indent: 12,
+                            endIndent: 12,
+                            color: SmartRootsColors.maBlue,
+                          );
+                        },
+                        itemCount: autocompleteController.searchResults.length,
+                      ),
+                    )
+                  : Semantics(
+                      excludeSemantics: true,
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.search_rounded,
+                            size: 96,
+                            color: SmartRootsColors.maBlue,
+                          ),
+                          SizedBox(height: 16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Text(
+                              autocompleteController.searchQuery.isEmpty
+                                  ? AppLocalizations.of(
+                                      context,
+                                    )!.searchScreenPrompt
+                                  : AppLocalizations.of(
+                                      context,
+                                    )!.searchScreenErrorNoSuggestions,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: SmartRootsColors.maBlue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              const Spacer(),
+              /*AccessibleButton(
+                label: AppLocalizations.of(context)!.commonHomeScreenButton,
+                style: AccessibleButtonStyle.pink,
+                onTap: () =>
+                    Navigator.of(context).popUntil((route) => route.isFirst),
+              ),*/
+            ],
           ),
         ),
       ),
@@ -219,48 +255,69 @@ class _SearchScreenState extends State<SearchScreen> {
 
 class _SearchSuggestion extends StatelessWidget {
   final Place place;
+  final bool isRecentSearch;
   final Function onTap;
-  const _SearchSuggestion({required this.place, required this.onTap});
+  const _SearchSuggestion({
+    required this.place,
+    this.isRecentSearch = false,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onTap(),
-      child: Semantics(
-        focusable: true,
-        focused: true,
-        label: AppLocalizations.of(context)!.searchResultSemantic(
-          place.name,
-          place.locality != null ? "in ${place.locality}" : "",
-        ),
-        excludeSemantics: true,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                place.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: SmartRootsColors.maBlueExtraExtraDark,
-                  fontWeight: FontWeight.bold,
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: () => onTap(),
+        child: Semantics(
+          focusable: true,
+          focused: true,
+          label: AppLocalizations.of(context)!.searchResultSemantic(
+            place.name,
+            place.locality != null ? "in ${place.locality}" : "",
+          ),
+          excludeSemantics: true,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Icon(
+                  isRecentSearch
+                      ? Icons.history_rounded
+                      : Icons.location_on_rounded,
+                  color: SmartRootsColors.maBlue,
                 ),
-              ),
-              place.locality != null
-                  ? Text(
-                      place.locality!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        place.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    )
-                  : const SizedBox.shrink(),
-            ],
+                      place.locality != null
+                          ? Text(
+                              place.locality!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
