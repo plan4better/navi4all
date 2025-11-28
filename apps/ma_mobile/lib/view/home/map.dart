@@ -244,23 +244,78 @@ class _HomeMapState extends State<HomeMap> {
     }
   }
 
-  void _onCircleTapped(Circle circle) {
-    final site = _symbolIdToSite[circle.id] ?? {};
-    if (site.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ParkingLocationScreen(parkingLocation: site),
-        ),
-      );
+  Future<void> _onMapClicked(Point<double> point, LatLng latLng) async {
+    CameraPosition? cameraPosition = _mapController.cameraPosition;
+    if (cameraPosition == null) {
+      return;
     }
 
-    // Analytics event
-    MatomoTracker.instance.trackEvent(
-      eventInfo: EventInfo(
-        category: EventCategory.homeMapScreen.toString(),
-        action: EventAction.homeMapScreenParkingLocationMarkerClicked
-            .toString(),
+    // If zoom level is below threshold, zoom in
+    if (cameraPosition.zoom < 15) {
+      _mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: latLng,
+            zoom: 15,
+            tilt: cameraPosition.tilt,
+            bearing: cameraPosition.bearing,
+          ),
+        ),
+        duration: const Duration(milliseconds: 500),
+      );
+    } else {
+      LatLngBounds visibleRegion = await _mapController.getVisibleRegion();
+
+      // Find nearest symbol ID to clicked point within visible region and select this parking spot
+      String? nearestSymbolId;
+      double nearestDistance = double.infinity;
+      for (var entry in _symbolIdToSite.entries) {
+        LatLng symbolLatLng = entry.value["coordinates"];
+        if (symbolLatLng.latitude >= visibleRegion.southwest.latitude &&
+            symbolLatLng.latitude <= visibleRegion.northeast.latitude &&
+            symbolLatLng.longitude >= visibleRegion.southwest.longitude &&
+            symbolLatLng.longitude <= visibleRegion.northeast.longitude) {
+          double distance = Geolocator.distanceBetween(
+            latLng.latitude,
+            latLng.longitude,
+            symbolLatLng.latitude,
+            symbolLatLng.longitude,
+          );
+          if (distance < 50.0 && distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestSymbolId = entry.key;
+          }
+        }
+      }
+
+      if (nearestSymbolId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ParkingLocationScreen(
+              parkingLocation: _symbolIdToSite[nearestSymbolId!]!,
+            ),
+          ),
+        );
+
+        // Analytics event
+        MatomoTracker.instance.trackEvent(
+          eventInfo: EventInfo(
+            category: EventCategory.homeMapScreen.toString(),
+            action: EventAction.homeMapScreenParkingLocationMarkerClicked
+                .toString(),
+          ),
+        );
+      }
+    }
+  }
+
+  void _onCircleTapped(Circle circle) {
+    _onMapClicked(
+      Point(0, 0),
+      LatLng(
+        circle.options.geometry!.latitude,
+        circle.options.geometry!.longitude,
       ),
     );
   }
@@ -289,6 +344,10 @@ class _HomeMapState extends State<HomeMap> {
             onStyleLoadedCallback: _onStyleLoaded,
             compassViewMargins: const Point(16, 160),
             compassViewPosition: CompassViewPosition.topRight,
+            attributionButtonPosition: AttributionButtonPosition.bottomRight,
+            attributionButtonMargins: const Point(12, 12),
+            onMapClick: _onMapClicked,
+            trackCameraPosition: true,
           ),
         ),
         // Fill screen with background while map is loading
