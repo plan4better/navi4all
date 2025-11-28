@@ -24,9 +24,11 @@ import 'package:smartroots/view/routing/routing.dart';
 class ParkingLocationScreen extends StatefulWidget {
   final Place? place;
   final Map<String, dynamic> parkingLocation;
+  final bool showAlternatives;
   const ParkingLocationScreen({
     this.place,
     required this.parkingLocation,
+    this.showAlternatives = false,
     super.key,
   });
 
@@ -151,7 +153,10 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          ParkingSiteMap(parkingSite: widget.parkingLocation),
+          ParkingSiteMap(
+            parkingSite: widget.parkingLocation,
+            showAlternatives: widget.showAlternatives,
+          ),
           SlidingBottomSheet(
             Row(
               children: <Widget>[
@@ -211,38 +216,6 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                             Flexible(
                               flex: 1,
                               child: SheetButton(
-                                icon: Icons.directions_car_outlined,
-                                label: AppLocalizations.of(
-                                  context,
-                                )!.parkingLocationButtonStart,
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => RoutingScreen(
-                                        parkingSite: widget.parkingLocation,
-                                      ),
-                                    ),
-                                  );
-
-                                  // Analytics event
-                                  MatomoTracker.instance.trackEvent(
-                                    eventInfo: EventInfo(
-                                      category: EventCategory
-                                          .parkingLocationScreen
-                                          .toString(),
-                                      action: EventAction
-                                          .parkingLocationScreenRouteInternalClicked
-                                          .toString(),
-                                    ),
-                                  );
-                                },
-                                shrinkWrap: false,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Flexible(
-                              flex: 1,
-                              child: SheetButton(
                                 icon: Icons.directions_outlined,
                                 label: AppLocalizations.of(
                                   context,
@@ -280,6 +253,38 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                           .toString(),
                                       action: EventAction
                                           .parkingLocationScreenRouteExternalClicked
+                                          .toString(),
+                                    ),
+                                  );
+                                },
+                                shrinkWrap: false,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Flexible(
+                              flex: 1,
+                              child: SheetButton(
+                                icon: Icons.directions_car_outlined,
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.parkingLocationButtonStart,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => RoutingScreen(
+                                        parkingSite: widget.parkingLocation,
+                                      ),
+                                    ),
+                                  );
+
+                                  // Analytics event
+                                  MatomoTracker.instance.trackEvent(
+                                    eventInfo: EventInfo(
+                                      category: EventCategory
+                                          .parkingLocationScreen
+                                          .toString(),
+                                      action: EventAction
+                                          .parkingLocationScreenRouteInternalClicked
                                           .toString(),
                                     ),
                                   );

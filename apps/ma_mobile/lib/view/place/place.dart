@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:smartroots/core/analytics/events.dart';
+import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/view/search/search.dart';
@@ -23,8 +24,8 @@ class PlaceScreen extends StatefulWidget {
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
-  int _selectedRadius = 500;
-  int _changedRadius = 500;
+  int _selectedRadius = Settings.defaultRadius;
+  int _changedRadius = Settings.defaultRadius;
   List<Map<String, dynamic>> _parkingSites = [];
 
   @override
@@ -99,7 +100,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                   dropdownMenuEntries: [
-                    for (var value in [100, 200, 300, 400, 500])
+                    for (var value in Settings.radiusOptions)
                       DropdownMenuEntry(
                         value: value,
                         label: '${value}m',
