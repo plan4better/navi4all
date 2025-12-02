@@ -31,7 +31,8 @@ class POIParkingService {
     ),
   );
 
-  Future<List<Map<String, dynamic>>> getParkingLocations({
+  Future<(List<Map<String, dynamic>>, Map<String, dynamic>)>
+  getParkingLocations({
     double? focusPointLat,
     double? focusPointLon,
     int? radius,
@@ -125,7 +126,7 @@ class POIParkingService {
       });
     }
 
-    return parkingLocations;
+    return (parkingLocations, convertToGeoJSON(parkingLocations));
   }
 
   Future<Map<String, dynamic>?> getParkingLocationDetails({
@@ -268,5 +269,39 @@ class POIParkingService {
     }
 
     return parkingSite;
+  }
+
+  Map<String, dynamic> convertToGeoJSON(
+    List<Map<String, dynamic>> parkingLocations,
+  ) {
+    List<Map<String, dynamic>> features = parkingLocations.map((location) {
+      // Ensure coordinates are properly typed as numbers
+      final coordinates = location['coordinates'] as LatLng;
+
+      return {
+        "type": "Feature",
+        "id": location['id']?.toString() ?? '', // Move id to feature level
+        "geometry": {
+          "type": "Point",
+          "coordinates": [coordinates.longitude, coordinates.latitude],
+        },
+        "properties": {
+          "parking_id":
+              location['id']?.toString() ?? '', // Keep copy in properties too
+          "name": location['name']?.toString() ?? '',
+          "address": location['address']?.toString() ?? '',
+          "parking_type": (location['parking_type'] as ParkingType).name,
+          "has_realtime_data": location['has_realtime_data'] == true,
+          "disabled_parking_supported":
+              location['disabled_parking_supported'] == true,
+          "disabled_parking_available":
+              location['disabled_parking_available'] == true,
+          if (location.containsKey('city') && location['city'] != null)
+            "city": location['city'].toString(),
+        },
+      };
+    }).toList();
+
+    return {"type": "FeatureCollection", "features": features};
   }
 }

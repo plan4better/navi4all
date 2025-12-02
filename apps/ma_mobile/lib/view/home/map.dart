@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
@@ -28,8 +29,7 @@ class HomeMap extends StatefulWidget {
 class _HomeMapState extends State<HomeMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
-  List<Map<String, dynamic>> _parkingSites = [];
-  final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
+  List<Map<String, dynamic>> _parkingLocations = [];
 
   Future<void> _panToUserLocation() async {
     // Check location permission status
@@ -202,13 +202,25 @@ class _HomeMapState extends State<HomeMap> {
 
   Future<void> _onStyleLoaded() async {
     // Clear existing markers and listeners
-    await _mapController.clearCircles();
-    _mapController.onCircleTapped.clear();
+    _mapController.onFeatureTapped.clear();
+
+    // Load custom marker icons
+    final bytes = await rootBundle.load('assets/parking_avbl_yes.png');
+    final list = bytes.buffer.asUint8List();
+    await _mapController.addImage("parking_avbl_yes.png", list);
+
+    final bytes2 = await rootBundle.load('assets/parking_avbl_no.png');
+    final list2 = bytes2.buffer.asUint8List();
+    await _mapController.addImage("parking_avbl_no.png", list2);
+
+    final bytes3 = await rootBundle.load('assets/parking_avbl_unknown.png');
+    final list3 = bytes3.buffer.asUint8List();
+    await _mapController.addImage("parking_avbl_unknown.png", list3);
 
     // Fetch and display parking locations
     _fetchParkingSites().then((_) {
-      // Add circle tap listener
-      _mapController.onCircleTapped.add(_onCircleTapped);
+      // Add feature tap listener
+      _mapController.onFeatureTapped.add(_onFeatureTapped);
 
       // Pan to user location by default if location access was granted
       Geolocator.checkPermission().then((permission) {
@@ -226,13 +238,11 @@ class _HomeMapState extends State<HomeMap> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Map<String, dynamic>> result = await parkingService
-          .getParkingLocations();
-
-      setState(() {
-        _parkingSites = result;
-      });
-      _updateMarkers();
+      List<Map<String, dynamic>> parkingLocations;
+      Map<String, dynamic> geoJson;
+      (parkingLocations, geoJson) = await parkingService.getParkingLocations();
+      _parkingLocations = parkingLocations;
+      _updateMarkers(geoJson);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -244,19 +254,24 @@ class _HomeMapState extends State<HomeMap> {
     }
   }
 
-  Future<void> _onMapClicked(Point<double> point, LatLng latLng) async {
+  Future<void> _onMapClicked(
+    Point<double> point,
+    LatLng latLng, {
+    String? featureId,
+    bool isCluster = false,
+  }) async {
     CameraPosition? cameraPosition = _mapController.cameraPosition;
     if (cameraPosition == null) {
       return;
     }
 
     // If zoom level is below threshold, zoom in
-    if (cameraPosition.zoom < 15) {
+    if ((cameraPosition.zoom < 15 && featureId == null) || isCluster) {
       _mapController.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: latLng,
-            zoom: 15,
+            zoom: !isCluster ? 15 : _mapController.cameraPosition!.zoom + 1.5,
             tilt: cameraPosition.tilt,
             bearing: cameraPosition.bearing,
           ),
@@ -266,34 +281,38 @@ class _HomeMapState extends State<HomeMap> {
     } else {
       LatLngBounds visibleRegion = await _mapController.getVisibleRegion();
 
-      // Find nearest symbol ID to clicked point within visible region and select this parking spot
-      String? nearestSymbolId;
-      double nearestDistance = double.infinity;
-      for (var entry in _symbolIdToSite.entries) {
-        LatLng symbolLatLng = entry.value["coordinates"];
-        if (symbolLatLng.latitude >= visibleRegion.southwest.latitude &&
-            symbolLatLng.latitude <= visibleRegion.northeast.latitude &&
-            symbolLatLng.longitude >= visibleRegion.southwest.longitude &&
-            symbolLatLng.longitude <= visibleRegion.northeast.longitude) {
-          double distance = Geolocator.distanceBetween(
-            latLng.latitude,
-            latLng.longitude,
-            symbolLatLng.latitude,
-            symbolLatLng.longitude,
-          );
-          if (distance < 50.0 && distance < nearestDistance) {
-            nearestDistance = distance;
-            nearestSymbolId = entry.key;
+      // Find nearest feature ID to clicked point
+      String? selectedFeatureId = featureId;
+      if (selectedFeatureId == null) {
+        double nearestDistance = double.infinity;
+        for (var parkingLocation in _parkingLocations) {
+          LatLng symbolLatLng = parkingLocation['coordinates'];
+          if (symbolLatLng.latitude >= visibleRegion.southwest.latitude &&
+              symbolLatLng.latitude <= visibleRegion.northeast.latitude &&
+              symbolLatLng.longitude >= visibleRegion.southwest.longitude &&
+              symbolLatLng.longitude <= visibleRegion.northeast.longitude) {
+            double distance = Geolocator.distanceBetween(
+              latLng.latitude,
+              latLng.longitude,
+              symbolLatLng.latitude,
+              symbolLatLng.longitude,
+            );
+            if (distance < 50.0 && distance < nearestDistance) {
+              nearestDistance = distance;
+              selectedFeatureId = parkingLocation["id"];
+            }
           }
         }
       }
 
-      if (nearestSymbolId != null) {
+      if (selectedFeatureId != null) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ParkingLocationScreen(
-              parkingLocation: _symbolIdToSite[nearestSymbolId!]!,
+              parkingLocation: _parkingLocations.firstWhere(
+                (location) => location["id"] == selectedFeatureId,
+              ),
             ),
           ),
         );
@@ -310,14 +329,19 @@ class _HomeMapState extends State<HomeMap> {
     }
   }
 
-  void _onCircleTapped(Circle circle) {
-    _onMapClicked(
-      Point(0, 0),
-      LatLng(
-        circle.options.geometry!.latitude,
-        circle.options.geometry!.longitude,
-      ),
-    );
+  void _onFeatureTapped(
+    Point<double> point,
+    LatLng coordinates,
+    String id,
+    String layerId,
+    Annotation? annotation,
+  ) {
+    bool isCluster = false;
+    if (layerId.contains('cluster')) {
+      isCluster = true;
+    }
+
+    _onMapClicked(point, coordinates, featureId: id, isCluster: isCluster);
   }
 
   @override
@@ -327,6 +351,7 @@ class _HomeMapState extends State<HomeMap> {
         Consumer<ThemeController>(
           builder: (context, themeController, _) => MapLibreMap(
             myLocationEnabled: true,
+            rotateGesturesEnabled: false,
             styleString:
                 Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
             onMapCreated: (controller) => _mapController = controller,
@@ -390,35 +415,243 @@ class _HomeMapState extends State<HomeMap> {
     );
   }
 
-  void _updateMarkers() {
-    _mapController.clearCircles();
+  void _updateMarkers(Map<String, dynamic> geoJson) async {
+    // Separate features by availability status
+    List<Map<String, dynamic>> availableFeatures = [];
+    List<Map<String, dynamic>> occupiedFeatures = [];
+    List<Map<String, dynamic>> unknownFeatures = [];
 
-    List<CircleOptions> circles = [];
-    for (var site in _parkingSites) {
-      String markerColor = "#3685E2";
-      if (!site["has_realtime_data"]) {
-        markerColor = "#3685E2";
-      } else if (site["disabled_parking_available"]) {
-        markerColor = "#089161";
+    for (var feature in geoJson['features']) {
+      var properties = feature['properties'];
+      if (properties['disabled_parking_available'] == true) {
+        availableFeatures.add(feature);
+      } else if (properties['has_realtime_data'] == true) {
+        occupiedFeatures.add(feature);
       } else {
-        markerColor = "#F4B1A4";
+        unknownFeatures.add(feature);
       }
-
-      circles.add(
-        CircleOptions(
-          geometry: site["coordinates"],
-          circleColor: markerColor,
-          circleRadius: 6.0,
-          circleStrokeWidth: 1.0,
-          circleStrokeColor: "#FFFFFF",
-        ),
-      );
     }
 
-    _mapController.addCircles(circles).then((symbols) {
-      for (int i = 0; i < symbols.length; i++) {
-        _symbolIdToSite[symbols[i].id] = _parkingSites[i];
-      }
-    });
+    // Create separate GeoJSON for each group
+    Map<String, dynamic> unknownGeoJson = {
+      'type': 'FeatureCollection',
+      'features': unknownFeatures,
+    };
+    Map<String, dynamic> occupiedGeoJson = {
+      'type': 'FeatureCollection',
+      'features': occupiedFeatures,
+    };
+    Map<String, dynamic> availableGeoJson = {
+      'type': 'FeatureCollection',
+      'features': availableFeatures,
+    };
+
+    // Add sources for each availability group
+    await _mapController.addSource(
+      'parking_available',
+      GeojsonSourceProperties(
+        data: availableGeoJson,
+        cluster: true,
+        clusterMaxZoom: 16,
+        clusterRadius: 30,
+      ),
+    );
+
+    await _mapController.addSource(
+      'parking_occupied',
+      GeojsonSourceProperties(
+        data: occupiedGeoJson,
+        cluster: true,
+        clusterMaxZoom: 16,
+        clusterRadius: 30,
+      ),
+    );
+
+    await _mapController.addSource(
+      'parking_unknown',
+      GeojsonSourceProperties(
+        data: unknownGeoJson,
+        cluster: true,
+        clusterMaxZoom: 16,
+        clusterRadius: 30,
+      ),
+    );
+
+    // Add layer for unclustered points - Unknown (Blue)
+    await _mapController.addLayer(
+      'parking_unknown',
+      'parking_unknown_layer',
+      CircleLayerProperties(
+        circleColor: '#3685E2',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
+    );
+
+    // Add layer for unclustered points - Occupied (Red)
+    await _mapController.addLayer(
+      'parking_occupied',
+      'parking_occupied_layer',
+      CircleLayerProperties(
+        circleColor: '#F4B1A4',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
+    );
+
+    // Add layer for unclustered points - Available (Green)
+    await _mapController.addLayer(
+      'parking_available',
+      'parking_available_layer',
+      CircleLayerProperties(
+        circleColor: '#089161',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
+    );
+
+    // Add cluster circles - Unknown (Blue)
+    await _mapController.addLayer(
+      'parking_unknown',
+      'unknown_clusters',
+      CircleLayerProperties(
+        circleColor: '#3685E2',
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['get', 'point_count'],
+          2,
+          13,
+          5,
+          15,
+          10,
+          17,
+          25,
+          19,
+          50,
+          21,
+          100,
+          25,
+        ],
+        circleStrokeWidth: 2.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: ['has', 'point_count'],
+    );
+
+    await _mapController.addLayer(
+      'parking_unknown',
+      'unknown_cluster_count',
+      SymbolLayerProperties(
+        textField: ['get', 'point_count_abbreviated'],
+        textFont: ['Roboto Bold'],
+        textSize: 12,
+        textColor: '#FFFFFF',
+        textIgnorePlacement: true,
+        textAllowOverlap: true,
+      ),
+      filter: ['has', 'point_count'],
+    );
+
+    // Add cluster circles - Occupied (Red)
+    await _mapController.addLayer(
+      'parking_occupied',
+      'occupied_clusters',
+      CircleLayerProperties(
+        circleColor: '#F4B1A4',
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['get', 'point_count'],
+          2,
+          13,
+          5,
+          15,
+          10,
+          17,
+          25,
+          19,
+          50,
+          21,
+          100,
+          25,
+        ],
+        circleStrokeWidth: 2.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: ['has', 'point_count'],
+    );
+
+    await _mapController.addLayer(
+      'parking_occupied',
+      'occupied_cluster_count',
+      SymbolLayerProperties(
+        textField: ['get', 'point_count_abbreviated'],
+        textFont: ['Roboto Bold'],
+        textSize: 12,
+        textColor: '#FFFFFF',
+        textIgnorePlacement: true,
+        textAllowOverlap: true,
+      ),
+      filter: ['has', 'point_count'],
+    );
+
+    // Add cluster circles - Available (Green)
+    await _mapController.addLayer(
+      'parking_available',
+      'available_clusters',
+      CircleLayerProperties(
+        circleColor: '#089161',
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['get', 'point_count'],
+          2,
+          13,
+          5,
+          15,
+          10,
+          17,
+          25,
+          19,
+          50,
+          21,
+          100,
+          25,
+        ],
+        circleStrokeWidth: 2.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: ['has', 'point_count'],
+    );
+
+    await _mapController.addLayer(
+      'parking_available',
+      'available_cluster_count',
+      SymbolLayerProperties(
+        textField: ['get', 'point_count_abbreviated'],
+        textFont: ['Roboto Bold'],
+        textSize: 12,
+        textColor: '#FFFFFF',
+        textIgnorePlacement: true,
+        textAllowOverlap: true,
+      ),
+      filter: ['has', 'point_count'],
+    );
   }
 }

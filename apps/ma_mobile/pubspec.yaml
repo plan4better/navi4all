@@ -1,7 +1,7 @@
 name: smartroots
 description: ""
 publish_to: 'none'
-version: 0.0.1+11
+version: 0.0.1+12
 
 environment:
   sdk: ^3.8.1
@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.2.1
   intl: any
-  maplibre_gl: ^0.22.0
+  maplibre_gl: ^0.24.1
   shared_preferences: ^2.5.3
   geolocator: ^14.0.2
   maps_launcher: ^3.0.0+1

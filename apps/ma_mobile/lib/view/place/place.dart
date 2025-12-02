@@ -37,12 +37,12 @@ class _PlaceScreenState extends State<PlaceScreen> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Map<String, dynamic>> result = await parkingService
-          .getParkingLocations(
-            focusPointLat: widget.place.coordinates.lat,
-            focusPointLon: widget.place.coordinates.lon,
-            radius: _selectedRadius,
-          );
+      List<Map<String, dynamic>> result;
+      (result, _) = await parkingService.getParkingLocations(
+        focusPointLat: widget.place.coordinates.lat,
+        focusPointLon: widget.place.coordinates.lon,
+        radius: _selectedRadius,
+      );
 
       setState(() {
         _parkingSites = result;
