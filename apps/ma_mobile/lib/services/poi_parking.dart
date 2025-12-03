@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:smartroots/core/config.dart' show Settings;
-import 'package:maplibre_gl/maplibre_gl.dart' show LatLng;
 import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
+import 'package:smartroots/core/utils.dart';
 import 'package:smartroots/schemas/poi/parking_type.dart';
+import 'package:smartroots/schemas/routing/coordinates.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 
 class POIParkingService {
   // TODO: ONLY FOR TESTING
@@ -31,23 +33,21 @@ class POIParkingService {
     ),
   );
 
-  Future<(List<Map<String, dynamic>>, Map<String, dynamic>)>
-  getParkingLocations({
-    double? focusPointLat,
-    double? focusPointLon,
+  Future<(List<Place>, Map<String, dynamic>)> getParkingLocations({
+    Coordinates? focusPoint,
     int? radius,
   }) async {
-    List<Map<String, dynamic>> parkingLocations = [];
+    List<Place> parkingLocations = [];
 
     // Build request query parameters
     Map<String, dynamic> queryParameters = {
       'purpose': 'CAR',
       'source_uids': Settings.parkApiSourceUids.join(','),
     };
-    if (focusPointLat != null && focusPointLon != null && radius != null) {
+    if (focusPoint != null && radius != null) {
       queryParameters.addAll({
-        'lat': focusPointLat,
-        'lon': focusPointLon,
+        'lat': focusPoint.lat,
+        'lon': focusPoint.lon,
         'radius': radius,
       });
     }
@@ -76,7 +76,9 @@ class POIParkingService {
       parkingLocations.addAll(
         (parkingSpotsResponse.data['items'] as List)
             .map((item) => _parseParkingSpotLocation(item))
-            .where((site) => site["disabled_parking_supported"] == true)
+            .where(
+              (site) => site.attributes?["disabled_parking_supported"] == true,
+            )
             .toList(),
       );
     } else {
@@ -88,7 +90,9 @@ class POIParkingService {
       parkingLocations.addAll(
         (parkingSitesResponse.data['items'] as List)
             .map((item) => _parseParkingSiteLocation(item))
-            .where((site) => site["disabled_parking_supported"] == true)
+            .where(
+              (site) => site.attributes?["disabled_parking_supported"] == true,
+            )
             .toList(),
       );
     } else {
@@ -96,13 +100,13 @@ class POIParkingService {
     }
 
     // Remove parking locations outside the specified radius
-    if (focusPointLat != null && focusPointLon != null && radius != null) {
+    if (focusPoint != null && radius != null) {
       parkingLocations = parkingLocations.where((location) {
         num distance = maps_toolkit.SphericalUtil.computeDistanceBetween(
-          maps_toolkit.LatLng(focusPointLat, focusPointLon),
+          maps_toolkit.LatLng(focusPoint.lat, focusPoint.lon),
           maps_toolkit.LatLng(
-            location['coordinates'].latitude,
-            location['coordinates'].longitude,
+            location.coordinates.lat,
+            location.coordinates.lon,
           ),
         );
         return distance <= radius;
@@ -110,18 +114,18 @@ class POIParkingService {
     }
 
     // Order parking locations by distance to focus point
-    if (focusPointLat != null && focusPointLon != null) {
+    if (focusPoint != null) {
       parkingLocations.sort((a, b) {
         double distanceA =
-            ((a['coordinates'].latitude - focusPointLat) *
-                (a['coordinates'].latitude - focusPointLat)) +
-            ((a['coordinates'].longitude - focusPointLon) *
-                (a['coordinates'].longitude - focusPointLon));
+            ((a.coordinates.lat - focusPoint.lat) *
+                (a.coordinates.lat - focusPoint.lat)) +
+            ((a.coordinates.lon - focusPoint.lon) *
+                (a.coordinates.lon - focusPoint.lon));
         double distanceB =
-            ((b['coordinates'].latitude - focusPointLat) *
-                (b['coordinates'].latitude - focusPointLat)) +
-            ((b['coordinates'].longitude - focusPointLon) *
-                (b['coordinates'].longitude - focusPointLon));
+            ((b.coordinates.lat - focusPoint.lat) *
+                (b.coordinates.lat - focusPoint.lat)) +
+            ((b.coordinates.lon - focusPoint.lon) *
+                (b.coordinates.lon - focusPoint.lon));
         return distanceA.compareTo(distanceB);
       });
     }
@@ -129,16 +133,16 @@ class POIParkingService {
     return (parkingLocations, convertToGeoJSON(parkingLocations));
   }
 
-  Future<Map<String, dynamic>?> getParkingLocationDetails({
-    required String id,
-    required ParkingType parkingType,
+  Future<Place?> getParkingLocationDetails({
+    required String placeId,
+    required PlaceType placeType,
   }) async {
     // TODO: ONLY FOR TESTING
     for (var testLocation in _testParkingLocations) {
-      if (testLocation['id'] == id) {
-        if (parkingType == ParkingType.parkingSite) {
+      if (testLocation['id'] == placeId) {
+        if (placeType == PlaceType.parkingSite) {
           return _parseParkingSiteLocation(testLocation);
-        } else if (parkingType == ParkingType.parkingSpot) {
+        } else if (placeType == PlaceType.parkingSpot) {
           return _parseParkingSpotLocation(testLocation);
         } else {
           throw Exception('Invalid parking type');
@@ -146,18 +150,22 @@ class POIParkingService {
       }
     }
 
-    if (parkingType == ParkingType.parkingSpot) {
+    if (placeType == PlaceType.parkingSpot) {
       // Fetch details from parking-spots endpoint
-      Response parkingSpotsResponse = await apiClient.get('/parking-spots/$id');
+      Response parkingSpotsResponse = await apiClient.get(
+        '/parking-spots/$placeId',
+      );
       if (parkingSpotsResponse.statusCode == 200) {
         return _parseParkingSpotLocation(parkingSpotsResponse.data);
       } else if (parkingSpotsResponse.statusCode != 404) {
         throw Exception(parkingSpotsResponse.statusMessage);
       }
       return null;
-    } else if (parkingType == ParkingType.parkingSite) {
+    } else if (placeType == PlaceType.parkingSite) {
       // Fetch details from parking-sites endpoint
-      Response parkingSitesResponse = await apiClient.get('/parking-sites/$id');
+      Response parkingSitesResponse = await apiClient.get(
+        '/parking-sites/$placeId',
+      );
       if (parkingSitesResponse.statusCode == 200) {
         return _parseParkingSiteLocation(parkingSitesResponse.data);
       } else if (parkingSitesResponse.statusCode != 404) {
@@ -169,16 +177,8 @@ class POIParkingService {
     }
   }
 
-  Map<String, dynamic> _parseParkingSpotLocation(Map<String, dynamic> item) {
-    Map<String, dynamic> parkingSpot = {
-      "id": item['id'].toString(),
-      "parking_type": ParkingType.parkingSpot,
-      "name": item['name'],
-      "address": item['address'] ?? '',
-      "coordinates": LatLng(
-        double.parse(item['lat']),
-        double.parse(item['lon']),
-      ),
+  Place _parseParkingSpotLocation(Map<String, dynamic> item) {
+    Map<String, dynamic> attributes = {
       "has_realtime_data": item['has_realtime_data'],
     };
 
@@ -207,33 +207,27 @@ class POIParkingService {
     }
 
     // Compute availability of disabled parking
-    parkingSpot["disabled_parking_supported"] = (capacityDisabled ?? 0) > 0;
-    parkingSpot["disabled_parking_available"] = (freeCapacityDisabled ?? 0) > 0;
+    attributes["disabled_parking_supported"] = (capacityDisabled ?? 0) > 0;
+    attributes["disabled_parking_available"] = (freeCapacityDisabled ?? 0) > 0;
 
-    // Extract city name from parking location address
-    // Currently designed for the German address format
-    List<String> addressParts = parkingSpot['address'].split(',');
-    if (addressParts.length >= 2) {
-      String cityPart = addressParts[1].trim();
-      List<String> cityParts = cityPart.split(' ');
-      if (cityParts.length >= 2) {
-        parkingSpot['city'] = cityParts.sublist(1).join(' ');
-      }
-    }
+    // Final place object
+    Place place = Place(
+      id: item['id'].toString(),
+      type: PlaceType.parkingSpot,
+      name: item['name'],
+      address: item['address'] ?? '',
+      description: TextFormatter.extractCityFromAddress(item['address'] ?? ''),
+      coordinates: Coordinates(
+        lat: double.parse(item['lat']),
+        lon: double.parse(item['lon']),
+      ),
+    ).copyWith(attributes: attributes);
 
-    return parkingSpot;
+    return place;
   }
 
-  Map<String, dynamic> _parseParkingSiteLocation(Map<String, dynamic> item) {
-    Map<String, dynamic> parkingSite = {
-      "id": item['id'].toString(),
-      "parking_type": ParkingType.parkingSite,
-      "name": item['name'],
-      "address": item['address'] ?? '',
-      "coordinates": LatLng(
-        double.parse(item['lat']),
-        double.parse(item['lon']),
-      ),
+  Place _parseParkingSiteLocation(Map<String, dynamic> item) {
+    Map<String, dynamic> attributes = {
       "has_realtime_data": item['has_realtime_data'],
     };
 
@@ -254,50 +248,45 @@ class POIParkingService {
     }
 
     // Compute availability of disabled parking
-    parkingSite["disabled_parking_supported"] = (capacityDisabled ?? 0) > 0;
-    parkingSite["disabled_parking_available"] = (freeCapacityDisabled ?? 0) > 0;
+    attributes["disabled_parking_supported"] = (capacityDisabled ?? 0) > 0;
+    attributes["disabled_parking_available"] = (freeCapacityDisabled ?? 0) > 0;
 
-    // Extract city name from parking location address
-    // Currently designed for the German address format
-    List<String> addressParts = parkingSite['address'].split(',');
-    if (addressParts.length >= 2) {
-      String cityPart = addressParts[1].trim();
-      List<String> cityParts = cityPart.split(' ');
-      if (cityParts.length >= 2) {
-        parkingSite['city'] = cityParts.sublist(1).join(' ');
-      }
-    }
+    // Final place object
+    Place place = Place(
+      id: item['id'].toString(),
+      type: PlaceType.parkingSite,
+      name: item['name'],
+      address: item['address'] ?? '',
+      description: TextFormatter.extractCityFromAddress(item['address'] ?? ''),
+      coordinates: Coordinates(
+        lat: double.parse(item['lat']),
+        lon: double.parse(item['lon']),
+      ),
+    ).copyWith(attributes: attributes);
 
-    return parkingSite;
+    return place;
   }
 
-  Map<String, dynamic> convertToGeoJSON(
-    List<Map<String, dynamic>> parkingLocations,
-  ) {
+  Map<String, dynamic> convertToGeoJSON(List<Place> parkingLocations) {
     List<Map<String, dynamic>> features = parkingLocations.map((location) {
-      // Ensure coordinates are properly typed as numbers
-      final coordinates = location['coordinates'] as LatLng;
-
       return {
         "type": "Feature",
-        "id": location['id']?.toString() ?? '', // Move id to feature level
+        "id": location.id,
         "geometry": {
           "type": "Point",
-          "coordinates": [coordinates.longitude, coordinates.latitude],
+          "coordinates": [location.coordinates.lon, location.coordinates.lat],
         },
         "properties": {
-          "parking_id":
-              location['id']?.toString() ?? '', // Keep copy in properties too
-          "name": location['name']?.toString() ?? '',
-          "address": location['address']?.toString() ?? '',
-          "parking_type": (location['parking_type'] as ParkingType).name,
-          "has_realtime_data": location['has_realtime_data'] == true,
+          "name": location.name,
+          "address": location.address,
+          "parking_type": location.type.name,
+          "has_realtime_data":
+              location.attributes?["has_realtime_data"] == true,
           "disabled_parking_supported":
-              location['disabled_parking_supported'] == true,
+              location.attributes?["disabled_parking_supported"] == true,
           "disabled_parking_available":
-              location['disabled_parking_available'] == true,
-          if (location.containsKey('city') && location['city'] != null)
-            "city": location['city'].toString(),
+              location.attributes?["disabled_parking_available"] == true,
+          "description": location.description,
         },
       };
     }).toList();

@@ -8,14 +8,15 @@ import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/services/poi_parking.dart';
 import 'package:smartroots/view/parking_location/parking_location.dart';
 
 class ParkingSiteMap extends StatefulWidget {
-  final Map<String, dynamic> parkingSite;
+  final Place parkingLocation;
   final bool showAlternatives;
   const ParkingSiteMap({
-    required this.parkingSite,
+    required this.parkingLocation,
     required this.showAlternatives,
     super.key,
   });
@@ -27,8 +28,8 @@ class ParkingSiteMap extends StatefulWidget {
 class _ParkingSiteMapState extends State<ParkingSiteMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
-  List<Map<String, dynamic>> _parkingSites = [];
-  final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
+  List<Place> _parkingLocations = [];
+  final Map<String, Place> _featureIdToParkingLocation = {};
 
   Future<void> _onStyleLoaded() async {
     // Fetch and draw map layers
@@ -84,9 +85,9 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: LatLng(
-            widget.parkingSite['coordinates'].latitude -
+            widget.parkingLocation.coordinates.lat -
                 (Settings.defaultRadius / 200000),
-            widget.parkingSite['coordinates'].longitude,
+            widget.parkingLocation.coordinates.lon,
           ),
           zoom: zoomLevel,
         ),
@@ -98,15 +99,14 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Map<String, dynamic>> result;
+      List<Place> result;
       (result, _) = await parkingService.getParkingLocations(
-        focusPointLat: widget.parkingSite['coordinates'].latitude,
-        focusPointLon: widget.parkingSite['coordinates'].longitude,
+        focusPoint: widget.parkingLocation.coordinates,
         radius: Settings.defaultRadius,
       );
 
       setState(() {
-        _parkingSites = result;
+        _parkingLocations = result;
       });
       _updateMarkers();
     } catch (e) {
@@ -123,8 +123,8 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   void _drawRadius() {
     // Draw a polygon (circle approximation) with given radius in meters
     final center = LatLng(
-      widget.parkingSite['coordinates'].latitude,
-      widget.parkingSite['coordinates'].longitude,
+      widget.parkingLocation.coordinates.lat,
+      widget.parkingLocation.coordinates.lon,
     );
     final int points = 60; // More points = smoother circle
     final double radiusInMeters = Settings.defaultRadius.toDouble();
@@ -156,11 +156,11 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   }
 
   void _updateMarkers() {
-    for (var site in _parkingSites) {
+    for (var site in _parkingLocations) {
       String markerColor = "#3685E2";
-      if (!site["has_realtime_data"]) {
+      if (!site.attributes?["has_realtime_data"]) {
         markerColor = "#3685E2";
-      } else if (site["disabled_parking_available"]) {
+      } else if (site.attributes?["disabled_parking_available"]) {
         markerColor = "#089161";
       } else {
         markerColor = "#F4B1A4";
@@ -169,7 +169,7 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
       _mapController
           .addCircle(
             CircleOptions(
-              geometry: site["coordinates"],
+              geometry: LatLng(site.coordinates.lat, site.coordinates.lon),
               circleColor: markerColor,
               circleRadius: 6.0,
               circleOpacity: 0.5,
@@ -179,16 +179,18 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
             ),
           )
           .then((symbol) {
-            _symbolIdToSite[symbol.id] = site;
+            _featureIdToParkingLocation[symbol.id] = site;
           });
     }
   }
 
   Future<void> _drawPlace() async {
     String iconName;
-    if (!widget.parkingSite["has_realtime_data"]) {
+    if (!widget.parkingLocation.attributes?["has_realtime_data"]) {
       iconName = "parking_avbl_unknown.png";
-    } else if (widget.parkingSite["disabled_parking_available"]) {
+    } else if (widget
+        .parkingLocation
+        .attributes?["disabled_parking_available"]) {
       iconName = "parking_avbl_yes.png";
     } else {
       iconName = "parking_avbl_no.png";
@@ -196,7 +198,10 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
 
     await _mapController.addSymbol(
       SymbolOptions(
-        geometry: widget.parkingSite["coordinates"],
+        geometry: LatLng(
+          widget.parkingLocation.coordinates.lat,
+          widget.parkingLocation.coordinates.lon,
+        ),
         iconImage: iconName,
         iconSize: 0.85,
       ),
@@ -204,12 +209,13 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   }
 
   void _onCircleTapped(Circle circle) {
-    final site = _symbolIdToSite[circle.id] ?? {};
-    if (site.isNotEmpty) {
+    final Place? parkingLocation = _featureIdToParkingLocation[circle.id];
+    if (parkingLocation != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParkingLocationScreen(parkingLocation: site),
+          builder: (context) =>
+              ParkingLocationScreen(parkingLocation: parkingLocation),
         ),
       );
     }
@@ -240,8 +246,8 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
             ),
             initialCameraPosition: CameraPosition(
               target: LatLng(
-                widget.parkingSite['coordinates'].latitude - 0.003,
-                widget.parkingSite['coordinates'].longitude,
+                widget.parkingLocation.coordinates.lat - 0.003,
+                widget.parkingLocation.coordinates.lon,
               ),
               zoom: 13.5,
             ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smartroots/controllers/favourites_controller.dart';
+import 'package:smartroots/controllers/favorites_controller.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/core/utils.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/view/parking_location/parking_location.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -37,18 +38,16 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
               ),
             ),
             SizedBox(height: 8),
-            Consumer<FavouritesController>(
+            Consumer<FavoritesController>(
               builder: (context, favouritesController, _) => Expanded(
-                child: favouritesController.favouriteParkingLocations.isNotEmpty
+                child: favouritesController.favorites.isNotEmpty
                     ? ListView.builder(
                         padding: EdgeInsets.all(16),
                         shrinkWrap: true,
-                        itemCount: favouritesController
-                            .favouriteParkingLocations
-                            .length,
+                        itemCount: favouritesController.favorites.length,
                         itemBuilder: (context, index) => _FavouritesListItem(
-                          parkingLocation: favouritesController
-                              .favouriteParkingLocations[index],
+                          parkingLocation:
+                              favouritesController.favorites[index],
                         ),
                       )
                     : Expanded(
@@ -97,7 +96,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 }
 
 class _FavouritesListItem extends StatelessWidget {
-  final Map<String, dynamic> parkingLocation;
+  final Place parkingLocation;
 
   const _FavouritesListItem({required this.parkingLocation});
 
@@ -122,8 +121,9 @@ class _FavouritesListItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: parkingLocation['has_realtime_data']
-                      ? parkingLocation['disabled_parking_available']
+                  color: parkingLocation.attributes!['has_realtime_data']
+                      ? parkingLocation
+                                .attributes!['disabled_parking_available']
                             ? SmartRootsColors.maGreen
                             : SmartRootsColors.maRed
                       : SmartRootsColors.maBlueExtraDark,
@@ -145,7 +145,7 @@ class _FavouritesListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      parkingLocation["name"],
+                      parkingLocation.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -154,9 +154,7 @@ class _FavouritesListItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      parkingLocation["city"] ??
-                          parkingLocation["address"] ??
-                          '',
+                      parkingLocation.description,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -193,11 +191,6 @@ class _FavouritesListItem extends StatelessWidget {
                   ],
                 ),
               ),
-              /*SizedBox(width: 16),
-                            Icon(
-                              Icons.more_vert,
-                              color: SmartRootsColors.maBlueExtraExtraDark,
-                            ),*/
             ],
           ),
         ),

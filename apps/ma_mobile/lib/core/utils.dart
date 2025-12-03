@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 
 class TextFormatter {
-  static String getOccupancyText(
-    BuildContext context,
-    Map<String, dynamic> parkingSite,
-  ) {
-    if (!parkingSite["has_realtime_data"]) {
+  static String getOccupancyText(BuildContext context, Place place) {
+    // Ensure place is a parking location
+    if (place.type != PlaceType.parkingSpot &&
+        place.type != PlaceType.parkingSite) {
+      throw Exception(
+        'Place must be a parking location to get occupancy text.',
+      );
+    }
+
+    if (!place.attributes!["has_realtime_data"]) {
       return AppLocalizations.of(context)!.availabilityUnknown;
     }
-    if (parkingSite["disabled_parking_available"]) {
+    if (place.attributes!["disabled_parking_available"]) {
       return AppLocalizations.of(context)!.availabilityAvailable;
     } else {
       return AppLocalizations.of(context)!.availabilityOccupied;
@@ -64,5 +70,18 @@ class TextFormatter {
     } else {
       return '${speed.toStringAsFixed(1)} km/h';
     }
+  }
+
+  static String extractCityFromAddress(String fullAddress) {
+    // Currently designed for the German address format
+    List<String> addressParts = fullAddress.split(',');
+    if (addressParts.length >= 2) {
+      String cityPart = addressParts[1].trim();
+      List<String> cityParts = cityPart.split(' ');
+      if (cityParts.length >= 2) {
+        return cityParts.sublist(1).join(' ');
+      }
+    }
+    return '';
   }
 }

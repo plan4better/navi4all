@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:smartroots/core/config.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/services/poi_parking.dart';
 
 class AvailabilityController extends ChangeNotifier {
@@ -9,13 +10,19 @@ class AvailabilityController extends ChangeNotifier {
 
   Timer? _refreshTimer;
   DateTime? _lastRefresh;
-  Map<String, dynamic>? _parkingLocation;
+  Place? _parkingLocation;
   AvailabilityControllerState _state = AvailabilityControllerState.idle;
 
-  Map<String, dynamic>? get parkingLocation => _parkingLocation;
+  Place? get parkingLocation => _parkingLocation;
   AvailabilityControllerState get state => _state;
 
-  void startMonitoring(Map<String, dynamic> parkingLocation) {
+  void startMonitoring(Place parkingLocation) {
+    // Ensure this place is a parking location
+    if (parkingLocation.type != PlaceType.parkingSpot &&
+        parkingLocation.type != PlaceType.parkingSite) {
+      throw Exception('Place is not a valid parking location');
+    }
+
     _parkingLocation = parkingLocation;
 
     _refreshTimer = Timer.periodic(
@@ -45,8 +52,8 @@ class AvailabilityController extends ChangeNotifier {
       if (_parkingLocation != null) {
         // Refresh latest status of parking location
         var details = await parkingService.getParkingLocationDetails(
-          id: _parkingLocation!["id"],
-          parkingType: _parkingLocation!["parking_type"],
+          placeId: _parkingLocation!.id,
+          placeType: _parkingLocation!.type,
         );
 
         // Flag error if unable to fetch details
@@ -55,9 +62,9 @@ class AvailabilityController extends ChangeNotifier {
         }
 
         // Check if availability status has changed
-        if (!details['disabled_parking_available'] &&
-            details['disabled_parking_available'] !=
-                _parkingLocation!['disabled_parking_available']) {
+        if (!details.attributes?['disabled_parking_available'] &&
+            details.attributes?['disabled_parking_available'] !=
+                _parkingLocation!.attributes?['disabled_parking_available']) {
           _parkingLocation = details;
           _state = AvailabilityControllerState.change;
           notifyListeners();

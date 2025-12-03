@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
-import 'package:smartroots/controllers/favourites_controller.dart';
+import 'package:smartroots/controllers/favorites_controller.dart';
 import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
@@ -23,7 +23,7 @@ import 'package:smartroots/view/routing/routing.dart';
 
 class ParkingLocationScreen extends StatefulWidget {
   final Place? place;
-  final Map<String, dynamic> parkingLocation;
+  final Place parkingLocation;
   final bool showAlternatives;
   const ParkingLocationScreen({
     this.place,
@@ -49,34 +49,24 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
   }
 
   Future<void> _checkIfFavorite() async {
-    _isFavorite =
-        await Provider.of<FavouritesController>(
-          context,
-          listen: false,
-        ).checkIsFavouriteParkingLocation(
-          widget.parkingLocation["id"],
-          widget.parkingLocation["parking_type"],
-        );
+    _isFavorite = await Provider.of<FavoritesController>(
+      context,
+      listen: false,
+    ).checkIsFavorite(widget.parkingLocation);
     setState(() {});
   }
 
   Future<void> _toggleFavorite() async {
     if (_isFavorite) {
-      await Provider.of<FavouritesController>(
+      await Provider.of<FavoritesController>(
         context,
         listen: false,
-      ).removeFavouriteParkingLocation(
-        widget.parkingLocation["id"],
-        widget.parkingLocation["parking_type"],
-      );
+      ).removeFavorite(widget.parkingLocation);
     } else {
-      await Provider.of<FavouritesController>(
+      await Provider.of<FavoritesController>(
         context,
         listen: false,
-      ).addFavouriteParkingLocation(
-        widget.parkingLocation["id"],
-        widget.parkingLocation["parking_type"],
-      );
+      ).addFavorite(widget.parkingLocation);
 
       // Analytics event
       MatomoTracker.instance.trackEvent(
@@ -112,8 +102,8 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
       final response = await routingService.getItineraries(
         originLat: userLatLng.latitude,
         originLon: userLatLng.longitude,
-        destinationLat: widget.parkingLocation['coordinates'].latitude,
-        destinationLon: widget.parkingLocation['coordinates'].longitude,
+        destinationLat: widget.parkingLocation.coordinates.lat,
+        destinationLon: widget.parkingLocation.coordinates.lon,
         date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
         time: DateFormat('HH:mm:ss').format(DateTime.now()),
         timeIsArrival: false,
@@ -154,7 +144,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
       body: Stack(
         children: [
           ParkingSiteMap(
-            parkingSite: widget.parkingLocation,
+            parkingLocation: widget.parkingLocation,
             showAlternatives: widget.showAlternatives,
           ),
           SlidingBottomSheet(
@@ -175,7 +165,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.parkingLocation["name"],
+                                    widget.parkingLocation.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -185,17 +175,15 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                           SmartRootsColors.maBlueExtraExtraDark,
                                     ),
                                   ),
-                                  widget.parkingLocation["address"] != null
-                                      ? Text(
-                                          widget.parkingLocation["address"],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: SmartRootsColors
-                                                .maBlueExtraExtraDark,
-                                          ),
-                                        )
-                                      : SizedBox.shrink(),
+                                  Text(
+                                    widget.parkingLocation.address,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color:
+                                          SmartRootsColors.maBlueExtraExtraDark,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -222,13 +210,9 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                 )!.parkingLocationButtonRouteExternal,
                                 onTap: () {
                                   MapsLauncher.launchCoordinates(
-                                    widget
-                                        .parkingLocation['coordinates']
-                                        .latitude,
-                                    widget
-                                        .parkingLocation['coordinates']
-                                        .longitude,
-                                    widget.parkingLocation['name'],
+                                    widget.parkingLocation.coordinates.lat,
+                                    widget.parkingLocation.coordinates.lon,
+                                    widget.parkingLocation.name,
                                   ).then((value) {
                                     if (!value) {
                                       ScaffoldMessenger.of(
@@ -272,7 +256,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => RoutingScreen(
-                                        parkingSite: widget.parkingLocation,
+                                        parkingLocation: widget.parkingLocation,
                                       ),
                                     ),
                                   );
@@ -360,8 +344,12 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 color:
-                                    widget.parkingLocation['has_realtime_data']
-                                    ? widget.parkingLocation['disabled_parking_available']
+                                    (widget
+                                        .parkingLocation
+                                        .attributes?['has_realtime_data'])
+                                    ? (widget
+                                              .parkingLocation
+                                              .attributes?['disabled_parking_available'])
                                           ? SmartRootsColors.maGreen
                                           : SmartRootsColors.maRed
                                     : SmartRootsColors.maBlueExtraDark,
@@ -437,7 +425,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              widget.parkingLocation["name"],
+                              widget.parkingLocation.name,
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: SmartRootsColors.maBlueExtraExtraDark,

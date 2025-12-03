@@ -26,7 +26,7 @@ class PlaceScreen extends StatefulWidget {
 class _PlaceScreenState extends State<PlaceScreen> {
   int _selectedRadius = Settings.defaultRadius;
   int _changedRadius = Settings.defaultRadius;
-  List<Map<String, dynamic>> _parkingSites = [];
+  List<Place> _parkingLocations = [];
 
   @override
   void initState() {
@@ -37,15 +37,14 @@ class _PlaceScreenState extends State<PlaceScreen> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Map<String, dynamic>> result;
+      List<Place> result;
       (result, _) = await parkingService.getParkingLocations(
-        focusPointLat: widget.place.coordinates.lat,
-        focusPointLon: widget.place.coordinates.lon,
+        focusPoint: widget.place.coordinates,
         radius: _selectedRadius,
       );
 
       setState(() {
-        _parkingSites = result;
+        _parkingLocations = result;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -237,8 +236,11 @@ class _PlaceScreenState extends State<PlaceScreen> {
               ],
             ),
             listItems: [
-              for (var site in _parkingSites)
-                PlaceListItem(place: widget.place, parkingSite: site),
+              for (Place parkingLocation in _parkingLocations)
+                PlaceListItem(
+                  place: widget.place,
+                  parkingLocation: parkingLocation,
+                ),
             ],
           ),
           SafeArea(
@@ -302,10 +304,10 @@ class _PlaceScreenState extends State<PlaceScreen> {
 
 class PlaceListItem extends StatelessWidget {
   final Place place;
-  final Map<String, dynamic> parkingSite;
+  final Place parkingLocation;
   const PlaceListItem({
     required this.place,
-    required this.parkingSite,
+    required this.parkingLocation,
     super.key,
   });
 
@@ -317,7 +319,7 @@ class PlaceListItem extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => ParkingLocationScreen(
               place: place,
-              parkingLocation: parkingSite,
+              parkingLocation: parkingLocation,
             ),
           ),
         );
@@ -331,7 +333,7 @@ class PlaceListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    parkingSite["name"],
+                    parkingLocation.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -366,7 +368,7 @@ class PlaceListItem extends StatelessWidget {
             ),
             SizedBox(width: 16),
             Text(
-              TextFormatter.getOccupancyText(context, parkingSite),
+              TextFormatter.getOccupancyText(context, parkingLocation),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -378,8 +380,9 @@ class PlaceListItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: parkingSite['has_realtime_data']
-                    ? parkingSite['disabled_parking_available']
+                color: (parkingLocation.attributes?['has_realtime_data'])
+                    ? (parkingLocation
+                              .attributes?['disabled_parking_available'])
                           ? SmartRootsColors.maGreen
                           : SmartRootsColors.maRed
                     : SmartRootsColors.maBlueExtraDark,

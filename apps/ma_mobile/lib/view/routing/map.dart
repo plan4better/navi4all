@@ -15,13 +15,13 @@ import 'package:smartroots/schemas/routing/place.dart';
 
 class RoutingMap extends StatefulWidget {
   final Place origin;
-  final Map<String, dynamic> parkingSite;
+  final Place parkingLocation;
   final ItineraryDetails? itineraryDetails;
   final NavigationStatus navigationStatus;
   final Position? userPosition;
   const RoutingMap({
     required this.origin,
-    required this.parkingSite,
+    required this.parkingLocation,
     required this.itineraryDetails,
     required this.navigationStatus,
     required this.userPosition,
@@ -154,9 +154,11 @@ class _RoutingMapState extends State<RoutingMap> {
 
   Future<void> _drawPlace() async {
     String iconName;
-    if (!widget.parkingSite["has_realtime_data"]) {
+    if (!widget.parkingLocation.attributes?['has_realtime_data']) {
       iconName = "parking_avbl_unknown.png";
-    } else if (widget.parkingSite["disabled_parking_available"]) {
+    } else if (widget
+        .parkingLocation
+        .attributes?['disabled_parking_available']) {
       iconName = "parking_avbl_yes.png";
     } else {
       iconName = "parking_avbl_no.png";
@@ -164,7 +166,10 @@ class _RoutingMapState extends State<RoutingMap> {
 
     _mapController.addSymbol(
       SymbolOptions(
-        geometry: widget.parkingSite["coordinates"],
+        geometry: LatLng(
+          widget.parkingLocation.coordinates.lat,
+          widget.parkingLocation.coordinates.lon,
+        ),
         iconImage: iconName,
         iconSize: 0.85,
       ),
@@ -344,8 +349,8 @@ class _RoutingMapState extends State<RoutingMap> {
             ),
             initialCameraPosition: CameraPosition(
               target: LatLng(
-                widget.parkingSite['coordinates'].latitude - 0.002,
-                widget.parkingSite['coordinates'].longitude,
+                widget.parkingLocation.coordinates.lat - 0.002,
+                widget.parkingLocation.coordinates.lon,
               ),
               zoom: 14,
             ),

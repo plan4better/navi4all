@@ -13,6 +13,7 @@ import 'package:smartroots/core/persistence/preference_helper.dart';
 import 'package:smartroots/core/theme/base_map_style.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/services/poi_parking.dart';
 import 'package:smartroots/view/common/selection_tile.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
@@ -29,7 +30,7 @@ class HomeMap extends StatefulWidget {
 class _HomeMapState extends State<HomeMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
-  List<Map<String, dynamic>> _parkingLocations = [];
+  List<Place> _parkingLocations = [];
 
   Future<void> _panToUserLocation() async {
     // Check location permission status
@@ -238,7 +239,7 @@ class _HomeMapState extends State<HomeMap> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Map<String, dynamic>> parkingLocations;
+      List<Place> parkingLocations;
       Map<String, dynamic> geoJson;
       (parkingLocations, geoJson) = await parkingService.getParkingLocations();
       _parkingLocations = parkingLocations;
@@ -282,11 +283,14 @@ class _HomeMapState extends State<HomeMap> {
       LatLngBounds visibleRegion = await _mapController.getVisibleRegion();
 
       // Find nearest feature ID to clicked point
-      String? selectedFeatureId = featureId;
-      if (selectedFeatureId == null) {
+      Place? selectedPlace;
+      if (featureId == null) {
         double nearestDistance = double.infinity;
         for (var parkingLocation in _parkingLocations) {
-          LatLng symbolLatLng = parkingLocation['coordinates'];
+          LatLng symbolLatLng = LatLng(
+            parkingLocation.coordinates.lat,
+            parkingLocation.coordinates.lon,
+          );
           if (symbolLatLng.latitude >= visibleRegion.southwest.latitude &&
               symbolLatLng.latitude <= visibleRegion.northeast.latitude &&
               symbolLatLng.longitude >= visibleRegion.southwest.longitude &&
@@ -299,21 +303,44 @@ class _HomeMapState extends State<HomeMap> {
             );
             if (distance < 50.0 && distance < nearestDistance) {
               nearestDistance = distance;
-              selectedFeatureId = parkingLocation["id"];
+              selectedPlace = parkingLocation;
             }
           }
         }
+      } else {
+        // Fetch selected place by feature ID, sorted by distance
+        // This is necessary as feature IDs may not be unique
+        List<Place> orderedParkingLocations = _parkingLocations.where((
+          location,
+        ) {
+          return location.id == featureId;
+        }).toList();
+        orderedParkingLocations.sort((a, b) {
+          double distanceA = Geolocator.distanceBetween(
+            latLng.latitude,
+            latLng.longitude,
+            a.coordinates.lat,
+            a.coordinates.lon,
+          );
+          double distanceB = Geolocator.distanceBetween(
+            latLng.latitude,
+            latLng.longitude,
+            b.coordinates.lat,
+            b.coordinates.lon,
+          );
+          return distanceA.compareTo(distanceB);
+        });
+        selectedPlace = orderedParkingLocations.isNotEmpty
+            ? orderedParkingLocations.first
+            : null;
       }
 
-      if (selectedFeatureId != null) {
+      if (selectedPlace != null) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ParkingLocationScreen(
-              parkingLocation: _parkingLocations.firstWhere(
-                (location) => location["id"] == selectedFeatureId,
-              ),
-            ),
+            builder: (context) =>
+                ParkingLocationScreen(parkingLocation: selectedPlace!),
           ),
         );
 

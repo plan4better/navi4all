@@ -24,8 +24,8 @@ class PlaceMap extends StatefulWidget {
 class _PlaceMapState extends State<PlaceMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
-  List<Map<String, dynamic>> _parkingSites = [];
-  final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
+  List<Place> _parkingLocations = [];
+  final Map<String, Place> _featureIdToParkingLocation = {};
   int? _lastRadius;
 
   Future<void> _onStyleLoaded() async {
@@ -84,15 +84,14 @@ class _PlaceMapState extends State<PlaceMap> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Map<String, dynamic>> result;
+      List<Place> result;
       (result, _) = await parkingService.getParkingLocations(
-        focusPointLat: widget.place.coordinates.lat,
-        focusPointLon: widget.place.coordinates.lon,
+        focusPoint: widget.place.coordinates,
         radius: widget.radius,
       );
 
       setState(() {
-        _parkingSites = result;
+        _parkingLocations = result;
       });
       _updateMarkers();
     } catch (e) {
@@ -107,12 +106,13 @@ class _PlaceMapState extends State<PlaceMap> {
   }
 
   void _onCircleTapped(Circle circle) {
-    final site = _symbolIdToSite[circle.id] ?? {};
-    if (site.isNotEmpty) {
+    final Place? parkingLocation = _featureIdToParkingLocation[circle.id];
+    if (parkingLocation != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParkingLocationScreen(parkingLocation: site),
+          builder: (context) =>
+              ParkingLocationScreen(parkingLocation: parkingLocation),
         ),
       );
     }
@@ -247,11 +247,11 @@ class _PlaceMapState extends State<PlaceMap> {
   }
 
   void _updateMarkers() {
-    for (var site in _parkingSites) {
+    for (Place parkingLocation in _parkingLocations) {
       String markerColor = "#3685E2";
-      if (!site["has_realtime_data"]) {
+      if (!parkingLocation.attributes?["has_realtime_data"]) {
         markerColor = "#3685E2";
-      } else if (site["disabled_parking_available"]) {
+      } else if (parkingLocation.attributes?["disabled_parking_available"]) {
         markerColor = "#089161";
       } else {
         markerColor = "#F4B1A4";
@@ -260,7 +260,10 @@ class _PlaceMapState extends State<PlaceMap> {
       _mapController
           .addCircle(
             CircleOptions(
-              geometry: site["coordinates"],
+              geometry: LatLng(
+                parkingLocation.coordinates.lat,
+                parkingLocation.coordinates.lon,
+              ),
               circleColor: markerColor,
               circleRadius: 6.0,
               circleStrokeWidth: 1.0,
@@ -268,7 +271,7 @@ class _PlaceMapState extends State<PlaceMap> {
             ),
           )
           .then((symbol) {
-            _symbolIdToSite[symbol.id] = site;
+            _featureIdToParkingLocation[symbol.id] = parkingLocation;
           });
     }
   }

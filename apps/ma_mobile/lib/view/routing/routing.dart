@@ -27,16 +27,16 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
 class RoutingScreen extends StatefulWidget {
-  final Map<String, dynamic> parkingSite;
+  final Place parkingLocation;
 
-  const RoutingScreen({required this.parkingSite, super.key});
+  const RoutingScreen({required this.parkingLocation, super.key});
 
   @override
   RoutingState createState() => RoutingState();
 }
 
 class RoutingState extends State<RoutingScreen> {
-  late Map<String, dynamic> _parkingLocation;
+  late Place _parkingLocation;
   bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
@@ -55,7 +55,7 @@ class RoutingState extends State<RoutingScreen> {
   void initState() {
     super.initState();
 
-    _parkingLocation = widget.parkingSite;
+    _parkingLocation = widget.parkingLocation;
 
     // flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
 
@@ -63,22 +63,12 @@ class RoutingState extends State<RoutingScreen> {
     _origin = Place(
       id: SmartRootsValues.userLocation,
       name: '',
-      type: '',
+      type: PlaceType.address,
       description: '',
       address: '',
       coordinates: Coordinates(lat: 0.0, lon: 0.0),
     );
-    _destination = Place(
-      id: _parkingLocation['id'].toString(),
-      type: 'PARKING',
-      name: _parkingLocation['name'],
-      description: _parkingLocation['description'] ?? '',
-      address: _parkingLocation['address'] ?? '',
-      coordinates: Coordinates(
-        lat: _parkingLocation['coordinates'].latitude,
-        lon: _parkingLocation['coordinates'].longitude,
-      ),
-    );
+    _destination = _parkingLocation;
 
     // Initiate availability monitoring
     Provider.of<AvailabilityController>(
@@ -134,8 +124,11 @@ class RoutingState extends State<RoutingScreen> {
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: _parkingLocation['has_realtime_data']
-                                ? _parkingLocation['disabled_parking_available']
+                            color:
+                                (_parkingLocation
+                                    .attributes?['has_realtime_data'])
+                                ? (_parkingLocation
+                                          .attributes?['disabled_parking_available'])
                                       ? SmartRootsColors.maGreen
                                       : SmartRootsColors.maRed
                                 : SmartRootsColors.maBlueExtraDark,
@@ -220,17 +213,7 @@ class RoutingState extends State<RoutingScreen> {
                               _navigationStatus = NavigationStatus.idle;
                             });
 
-                            Place place = Place(
-                              id: '',
-                              name: _parkingLocation['name'],
-                              type: '',
-                              description: _parkingLocation['address'] ?? '',
-                              address: _parkingLocation['address'] ?? '',
-                              coordinates: Coordinates(
-                                lat: _parkingLocation['coordinates'].latitude,
-                                lon: _parkingLocation['coordinates'].longitude,
-                              ),
-                            );
+                            Place place = _parkingLocation;
                             Navigator.of(context).pop();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
@@ -404,7 +387,7 @@ class RoutingState extends State<RoutingScreen> {
         _origin = Place(
           id: SmartRootsValues.userLocation,
           name: '',
-          type: '',
+          type: PlaceType.address,
           description: '',
           address: '',
           coordinates: Coordinates(
@@ -418,7 +401,7 @@ class RoutingState extends State<RoutingScreen> {
         _destination = Place(
           id: SmartRootsValues.userLocation,
           name: '',
-          type: '',
+          type: PlaceType.address,
           description: '',
           address: '',
           coordinates: Coordinates(
@@ -683,7 +666,7 @@ class RoutingState extends State<RoutingScreen> {
         children: [
           RoutingMap(
             origin: _origin,
-            parkingSite: _parkingLocation,
+            parkingLocation: _parkingLocation,
             itineraryDetails: _itineraryDetails,
             navigationStatus: _navigationStatus,
             userPosition: _userPosition,
@@ -945,8 +928,11 @@ class RoutingState extends State<RoutingScreen> {
                             Container(
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
-                                color: _parkingLocation['has_realtime_data']
-                                    ? _parkingLocation['disabled_parking_available']
+                                color:
+                                    (_parkingLocation
+                                        .attributes?['has_realtime_data'])
+                                    ? (_parkingLocation
+                                              .attributes?['disabled_parking_available'])
                                           ? SmartRootsColors.maGreen
                                           : SmartRootsColors.maRed
                                     : SmartRootsColors.maBlueExtraDark,
