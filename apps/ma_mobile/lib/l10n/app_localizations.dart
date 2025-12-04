@@ -275,6 +275,12 @@ abstract class AppLocalizations {
   /// **'Search here'**
   String get searchTextFieldHint;
 
+  /// No description provided for @searchTextFieldHintSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a destination.'**
+  String get searchTextFieldHintSemantic;
+
   /// No description provided for @searchTextFieldOriginHintSemantic.
   ///
   /// In en, this message translates to:
@@ -362,7 +368,7 @@ abstract class AppLocalizations {
   /// No description provided for @origDestPickerDestinationSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Destination: {destination}. Tap to change.'**
+  /// **'Destination: {destination}.'**
   String origDestPickerDestinationSemantic(String destination);
 
   /// No description provided for @journeyOptionSemantic.
@@ -473,16 +479,10 @@ abstract class AppLocalizations {
   /// **'Unable to fetch itineraries.'**
   String get errorUnableToFetchItineraries;
 
-  /// No description provided for @errorNoItinerariesFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No itineraries found for the selected origin and destination.'**
-  String get errorNoItinerariesFound;
-
   /// No description provided for @searchResultSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Search result: {name}, {locality}.'**
+  /// **'Result: {name}, {locality}.'**
   String searchResultSemantic(String name, String locality);
 
   /// No description provided for @origDestCurrentLocation.
@@ -940,6 +940,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No results found. Try searching for other places, addresses or transit stations.'**
   String get searchScreenErrorNoSuggestions;
+
+  /// No description provided for @homeMapScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Map screen.'**
+  String get homeMapScreenSemantic;
+
+  /// No description provided for @homeMapScreenLayersButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Change map style.'**
+  String get homeMapScreenLayersButtonSemantic;
+
+  /// No description provided for @homeMapScreenCurrentLocationButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to current location.'**
+  String get homeMapScreenCurrentLocationButtonSemantic;
+
+  /// No description provided for @homeFavoritesScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites screen.'**
+  String get homeFavoritesScreenSemantic;
+
+  /// No description provided for @favoritesScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites screen. With {count} favorites.'**
+  String favoritesScreenSemantic(int count);
+
+  /// No description provided for @favoritesListItemSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {description}. Status: {status}.'**
+  String favoritesListItemSemantic(String name, String description, String status);
+
+  /// No description provided for @homeSettingsScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings screen.'**
+  String get homeSettingsScreenSemantic;
+
+  /// No description provided for @searchScreenSearchFieldSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Search field. Input: {input}.'**
+  String searchScreenSearchFieldSemantic(String input);
+
+  /// No description provided for @searchScreenRecentSearchItemSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent search: {name}.'**
+  String searchScreenRecentSearchItemSemantic(String name);
+
+  /// No description provided for @placeScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} parking spaces found within {radius} metres.'**
+  String placeScreenSemantic(int count, int radius);
+
+  /// No description provided for @placeScreenSearchBarSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} selected. Tap to go back.'**
+  String placeScreenSearchBarSemantic(String name);
+
+  /// No description provided for @placeScreenSearchRadiusButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Change search radius. Currently: {radius} metres.'**
+  String placeScreenSearchRadiusButtonSemantic(int radius);
+
+  /// No description provided for @placeListItemSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}. {status}.'**
+  String placeListItemSemantic(String name, String status);
+
+  /// No description provided for @parkingLocationScreenSearchBarSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} selected. Tap to go back.'**
+  String parkingLocationScreenSearchBarSemantic(String name);
+
+  /// No description provided for @parkingLocationScreenAddToFavoritesButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites.'**
+  String get parkingLocationScreenAddToFavoritesButtonSemantic;
+
+  /// No description provided for @parkingLocationScreenRemoveFromFavoritesButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites.'**
+  String get parkingLocationScreenRemoveFromFavoritesButtonSemantic;
+
+  /// No description provided for @parkingLocationScreenRouteExternalButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Route using external maps app.'**
+  String get parkingLocationScreenRouteExternalButtonSemantic;
+
+  /// No description provided for @parkingLocationScreenRouteInternalButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Route using ParkStark.'**
+  String get parkingLocationScreenRouteInternalButtonSemantic;
+
+  /// No description provided for @parkingLocationScreenEstimatedDrivingTimeSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated driving time: {time}.'**
+  String parkingLocationScreenEstimatedDrivingTimeSemantic(String time);
+
+  /// No description provided for @parkingLocationScreenOccupancyStatusSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupancy status: {status}.'**
+  String parkingLocationScreenOccupancyStatusSemantic(String status);
+
+  /// No description provided for @routingScreenSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation screen.'**
+  String get routingScreenSemantic;
+
+  /// No description provided for @routingScreenExitRoutingButtonSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit navigation.'**
+  String get routingScreenExitRoutingButtonSemantic;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

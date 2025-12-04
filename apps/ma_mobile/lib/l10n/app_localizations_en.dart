@@ -99,6 +99,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchTextFieldHint => 'Search here';
 
   @override
+  String get searchTextFieldHintSemantic => 'Search for a destination.';
+
+  @override
   String get searchTextFieldOriginHintSemantic => 'Text input. Type to search for an origin location.';
 
   @override
@@ -146,7 +149,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Destination: $destination. Tap to change.';
+    return 'Destination: $destination.';
   }
 
   @override
@@ -220,11 +223,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorUnableToFetchItineraries => 'Unable to fetch itineraries.';
 
   @override
-  String get errorNoItinerariesFound => 'No itineraries found for the selected origin and destination.';
-
-  @override
   String searchResultSemantic(String name, String locality) {
-    return 'Search result: $name, $locality.';
+    return 'Result: $name, $locality.';
   }
 
   @override
@@ -458,4 +458,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchScreenErrorNoSuggestions => 'No results found. Try searching for other places, addresses or transit stations.';
+
+  @override
+  String get homeMapScreenSemantic => 'Map screen.';
+
+  @override
+  String get homeMapScreenLayersButtonSemantic => 'Change map style.';
+
+  @override
+  String get homeMapScreenCurrentLocationButtonSemantic => 'Go to current location.';
+
+  @override
+  String get homeFavoritesScreenSemantic => 'Favourites screen.';
+
+  @override
+  String favoritesScreenSemantic(int count) {
+    return 'Favorites screen. With $count favorites.';
+  }
+
+  @override
+  String favoritesListItemSemantic(String name, String description, String status) {
+    return '$name, $description. Status: $status.';
+  }
+
+  @override
+  String get homeSettingsScreenSemantic => 'Settings screen.';
+
+  @override
+  String searchScreenSearchFieldSemantic(String input) {
+    return 'Search field. Input: $input.';
+  }
+
+  @override
+  String searchScreenRecentSearchItemSemantic(String name) {
+    return 'Recent search: $name.';
+  }
+
+  @override
+  String placeScreenSemantic(int count, int radius) {
+    return '$count parking spaces found within $radius metres.';
+  }
+
+  @override
+  String placeScreenSearchBarSemantic(String name) {
+    return '$name selected. Tap to go back.';
+  }
+
+  @override
+  String placeScreenSearchRadiusButtonSemantic(int radius) {
+    return 'Change search radius. Currently: $radius metres.';
+  }
+
+  @override
+  String placeListItemSemantic(String name, String status) {
+    return '$name. $status.';
+  }
+
+  @override
+  String parkingLocationScreenSearchBarSemantic(String name) {
+    return '$name selected. Tap to go back.';
+  }
+
+  @override
+  String get parkingLocationScreenAddToFavoritesButtonSemantic => 'Add to favorites.';
+
+  @override
+  String get parkingLocationScreenRemoveFromFavoritesButtonSemantic => 'Remove from favorites.';
+
+  @override
+  String get parkingLocationScreenRouteExternalButtonSemantic => 'Route using external maps app.';
+
+  @override
+  String get parkingLocationScreenRouteInternalButtonSemantic => 'Route using ParkStark.';
+
+  @override
+  String parkingLocationScreenEstimatedDrivingTimeSemantic(String time) {
+    return 'Estimated driving time: $time.';
+  }
+
+  @override
+  String parkingLocationScreenOccupancyStatusSemantic(String status) {
+    return 'Occupancy status: $status.';
+  }
+
+  @override
+  String get routingScreenSemantic => 'Navigation screen.';
+
+  @override
+  String get routingScreenExitRoutingButtonSemantic => 'Exit navigation.';
 }

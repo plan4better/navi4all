@@ -22,6 +22,7 @@ class SheetButton extends StatelessWidget {
     return Semantics(
       label: semanticLabel,
       excludeSemantics: semanticLabel != null,
+      button: true,
       child: Material(
         color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(32),
@@ -68,4 +69,4 @@ class SheetButton extends StatelessWidget {
   }
 }
 
-enum AccessibleButtonStyle { white, pink, red }
+enum SheetButtonStyle { white, pink, red }

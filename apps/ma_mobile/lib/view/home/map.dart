@@ -74,6 +74,7 @@ class _HomeMapState extends State<HomeMap> {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setStateDialog) => Dialog(
@@ -81,118 +82,132 @@ class _HomeMapState extends State<HomeMap> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(32),
             ),
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      AppLocalizations.of(context)!.homeChangeBaseMapTitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
+            child: Semantics(
+              label: AppLocalizations.of(context)!.homeChangeBaseMapTitle,
+              focused: true,
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Semantics(
+                        excludeSemantics: true,
+                        child: Text(
+                          AppLocalizations.of(context)!.homeChangeBaseMapTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: SmartRootsColors.maBlueExtraExtraDark,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 24),
-                  Column(
-                    children: [
-                      SelectionTile(
-                        title: getBaseMapStyleTitle(
-                          context,
-                          BaseMapStyle.light,
-                        ),
-                        isSelected: selectedBaseMapStyle == BaseMapStyle.light,
-                        leadingImage: 'assets/base_map_light_thumbnail.png',
-                        onTap: () {
-                          setStateDialog(() {
-                            selectedBaseMapStyle = BaseMapStyle.light;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      SelectionTile(
-                        title: getBaseMapStyleTitle(context, BaseMapStyle.dark),
-                        isSelected: selectedBaseMapStyle == BaseMapStyle.dark,
-                        leadingImage: 'assets/base_map_dark_thumbnail.png',
-                        onTap: () {
-                          setStateDialog(() {
-                            selectedBaseMapStyle = BaseMapStyle.dark;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      SelectionTile(
-                        title: getBaseMapStyleTitle(
-                          context,
-                          BaseMapStyle.satellite,
-                        ),
-                        isSelected:
-                            selectedBaseMapStyle == BaseMapStyle.satellite,
-                        leadingImage: 'assets/base_map_satellite_thumbnail.png',
-                        onTap: () {
-                          setStateDialog(() {
-                            selectedBaseMapStyle = BaseMapStyle.satellite;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SheetButton(
-                          label: AppLocalizations.of(
+                    SizedBox(height: 24),
+                    Column(
+                      children: [
+                        SelectionTile(
+                          title: getBaseMapStyleTitle(
                             context,
-                          )!.placeScreenChangeRadiusCancel,
+                            BaseMapStyle.light,
+                          ),
+                          isSelected:
+                              selectedBaseMapStyle == BaseMapStyle.light,
+                          leadingImage: 'assets/base_map_light_thumbnail.png',
                           onTap: () {
-                            selectedBaseMapStyle = Provider.of<ThemeController>(
-                              context,
-                              listen: false,
-                            ).baseMapStyle;
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: SheetButton(
-                          label: AppLocalizations.of(
-                            context,
-                          )!.placeScreenChangeRadiusConfirm,
-                          onTap: () {
-                            PreferenceHelper.setBaseMapStyle(
-                              selectedBaseMapStyle,
-                            );
-                            setState(() {
-                              Provider.of<ThemeController>(
-                                context,
-                                listen: false,
-                              ).setBaseMapStyle(selectedBaseMapStyle);
-                              Navigator.of(context).pop();
+                            setStateDialog(() {
+                              selectedBaseMapStyle = BaseMapStyle.light;
                             });
-
-                            // Analytics event
-                            MatomoTracker.instance.trackEvent(
-                              eventInfo: EventInfo(
-                                category: EventCategory.homeMapScreen
-                                    .toString(),
-                                action: EventAction.homeMapScreenBaseMapChanged
-                                    .toString(),
-                              ),
-                            );
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        SizedBox(height: 16),
+                        SelectionTile(
+                          title: getBaseMapStyleTitle(
+                            context,
+                            BaseMapStyle.dark,
+                          ),
+                          isSelected: selectedBaseMapStyle == BaseMapStyle.dark,
+                          leadingImage: 'assets/base_map_dark_thumbnail.png',
+                          onTap: () {
+                            setStateDialog(() {
+                              selectedBaseMapStyle = BaseMapStyle.dark;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        SelectionTile(
+                          title: getBaseMapStyleTitle(
+                            context,
+                            BaseMapStyle.satellite,
+                          ),
+                          isSelected:
+                              selectedBaseMapStyle == BaseMapStyle.satellite,
+                          leadingImage:
+                              'assets/base_map_satellite_thumbnail.png',
+                          onTap: () {
+                            setStateDialog(() {
+                              selectedBaseMapStyle = BaseMapStyle.satellite;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SheetButton(
+                            label: AppLocalizations.of(
+                              context,
+                            )!.placeScreenChangeRadiusCancel,
+                            onTap: () {
+                              selectedBaseMapStyle =
+                                  Provider.of<ThemeController>(
+                                    context,
+                                    listen: false,
+                                  ).baseMapStyle;
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: SheetButton(
+                            label: AppLocalizations.of(
+                              context,
+                            )!.placeScreenChangeRadiusConfirm,
+                            onTap: () {
+                              PreferenceHelper.setBaseMapStyle(
+                                selectedBaseMapStyle,
+                              );
+                              setState(() {
+                                Provider.of<ThemeController>(
+                                  context,
+                                  listen: false,
+                                ).setBaseMapStyle(selectedBaseMapStyle);
+                                Navigator.of(context).pop();
+                              });
+
+                              // Analytics event
+                              MatomoTracker.instance.trackEvent(
+                                eventInfo: EventInfo(
+                                  category: EventCategory.homeMapScreen
+                                      .toString(),
+                                  action: EventAction
+                                      .homeMapScreenBaseMapChanged
+                                      .toString(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -373,72 +388,98 @@ class _HomeMapState extends State<HomeMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Consumer<ThemeController>(
-          builder: (context, themeController, _) => MapLibreMap(
-            myLocationEnabled: true,
-            rotateGesturesEnabled: false,
-            styleString:
-                Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
-            onMapCreated: (controller) => _mapController = controller,
-            minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
-            cameraTargetBounds: CameraTargetBounds(
-              LatLngBounds(
-                southwest: LatLng(47.2701, 5.8663),
-                northeast: LatLng(55.0581, 15.0419),
-              ),
-            ),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(49.487164933378104, 8.46624749208),
-              zoom: 13.0,
-            ),
-            onStyleLoadedCallback: _onStyleLoaded,
-            compassViewMargins: const Point(16, 160),
-            compassViewPosition: CompassViewPosition.topRight,
-            attributionButtonPosition: AttributionButtonPosition.bottomRight,
-            attributionButtonMargins: const Point(12, 12),
-            onMapClick: _onMapClicked,
-            trackCameraPosition: true,
-          ),
-        ),
-        // Fill screen with background while map is loading
-        !_canInteractWithMap
-            ? Container(color: Theme.of(context).colorScheme.surface)
-            : SizedBox.shrink(),
-        SafeArea(
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16, bottom: 112),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FloatingActionButton(
-                    shape: CircleBorder(),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    onPressed: () => _onLayersButtonPressed(),
-                    child: Icon(
-                      Icons.layers,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                    ),
+    return Semantics(
+      focused: true,
+      label: AppLocalizations.of(context)!.homeMapScreenSemantic,
+      child: Stack(
+        children: [
+          Consumer<ThemeController>(
+            builder: (context, themeController, _) => Semantics(
+              excludeSemantics: true,
+              child: MapLibreMap(
+                myLocationEnabled: true,
+                rotateGesturesEnabled: false,
+                styleString:
+                    Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
+                onMapCreated: (controller) => _mapController = controller,
+                minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
+                cameraTargetBounds: CameraTargetBounds(
+                  LatLngBounds(
+                    southwest: LatLng(47.2701, 5.8663),
+                    northeast: LatLng(55.0581, 15.0419),
                   ),
-                  SizedBox(height: 16),
-                  FloatingActionButton(
-                    shape: CircleBorder(),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    onPressed: () => _panToUserLocation(),
-                    child: Icon(
-                      Icons.my_location,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                    ),
-                  ),
-                ],
+                ),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(49.487164933378104, 8.46624749208),
+                  zoom: 13.0,
+                ),
+                onStyleLoadedCallback: _onStyleLoaded,
+                compassViewMargins: const Point(16, 160),
+                compassViewPosition: CompassViewPosition.topRight,
+                attributionButtonPosition:
+                    AttributionButtonPosition.bottomRight,
+                attributionButtonMargins: const Point(12, 12),
+                onMapClick: _onMapClicked,
+                trackCameraPosition: true,
               ),
             ),
           ),
-        ),
-      ],
+          // Fill screen with background while map is loading
+          !_canInteractWithMap
+              ? Container(color: Theme.of(context).colorScheme.surface)
+              : SizedBox.shrink(),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16, bottom: 112),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Semantics(
+                      button: true,
+                      excludeSemantics: true,
+                      label: AppLocalizations.of(
+                        context,
+                      )!.homeMapScreenLayersButtonSemantic,
+                      child: FloatingActionButton(
+                        shape: CircleBorder(),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
+                        onPressed: () => _onLayersButtonPressed(),
+                        child: Icon(
+                          Icons.layers,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Semantics(
+                      button: true,
+                      excludeSemantics: true,
+                      label: AppLocalizations.of(
+                        context,
+                      )!.homeMapScreenCurrentLocationButtonSemantic,
+                      child: FloatingActionButton(
+                        shape: CircleBorder(),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
+                        onPressed: () => _panToUserLocation(),
+                        child: Icon(
+                          Icons.my_location,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

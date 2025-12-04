@@ -24,112 +24,119 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                AppLocalizations.of(context)!.settingsTitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: SmartRootsColors.maBlueExtraExtraDark,
+        child: Semantics(
+          focused: true,
+          label: AppLocalizations.of(context)!.homeSettingsScreenSemantic,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 32),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Semantics(
+                  excludeSemantics: true,
+                  child: Text(
+                    AppLocalizations.of(context)!.settingsTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: SmartRootsColors.maBlueExtraExtraDark,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.all(16),
-                shrinkWrap: true,
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.play_circle_outline,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.settingsOptionSetupGuide,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+              SizedBox(height: 16),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(16),
+                  shrinkWrap: true,
+                  children: [
+                    ListTile(
+                      leading: Icon(
+                        Icons.play_circle_outline,
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
-                    ),
-                    onTap: () => Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => OnboardingScreen(),
+                      title: Text(
+                        AppLocalizations.of(context)!.settingsOptionSetupGuide,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      ),
+                      onTap: () => Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => OnboardingScreen(),
+                        ),
                       ),
                     ),
-                  ),
-                  Divider(color: SmartRootsColors.maBlue, height: 0),
-                  ListTile(
-                    leading: Icon(
-                      Icons.feedback_outlined,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.settingsOptionFeedback,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                    Divider(color: SmartRootsColors.maBlue, height: 0),
+                    ListTile(
+                      leading: Icon(
+                        Icons.feedback_outlined,
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
-                    ),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const FeedbackScreen(),
+                      title: Text(
+                        AppLocalizations.of(context)!.settingsOptionFeedback,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const FeedbackScreen(),
+                        ),
                       ),
                     ),
-                  ),
-                  Divider(color: SmartRootsColors.maBlue, height: 0),
-                  ListTile(
-                    leading: Icon(
-                      Icons.support_agent_outlined,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.settingsOptionSupport,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                    Divider(color: SmartRootsColors.maBlue, height: 0),
+                    ListTile(
+                      leading: Icon(
+                        Icons.support_agent_outlined,
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
+                      title: Text(
+                        AppLocalizations.of(context)!.settingsOptionSupport,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      ),
+                      onTap: () => _launchSupport(),
                     ),
-                    onTap: () => _launchSupport(),
-                  ),
-                  Divider(color: SmartRootsColors.maBlue, height: 0),
-                  ListTile(
-                    leading: Icon(
-                      Icons.privacy_tip_outlined,
-                      color: SmartRootsColors.maBlueExtraExtraDark,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.settingsOptionLegalAndPrivacy,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                    Divider(color: SmartRootsColors.maBlue, height: 0),
+                    ListTile(
+                      leading: Icon(
+                        Icons.privacy_tip_outlined,
                         color: SmartRootsColors.maBlueExtraExtraDark,
                       ),
-                    ),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const LegalPrivacyScreen(),
+                      title: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.settingsOptionLegalAndPrivacy,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LegalPrivacyScreen(),
+                        ),
                       ),
                     ),
-                  ),
-                  Divider(color: SmartRootsColors.maBlue, height: 0),
-                ],
+                    Divider(color: SmartRootsColors.maBlue, height: 0),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 96),
-          ],
+              SizedBox(height: 96),
+            ],
+          ),
         ),
       ),
     );

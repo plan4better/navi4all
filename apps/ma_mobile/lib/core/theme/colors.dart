@@ -10,7 +10,7 @@ class SmartRootsColors {
   static const Color maGreen = Color(0xFF089161);
   static const Color maRed = Color(0xFFF4B1A4);
 
-  static const Color maSurfaceLight = Color(0xFFFFFFFF);
+  static const Color maSurfaceLight = Color(0xFFFAFAFA);
   static const Color maSurfaceDark = Color(0xFF1F262C);
 
   static const Color maSecondaryLight = Color(0xFFFFFFFF);

@@ -10,6 +10,7 @@ import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/core/theme/values.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/routing/coordinates.dart';
+import 'package:smartroots/view/common/accessible_icon_button.dart';
 import 'package:smartroots/view/place/place.dart';
 import 'package:smartroots/view/routing/map.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
@@ -105,6 +106,7 @@ class RoutingState extends State<RoutingScreen> {
   void _showAvailabilityChangeDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setStateDialog) => Dialog(
@@ -686,8 +688,7 @@ class RoutingState extends State<RoutingScreen> {
                           children: [
                             Row(
                               children: [
-                                Flexible(
-                                  flex: 3,
+                                Expanded(
                                   child: SheetButton(
                                     icon:
                                         _navigationStatus ==
@@ -719,30 +720,51 @@ class RoutingState extends State<RoutingScreen> {
                                         : AppLocalizations.of(
                                             context,
                                           )!.routingScreenNavigationResumeButton,
+                                    semanticLabel:
+                                        _navigationStatus ==
+                                            NavigationStatus.idle
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationStartButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.navigating
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationPauseButton
+                                        : _navigationStatus ==
+                                              NavigationStatus.arrived
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationDoneButton
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.routingScreenNavigationResumeButton,
                                     onTap: () => _toggleNavigationState(),
                                     shrinkWrap: false,
                                   ),
                                 ),
                                 SizedBox(width: 8),
-                                Flexible(
-                                  flex: 1,
-                                  child: SheetButton(
-                                    icon: _audioStatus == AudioStatus.muted
-                                        ? Icons.volume_off
-                                        : Icons.volume_up,
-                                    onTap: () => _toggleAudioState(),
-                                    shrinkWrap: false,
-                                  ),
+                                AccessibleIconButton(
+                                  icon: _audioStatus == AudioStatus.muted
+                                      ? Icons.volume_off
+                                      : Icons.volume_up,
+                                  semanticLabel:
+                                      _audioStatus == AudioStatus.muted
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.routeNavigationMuteButtonUnmuteText
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.routeNavigationMuteButtonMuteText,
+                                  onTap: _toggleAudioState,
                                 ),
                                 SizedBox(width: 8),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    size: 28,
-                                    color:
-                                        SmartRootsColors.maBlueExtraExtraDark,
-                                  ),
-                                  onPressed: () {
+                                AccessibleIconButton(
+                                  icon: Icons.close,
+                                  semanticLabel: AppLocalizations.of(
+                                    context,
+                                  )!.routingScreenExitRoutingButtonSemantic,
+                                  onTap: () {
                                     _positionStream?.drain();
                                     _positionStreamSubscription?.cancel();
                                     _positionStream = null;
@@ -825,151 +847,184 @@ class RoutingState extends State<RoutingScreen> {
               alignment: Alignment.topCenter,
               child: Padding(
                 padding: const EdgeInsets.only(top: 32, left: 16, right: 16),
-                child: Material(
-                  elevation: 4,
-                  borderRadius: BorderRadius.circular(28),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _navigationStatus != NavigationStatus.navigating
-                          ? InkWell(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(28),
-                                topRight: Radius.circular(28),
-                              ),
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SearchScreen(
-                                              isSecondarySearch: true,
-                                              isOriginPlaceSearch: true,
-                                            ),
-                                      ),
-                                    )
-                                    .then((result) {
-                                      if (result is Place) {
-                                        setState(() {
-                                          _origin = result;
-                                          _navigationStatus =
-                                              NavigationStatus.idle;
-                                        });
-                                        _fetchItineraries();
-                                      }
-                                    });
-                              },
-                              child: Container(
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Semantics(
+                      label: AppLocalizations.of(context)!
+                          .origDestPickerOriginSemantic(
+                            _origin.id == SmartRootsValues.userLocation
+                                ? AppLocalizations.of(
                                     context,
-                                  ).colorScheme.secondary,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(28),
-                                    topRight: Radius.circular(28),
-                                  ),
+                                  )!.origDestCurrentLocation
+                                : _origin.name,
+                          ),
+                      excludeSemantics: true,
+                      button: true,
+                      focused: true,
+                      child: _navigationStatus != NavigationStatus.navigating
+                          ? Material(
+                              elevation: 4,
+                              borderRadius: BorderRadius.circular(16),
+                              child: InkWell(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
                                 ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 16),
-                                    Icon(
-                                      Icons.place_outlined,
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                    ),
-                                    SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        _origin.id ==
-                                                SmartRootsValues.userLocation
-                                            ? AppLocalizations.of(
-                                                context,
-                                              )!.origDestCurrentLocation
-                                            : _origin.name,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: SmartRootsColors
-                                              .maBlueExtraExtraDark,
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SearchScreen(
+                                                isSecondarySearch: true,
+                                                isOriginPlaceSearch: true,
+                                              ),
                                         ),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      ),
+                                      )
+                                      .then((result) {
+                                        if (result is Place) {
+                                          setState(() {
+                                            _origin = result;
+                                            _navigationStatus =
+                                                NavigationStatus.idle;
+                                          });
+                                          _fetchItineraries();
+                                        }
+                                      });
+                                },
+                                child: Container(
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.secondary,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(28),
+                                      topRight: Radius.circular(28),
                                     ),
-                                    SizedBox(width: 16),
-                                  ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 16),
+                                      Icon(
+                                        Icons.place_outlined,
+                                        color: SmartRootsColors
+                                            .maBlueExtraExtraDark,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          _origin.id ==
+                                                  SmartRootsValues.userLocation
+                                              ? AppLocalizations.of(
+                                                  context,
+                                                )!.origDestCurrentLocation
+                                              : _origin.name,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: SmartRootsColors
+                                                .maBlueExtraExtraDark,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                      SizedBox(width: 16),
+                                    ],
+                                  ),
                                 ),
                               ),
                             )
                           : SizedBox.shrink(),
-                      _navigationStatus != NavigationStatus.navigating
-                          ? Divider(height: 0, color: SmartRootsColors.maBlue)
-                          : SizedBox.shrink(),
-                      Container(
-                        height: 56,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft:
-                                _navigationStatus != NavigationStatus.navigating
-                                ? Radius.circular(0)
-                                : Radius.circular(28),
-                            topRight:
-                                _navigationStatus != NavigationStatus.navigating
-                                ? Radius.circular(0)
-                                : Radius.circular(28),
-                            bottomLeft: Radius.circular(28),
-                            bottomRight: Radius.circular(28),
+                    ),
+                    _navigationStatus != NavigationStatus.navigating
+                        ? Divider(height: 0, color: SmartRootsColors.maBlue)
+                        : SizedBox.shrink(),
+                    Semantics(
+                      label: AppLocalizations.of(context)!
+                          .origDestPickerDestinationSemantic(
+                            _destination.id == SmartRootsValues.userLocation
+                                ? AppLocalizations.of(
+                                    context,
+                                  )!.origDestCurrentLocation
+                                : _destination.name,
                           ),
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 16),
-                            Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color:
-                                    (_parkingLocation
-                                        .attributes?['has_realtime_data'])
-                                    ? (_parkingLocation
-                                              .attributes?['disabled_parking_available'])
-                                          ? SmartRootsColors.maGreen
-                                          : SmartRootsColors.maRed
-                                    : SmartRootsColors.maBlueExtraDark,
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.local_parking,
-                                    size: 16,
-                                    color: SmartRootsColors.maWhite,
-                                  ),
-                                ],
-                              ),
+                      excludeSemantics: true,
+                      button: false,
+                      child: Material(
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  _navigationStatus !=
+                                      NavigationStatus.navigating
+                                  ? Radius.circular(0)
+                                  : Radius.circular(16),
+                              topRight:
+                                  _navigationStatus !=
+                                      NavigationStatus.navigating
+                                  ? Radius.circular(0)
+                                  : Radius.circular(16),
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16),
                             ),
-                            SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                _destination.id == SmartRootsValues.userLocation
-                                    ? AppLocalizations.of(
-                                        context,
-                                      )!.origDestCurrentLocation
-                                    : _destination.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: SmartRootsColors.maBlueExtraExtraDark,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(width: 16),
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color:
+                                      (_parkingLocation
+                                          .attributes?['has_realtime_data'])
+                                      ? (_parkingLocation
+                                                .attributes?['disabled_parking_available'])
+                                            ? SmartRootsColors.maGreen
+                                            : SmartRootsColors.maRed
+                                      : SmartRootsColors.maBlueExtraDark,
+                                  borderRadius: BorderRadius.circular(32),
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.local_parking,
+                                      size: 16,
+                                      color: SmartRootsColors.maWhite,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 16),
-                          ],
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _destination.id ==
+                                          SmartRootsValues.userLocation
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.origDestCurrentLocation
+                                      : _destination.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        SmartRootsColors.maBlueExtraExtraDark,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                            ],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1019,62 +1074,67 @@ class ItineraryLegStepTile extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-    color: isActive
-        ? Theme.of(context).colorScheme.tertiary
-        : Theme.of(context).colorScheme.surface,
-    child: Row(
-      children: [
-        Icon(
-          getRelativeDirectionIconMapping(step.relativeDirection),
-          color: SmartRootsColors.maBlue,
-          size: 32,
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                getRelativeDirectionTextMapping(
-                  step.relativeDirection,
-                  context,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: SmartRootsColors.maBlueExtraExtraDark,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              _streetName != null
-                  ? Text(
-                      _streetName!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                      ),
-                    )
-                  : SizedBox.shrink(),
-              _distance(context) != null
-                  ? Text(
-                      _distance(context)!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                      ),
-                    )
-                  : SizedBox.shrink(),
-            ],
+  Widget build(BuildContext context) => Semantics(
+    excludeSemantics: true,
+    label:
+        '${_distance(context) != null ? '${_distance(context)!}, ' : ''}${_streetName != null ? '${_streetName!}, ' : ''}${getRelativeDirectionTextMapping(step.relativeDirection, context)}',
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+      color: isActive
+          ? Theme.of(context).colorScheme.tertiary
+          : Theme.of(context).colorScheme.surface,
+      child: Row(
+        children: [
+          Icon(
+            getRelativeDirectionIconMapping(step.relativeDirection),
+            color: SmartRootsColors.maBlue,
+            size: 32,
           ),
-        ),
-      ],
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  getRelativeDirectionTextMapping(
+                    step.relativeDirection,
+                    context,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: SmartRootsColors.maBlueExtraExtraDark,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                _streetName != null
+                    ? Text(
+                        _streetName!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                _distance(context) != null
+                    ? Text(
+                        _distance(context)!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
+                      )
+                    : SizedBox.shrink(),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

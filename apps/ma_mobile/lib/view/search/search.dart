@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/autocomplete_controller.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
@@ -93,26 +94,37 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                        semanticLabel: AppLocalizations.of(
-                          context,
-                        )!.commonBackButtonSemantic,
+                    Semantics(
+                      sortKey: OrdinalSortKey(1),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                          semanticLabel: AppLocalizations.of(
+                            context,
+                          )!.commonBackButtonSemantic,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
                     ),
                     Expanded(
                       child: Semantics(
-                        label: widget.isOriginPlaceSearch
-                            ? AppLocalizations.of(
-                                context,
-                              )!.searchTextFieldOriginHintSemantic
+                        label: autocompleteController.searchQuery.isEmpty
+                            ? widget.isOriginPlaceSearch
+                                  ? AppLocalizations.of(
+                                      context,
+                                    )!.searchTextFieldOriginHintSemantic
+                                  : AppLocalizations.of(
+                                      context,
+                                    )!.searchTextFieldDestinationHintSemantic
                             : AppLocalizations.of(
                                 context,
-                              )!.searchTextFieldDestinationHintSemantic,
+                              )!.searchScreenSearchFieldSemantic(
+                                autocompleteController.searchQuery,
+                              ),
                         excludeSemantics: true,
+                        sortKey: OrdinalSortKey(0),
+                        focused: true,
                         child: TextField(
                           controller: _controller,
                           focusNode: _focusNode,
@@ -270,12 +282,13 @@ class _SearchSuggestion extends StatelessWidget {
       child: InkWell(
         onTap: () => onTap(),
         child: Semantics(
-          focusable: true,
-          focused: true,
-          label: AppLocalizations.of(context)!.searchResultSemantic(
-            place.name,
-            place.locality != null ? "in ${place.locality}" : "",
-          ),
+          label: !isRecentSearch
+              ? AppLocalizations.of(
+                  context,
+                )!.searchResultSemantic(place.name, place.locality ?? '')
+              : AppLocalizations.of(
+                  context,
+                )!.searchScreenRecentSearchItemSemantic(place.name),
           excludeSemantics: true,
           child: Container(
             padding: const EdgeInsets.all(16),

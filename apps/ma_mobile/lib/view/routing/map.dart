@@ -328,35 +328,37 @@ class _RoutingMapState extends State<RoutingMap> {
     return Stack(
       children: [
         Consumer<ThemeController>(
-          builder: (context, themeController, child) => MapLibreMap(
-            annotationOrder: [
-              AnnotationType.line,
-              AnnotationType.circle,
-              AnnotationType.symbol,
-            ],
-            myLocationEnabled:
-                _snappedPointIndex == null ||
-                widget.navigationStatus != NavigationStatus.navigating,
-            styleString:
-                Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
-            onMapCreated: (controller) => _mapController = controller,
-            minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
-            cameraTargetBounds: CameraTargetBounds(
-              LatLngBounds(
-                southwest: LatLng(47.2701, 5.8663),
-                northeast: LatLng(55.0581, 15.0419),
+          builder: (context, themeController, child) => ExcludeSemantics(
+            child: MapLibreMap(
+              annotationOrder: [
+                AnnotationType.line,
+                AnnotationType.circle,
+                AnnotationType.symbol,
+              ],
+              myLocationEnabled:
+                  _snappedPointIndex == null ||
+                  widget.navigationStatus != NavigationStatus.navigating,
+              styleString:
+                  Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
+              onMapCreated: (controller) => _mapController = controller,
+              minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
+              cameraTargetBounds: CameraTargetBounds(
+                LatLngBounds(
+                  southwest: LatLng(47.2701, 5.8663),
+                  northeast: LatLng(55.0581, 15.0419),
+                ),
               ),
-            ),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
-                widget.parkingLocation.coordinates.lat - 0.002,
-                widget.parkingLocation.coordinates.lon,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                  widget.parkingLocation.coordinates.lat - 0.002,
+                  widget.parkingLocation.coordinates.lon,
+                ),
+                zoom: 14,
               ),
-              zoom: 14,
+              onStyleLoadedCallback: _onStyleLoaded,
+              compassViewMargins: const Point(16, 192),
+              compassViewPosition: CompassViewPosition.topRight,
             ),
-            onStyleLoadedCallback: _onStyleLoaded,
-            compassViewMargins: const Point(16, 192),
-            compassViewPosition: CompassViewPosition.topRight,
           ),
         ),
         // Fill screen with background while map is loading

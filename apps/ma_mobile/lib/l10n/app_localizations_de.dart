@@ -99,6 +99,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get searchTextFieldHint => 'Hier suchen';
 
   @override
+  String get searchTextFieldHintSemantic => 'Suchen Sie nach einem Zielort.';
+
+  @override
   String get searchTextFieldOriginHintSemantic => 'Textfeld für die Eingabe. Tippen Sie, um einen Startort zu suchen.';
 
   @override
@@ -146,7 +149,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String origDestPickerDestinationSemantic(String destination) {
-    return 'Zielort: $destination. Tippen Sie, um zu ändern.';
+    return 'Zielort: $destination.';
   }
 
   @override
@@ -220,11 +223,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get errorUnableToFetchItineraries => 'Routen konnten nicht abgerufen werden.';
 
   @override
-  String get errorNoItinerariesFound => 'Keine Routen für den ausgewählten Start- und Zielort gefunden.';
-
-  @override
   String searchResultSemantic(String name, String locality) {
-    return 'Suchergebnis: $name, $locality.';
+    return 'Ergebnis: $name, $locality.';
   }
 
   @override
@@ -458,4 +458,92 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get searchScreenErrorNoSuggestions => 'Keine Ergebnisse gefunden. Versuchen Sie, nach anderen Orten, Adressen oder Verkehrsstationen zu suchen.';
+
+  @override
+  String get homeMapScreenSemantic => 'Kartenbildschirm.';
+
+  @override
+  String get homeMapScreenLayersButtonSemantic => 'Kartenstil ändern.';
+
+  @override
+  String get homeMapScreenCurrentLocationButtonSemantic => 'Gehe zum aktuellen Standort.';
+
+  @override
+  String get homeFavoritesScreenSemantic => 'Favoritenbildschirm.';
+
+  @override
+  String favoritesScreenSemantic(int count) {
+    return 'Favoritenbildschirm. Mit $count Favoriten.';
+  }
+
+  @override
+  String favoritesListItemSemantic(String name, String description, String status) {
+    return '$name, $description. Status: $status.';
+  }
+
+  @override
+  String get homeSettingsScreenSemantic => 'Einstellungsbildschirm.';
+
+  @override
+  String searchScreenSearchFieldSemantic(String input) {
+    return 'Suchfeld. Eingabe: $input.';
+  }
+
+  @override
+  String searchScreenRecentSearchItemSemantic(String name) {
+    return 'Letzte Suche: $name.';
+  }
+
+  @override
+  String placeScreenSemantic(int count, int radius) {
+    return '$count Parkplätze gefunden innerhalb von $radius Metern.';
+  }
+
+  @override
+  String placeScreenSearchBarSemantic(String name) {
+    return '$name ausgewählt. Tippen Sie, um zurückzugehen.';
+  }
+
+  @override
+  String placeScreenSearchRadiusButtonSemantic(int radius) {
+    return 'Suchbereich anpassen. Aktuell: $radius Metern.';
+  }
+
+  @override
+  String placeListItemSemantic(String name, String status) {
+    return '$name. $status.';
+  }
+
+  @override
+  String parkingLocationScreenSearchBarSemantic(String name) {
+    return '$name selected. Tap to go back.';
+  }
+
+  @override
+  String get parkingLocationScreenAddToFavoritesButtonSemantic => 'Zu Favoriten hinzufügen.';
+
+  @override
+  String get parkingLocationScreenRemoveFromFavoritesButtonSemantic => 'Aus Favoriten entfernen.';
+
+  @override
+  String get parkingLocationScreenRouteExternalButtonSemantic => 'Route mit externer Navigations-App.';
+
+  @override
+  String get parkingLocationScreenRouteInternalButtonSemantic => 'Route mit ParkStark-App.';
+
+  @override
+  String parkingLocationScreenEstimatedDrivingTimeSemantic(String time) {
+    return 'Fahrzeit mit dem Auto: $time.';
+  }
+
+  @override
+  String parkingLocationScreenOccupancyStatusSemantic(String status) {
+    return 'Belegungsstatus: $status.';
+  }
+
+  @override
+  String get routingScreenSemantic => 'Navigationsbildschirm.';
+
+  @override
+  String get routingScreenExitRoutingButtonSemantic => 'Navigation beenden.';
 }

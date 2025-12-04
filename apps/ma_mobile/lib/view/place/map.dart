@@ -128,33 +128,36 @@ class _PlaceMapState extends State<PlaceMap> {
     return Stack(
       children: [
         Consumer<ThemeController>(
-          builder: (context, themeController, child) => MapLibreMap(
-            annotationOrder: [
-              AnnotationType.fill,
-              AnnotationType.circle,
-              AnnotationType.symbol,
-            ],
-            myLocationEnabled: true,
-            styleString:
-                Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
-            onMapCreated: (controller) => _mapController = controller,
-            minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
-            cameraTargetBounds: CameraTargetBounds(
-              LatLngBounds(
-                southwest: LatLng(47.2701, 5.8663),
-                northeast: LatLng(55.0581, 15.0419),
+          builder: (context, themeController, child) => Semantics(
+            excludeSemantics: true,
+            child: MapLibreMap(
+              annotationOrder: [
+                AnnotationType.fill,
+                AnnotationType.circle,
+                AnnotationType.symbol,
+              ],
+              myLocationEnabled: true,
+              styleString:
+                  Settings.baseMapStyleUrls[themeController.baseMapStyle]!,
+              onMapCreated: (controller) => _mapController = controller,
+              minMaxZoomPreference: MinMaxZoomPreference(5.0, null),
+              cameraTargetBounds: CameraTargetBounds(
+                LatLngBounds(
+                  southwest: LatLng(47.2701, 5.8663),
+                  northeast: LatLng(55.0581, 15.0419),
+                ),
               ),
-            ),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
-                widget.place.coordinates.lat - 0.003,
-                widget.place.coordinates.lon,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                  widget.place.coordinates.lat - 0.003,
+                  widget.place.coordinates.lon,
+                ),
+                zoom: 14,
               ),
-              zoom: 14,
+              onStyleLoadedCallback: _onStyleLoaded,
+              compassViewMargins: const Point(16, 160),
+              compassViewPosition: CompassViewPosition.topRight,
             ),
-            onStyleLoadedCallback: _onStyleLoaded,
-            compassViewMargins: const Point(16, 160),
-            compassViewPosition: CompassViewPosition.topRight,
           ),
         ),
         // Fill screen with background while map is loading
