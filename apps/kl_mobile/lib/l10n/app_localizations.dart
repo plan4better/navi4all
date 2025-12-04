@@ -473,12 +473,6 @@ abstract class AppLocalizations {
   /// **'Unable to fetch itineraries.'**
   String get errorUnableToFetchItineraries;
 
-  /// No description provided for @errorNoItinerariesFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No itineraries found for the selected origin and destination.'**
-  String get errorNoItinerariesFound;
-
   /// No description provided for @searchResultSemantic.
   ///
   /// In en, this message translates to:

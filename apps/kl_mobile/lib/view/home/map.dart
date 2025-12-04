@@ -10,7 +10,6 @@ import 'package:navi4all/controllers/theme_controller.dart';
 import 'package:navi4all/core/config.dart';
 import 'package:navi4all/core/persistence/preference_helper.dart';
 import 'package:navi4all/core/theme/base_map_style.dart';
-import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/view/common/selection_tile.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
@@ -26,7 +25,7 @@ class HomeMap extends StatefulWidget {
 class _HomeMapState extends State<HomeMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
-  List<Map<String, dynamic>> _parkingSites = [];
+  final List<Map<String, dynamic>> _parkingSites = [];
   final Map<String, Map<String, dynamic>> _symbolIdToSite = {};
 
   Future<void> _panToUserLocation() async {

@@ -220,9 +220,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get errorUnableToFetchItineraries => 'Routen konnten nicht abgerufen werden.';
 
   @override
-  String get errorNoItinerariesFound => 'Keine Routen für den ausgewählten Start- und Zielort gefunden.';
-
-  @override
   String searchResultSemantic(String name, String locality) {
     return 'Ergebnis: $name, $locality.';
   }

@@ -177,7 +177,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(32.0),
                 color: Theme.of(context).colorScheme.tertiary,
-                border: Border.all(color: Navi4AllColors.klPink, width: 2.0),
+                border: Border.all(color: Navi4AllColors.klPink, width: 1.5),
               ),
               tabs: [
                 Tab(

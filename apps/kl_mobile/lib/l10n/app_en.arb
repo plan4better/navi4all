@@ -164,7 +164,6 @@
     "routeNavigationPauseButtonResumeText": "Resume",
     "routeNavigationStopButton": "Stop",
     "errorUnableToFetchItineraries": "Unable to fetch itineraries.",
-    "errorNoItinerariesFound": "No itineraries found for the selected origin and destination.",
     "searchResultSemantic": "Result: {name}, {locality}.",
     "@searchResultSemantic": {
         "placeholders": {

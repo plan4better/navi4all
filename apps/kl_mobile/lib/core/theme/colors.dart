@@ -17,5 +17,5 @@ class Navi4AllColors {
   static const Color maSecondaryDark = Color(0xFF1A2127);
 
   static const Color maTertiaryLight = Color(0xFFFFEDEB);
-  static const Color maTertiaryDark = Color(0xFF1A2127);
+  static const Color maTertiaryDark = Color(0xFF3A444C);
 }

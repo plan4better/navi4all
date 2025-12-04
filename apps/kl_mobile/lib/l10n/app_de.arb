@@ -164,7 +164,6 @@
     "routeNavigationPauseButtonResumeText": "Fortsetzen",
     "routeNavigationStopButton": "Ende",
     "errorUnableToFetchItineraries": "Routen konnten nicht abgerufen werden.",
-    "errorNoItinerariesFound": "Keine Routen für den ausgewählten Start- und Zielort gefunden.",
     "searchResultSemantic": "Ergebnis: {name}, {locality}.",
     "@searchResultSemantic": {
         "placeholders": {

@@ -116,13 +116,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
                 child: Material(
                   elevation: _pageIndex == 0 ? 4 : 0,
-                  borderRadius: BorderRadius.circular(32),
+                  borderRadius: BorderRadius.circular(64),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(32)),
+                      borderRadius: BorderRadius.all(Radius.circular(64)),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(32)),
+                      borderRadius: BorderRadius.all(Radius.circular(64)),
                       child: NavigationBar(
                         labelTextStyle:
                             WidgetStateProperty.resolveWith<TextStyle>((

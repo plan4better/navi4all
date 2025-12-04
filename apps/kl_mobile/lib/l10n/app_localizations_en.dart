@@ -220,9 +220,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorUnableToFetchItineraries => 'Unable to fetch itineraries.';
 
   @override
-  String get errorNoItinerariesFound => 'No itineraries found for the selected origin and destination.';
-
-  @override
   String searchResultSemantic(String name, String locality) {
     return 'Result: $name, $locality.';
   }

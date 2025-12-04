@@ -1,20 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:navi4all/view/common/accessible_icon_button.dart';
 // import 'package:matomo_tracker/matomo_tracker.dart';
-import 'package:provider/provider.dart';
 // import 'package:navi4all/core/analytics/events.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
 import 'package:navi4all/schemas/routing/coordinates.dart';
-import 'package:navi4all/view/place/place.dart';
 import 'package:navi4all/view/routing/map.dart';
 import 'package:navi4all/view/common/sliding_bottom_sheet.dart';
 import 'package:navi4all/view/common/sheet_button.dart';
-import 'package:navi4all/view/search/search.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/core/processing_status.dart';
 import 'package:navi4all/services/routing.dart';

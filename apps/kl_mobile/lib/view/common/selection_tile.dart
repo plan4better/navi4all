@@ -27,7 +27,9 @@ class SelectionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isSelected ? Navi4AllColors.klLightRed : Colors.transparent,
+      color: isSelected
+          ? Theme.of(context).colorScheme.tertiary
+          : Colors.transparent,
       borderRadius: BorderRadius.circular(32.0),
       child: Semantics(
         selected: isSelected,
@@ -38,7 +40,7 @@ class SelectionTile extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32.0),
-              border: Border.all(color: Navi4AllColors.klPink, width: 1.0),
+              border: Border.all(color: Navi4AllColors.klPink, width: 1.5),
             ),
             child: Row(
               children: [

@@ -877,7 +877,7 @@ class ItineraryLegStepTile extends StatelessWidget {
     child: Semantics(
       excludeSemantics: true,
       label:
-          '${_distance(context) != null ? _distance(context)! + ', ' : ''}${_streetName != null ? _streetName! + ', ' : ''}${getRelativeDirectionTextMapping(step.relativeDirection, context)}',
+          '${_distance(context) != null ? '${_distance(context)!}, ' : ''}${_streetName != null ? '${_streetName!}, ' : ''}${getRelativeDirectionTextMapping(step.relativeDirection, context)}',
       child: Row(
         children: [
           Icon(
