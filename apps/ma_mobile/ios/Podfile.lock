@@ -7,10 +7,10 @@ PODS:
   - geolocator_apple (1.2.0):
     - Flutter
     - FlutterMacOS
-  - MapLibre (6.14.0)
-  - maplibre_gl (0.0.1):
+  - MapLibre (6.19.1)
+  - maplibre_gl (0.24.1):
     - Flutter
-    - MapLibre (= 6.14.0)
+    - MapLibre (= 6.19.1)
   - maps_launcher (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
@@ -67,14 +67,14 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_tts: b88dbc8655d3dc961bc4a796e4e16a4cc1795833
   geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
-  MapLibre: 69e572367f4ef6287e18246cfafc39c80cdcabcd
-  maplibre_gl: 3c924e44725147b03dda33430ad216005b40555f
+  MapLibre: 7f24faba45439f80ccb0f83393c29fa32cb81952
+  maplibre_gl: d83126f1b19adee5e1071c453b421efd5fc99883
   maps_launcher: edf829809ba9e894d70e569bab11c16352dedb45
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
-PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
+PODFILE CHECKSUM: ae9e65fc23486119b8e977fd41d9213f251e537a
 
 COCOAPODS: 1.16.2
