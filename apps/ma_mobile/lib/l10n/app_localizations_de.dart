@@ -378,7 +378,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navigationRelativeDirectionSlightlyLeft => 'Leicht links';
 
   @override
-  String get navigationRelativeDirectionContinue => 'Weiter';
+  String get navigationRelativeDirectionContinue => 'Weiter geradeaus';
 
   @override
   String get navigationRelativeDirectionSlightlyRight => 'Leicht rechts';

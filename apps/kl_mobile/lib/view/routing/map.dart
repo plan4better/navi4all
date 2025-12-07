@@ -342,10 +342,12 @@ class _RoutingMapState extends State<RoutingMap> {
       maps_toolkit.LatLng snappedPoint = _journeyPoints[positionIndex];
       maps_toolkit.LatLng nextPoint = _journeyPoints[positionIndex + 1];
 
+      // Compute bearing, then normalise between 0-360 degrees
       num bearing = maps_toolkit.SphericalUtil.computeHeading(
         snappedPoint,
         nextPoint,
       );
+      bearing = (bearing + 360) % 360;
 
       // Adjust camera to focus on user position with bearing
       _mapController.animateCamera(
