@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/autocomplete_controller.dart';
 import 'package:smartroots/controllers/availability_controller.dart';
 import 'package:smartroots/controllers/favorites_controller.dart';
+import 'package:smartroots/controllers/routing_controller.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
 import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/theme/colors.dart';
@@ -20,7 +21,7 @@ void main() {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) => runApp(const SmartRootsApp()));
+  ]).then((_) => runApp(SmartRootsApp()));
 
   // Initialize Matomo analytics
   MatomoTracker.instance.initialize(
@@ -31,7 +32,9 @@ void main() {
 }
 
 class SmartRootsApp extends StatelessWidget {
-  const SmartRootsApp({super.key});
+  final RoutingController _routingController = RoutingController();
+
+  SmartRootsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,13 @@ class SmartRootsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => FavoritesController(context)),
         ChangeNotifierProvider(create: (_) => AvailabilityController()),
         ChangeNotifierProvider(create: (_) => AutocompleteController()),
+        ChangeNotifierProvider(create: (_) => _routingController),
+        ChangeNotifierProvider(
+          create: (_) => CurrentPositionController(_routingController),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ActionTrailController(_routingController),
+        ),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(
