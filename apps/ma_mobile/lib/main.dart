@@ -32,9 +32,25 @@ void main() {
 }
 
 class SmartRootsApp extends StatelessWidget {
-  final RoutingController _routingController = RoutingController();
+  late RoutingController _routingController;
+  late CurrentPositionController _currentPositionController;
+  late ActionTrailController _actionTrailController;
+  late NavigationStatsController _navigationStatsController;
+  late NavigationInstructionsController _navigationInstructionsController;
+  late NavigationAudioController _navigationAudioController;
 
-  SmartRootsApp({super.key});
+  SmartRootsApp({super.key}) {
+    _routingController = RoutingController();
+    _currentPositionController = CurrentPositionController(_routingController);
+    _actionTrailController = ActionTrailController(_routingController);
+    _navigationStatsController = NavigationStatsController(_routingController);
+    _navigationInstructionsController = NavigationInstructionsController(
+      _routingController,
+    );
+    _navigationAudioController = NavigationAudioController(
+      _navigationInstructionsController,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +61,13 @@ class SmartRootsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AvailabilityController()),
         ChangeNotifierProvider(create: (_) => AutocompleteController()),
         ChangeNotifierProvider(create: (_) => _routingController),
+        ChangeNotifierProvider(create: (_) => _currentPositionController),
+        ChangeNotifierProvider(create: (_) => _actionTrailController),
+        ChangeNotifierProvider(create: (_) => _navigationStatsController),
         ChangeNotifierProvider(
-          create: (_) => CurrentPositionController(_routingController),
+          create: (_) => _navigationInstructionsController,
         ),
-        ChangeNotifierProvider(
-          create: (_) => ActionTrailController(_routingController),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => NavigationStatsController(_routingController),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => NavigationInstructionsController(_routingController),
-        ),
+        ChangeNotifierProvider(create: (_) => _navigationAudioController),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(

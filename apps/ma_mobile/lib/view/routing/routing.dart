@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -40,6 +39,7 @@ class RoutingScreen extends StatefulWidget {
 class RoutingState extends State<RoutingScreen> {
   late Place _parkingLocation;
   late NavigationInstructionsController _navigationInstructionsController;
+  late NavigationAudioController _navigationAudioController;
   bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
@@ -57,8 +57,11 @@ class RoutingState extends State<RoutingScreen> {
     _navigationInstructionsController =
         Provider.of<NavigationInstructionsController>(context, listen: false);
     _navigationInstructionsController.addListener(_buildLegTiles);
-
-    // flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
+    _navigationAudioController = Provider.of<NavigationAudioController>(
+      context,
+      listen: false,
+    );
+    _navigationAudioController.addListener(_triggerNavigationAudio);
 
     // Initialise origin and destination places
     _origin = Place(
@@ -373,6 +376,7 @@ class RoutingState extends State<RoutingScreen> {
 
     // Delay allows map to initialize
     await Future.delayed(Duration(milliseconds: 250));
+    flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
 
     if (_origin.id == SmartRootsValues.userLocation ||
         _destination.id == SmartRootsValues.userLocation) {
@@ -564,9 +568,36 @@ class RoutingState extends State<RoutingScreen> {
     });
   }
 
+  Future<void> _triggerNavigationAudio() async {
+    // Make text-to-speech announcement for new active step
+    if (_navigationAudioController.audioStatus == AudioStatus.unmuted) {
+      String stepAnnouncement = "";
+      if (_navigationAudioController.instructionStep!.distance >= 1000) {
+        stepAnnouncement += AppLocalizations.of(context)!
+            .navigationStepDistanceToActionKilometres(
+              TextFormatter.formatKilometersDistanceFromMeters(
+                _navigationAudioController.instructionStep!.distance,
+              ).toString(),
+            );
+      } else {
+        stepAnnouncement += AppLocalizations.of(context)!
+            .navigationStepDistanceToActionMetres(
+              TextFormatter.formatMetersDistanceFromMeters(
+                _navigationAudioController.instructionStep!.distance,
+              ).toString(),
+            );
+      }
+      stepAnnouncement +=
+          ". ${getRelativeDirectionTextMapping(_navigationAudioController.instructionStep!.relativeDirection, context)}";
+
+      flutterTts.speak(stepAnnouncement);
+    }
+  }
+
   @override
   void dispose() {
     _navigationInstructionsController.removeListener(_buildLegTiles);
+    _navigationAudioController.removeListener(_triggerNavigationAudio);
     super.dispose();
   }
 

@@ -194,7 +194,7 @@ class _RoutingMapState extends State<RoutingMap> {
         LineOptions(
           geometry: lineCoordinates,
           lineColor: "#0078D7",
-          lineWidth: 6.0,
+          lineWidth: 8.0,
           lineOpacity: 0.8,
           lineJoin: "round",
           linePattern: legModeCoordinates.key == Mode.WALK

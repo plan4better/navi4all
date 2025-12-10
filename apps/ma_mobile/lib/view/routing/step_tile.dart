@@ -14,7 +14,7 @@ class StepTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),
         color: step == activeStep
@@ -23,6 +23,7 @@ class StepTile extends StatelessWidget {
       ),
       child: Column(
         children: [
+          SizedBox(height: 16),
           Row(
             children: [
               Icon(
@@ -76,7 +77,7 @@ class StepTile extends StatelessWidget {
               ),
             ],
           ),
-          step != activeStep ? SizedBox(height: 16) : SizedBox.shrink(),
+          SizedBox(height: 16),
           step != activeStep
               ? Divider(color: SmartRootsColors.maBlue, height: 0.0)
               : SizedBox.shrink(),

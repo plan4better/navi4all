@@ -3,7 +3,9 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/processing_status.dart';
+import 'package:smartroots/schemas/routing/audio_stage.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
 import 'package:smartroots/schemas/routing/mode.dart';
@@ -652,6 +654,14 @@ class NavigationStatsController extends ChangeNotifier {
 class NavigationInstructionsController extends ChangeNotifier {
   late RoutingController _routingController;
 
+  NavigationStatus? _navigationStatus;
+  NavigationStatus? get navigationStatus => _navigationStatus;
+
+  AudioStatus? _audioStatus;
+  AudioStatus? get audioStatus => _audioStatus;
+
+  Position? _currentPosition;
+
   leg_schema.LegDetailed? _instructionLeg;
   leg_schema.LegDetailed? get instructionLeg => _instructionLeg;
   leg_schema.Step? _instructionStep;
@@ -671,6 +681,9 @@ class NavigationInstructionsController extends ChangeNotifier {
 
   void _refreshNavigationInstructionsControllerState() {
     // Fetch navigation state
+    _navigationStatus = _routingController.navigationStatus;
+    _audioStatus = _routingController.audioStatus;
+    _currentPosition = _routingController.currentPosition;
     LinkedHashMap<
       leg_schema.LegDetailed,
       LinkedHashMap<leg_schema.Step, List<maps_toolkit.LatLng>?>
@@ -708,12 +721,17 @@ class NavigationInstructionsController extends ChangeNotifier {
       // Build new upcoming steps list using distance-to-step
       List<leg_schema.Step> upcomingSteps = [];
       for (int j = activeStepIndex; j < steps.length; j++) {
-        double previousStepDistance = 0.0;
-        if (j > 0) {
-          previousStepDistance = steps[j - 1].distance;
+        double stepDistance = 0.0;
+        if (j > 0 && j == activeStepIndex) {
+          stepDistance = _computeDistanceToEndOfStep(
+            _currentPosition!,
+            actionTrail[leg]![steps[j - 1]]!,
+          );
+        } else if (j > 0) {
+          stepDistance = steps[j - 1].distance;
         }
 
-        upcomingSteps.add(steps[j].copyWith(distance: previousStepDistance));
+        upcomingSteps.add(steps[j].copyWith(distance: stepDistance));
       }
 
       _upcomingInstructions.add(MapEntry(leg, upcomingSteps));
@@ -732,10 +750,140 @@ class NavigationInstructionsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  double _computeDistanceToEndOfStep(
+    Position currentPosition,
+    List<maps_toolkit.LatLng> stepGeometry,
+  ) {
+    double totalDistance = 0.0;
+
+    maps_toolkit.LatLng currentLatLng = maps_toolkit.LatLng(
+      currentPosition.latitude,
+      currentPosition.longitude,
+    );
+
+    // Find closest point on step geometry
+    int closestIndex = maps_toolkit.PolygonUtil.locationIndexOnPath(
+      currentLatLng,
+      stepGeometry,
+      true,
+      tolerance: 50.0,
+    );
+
+    if (closestIndex >= 0 && closestIndex < stepGeometry.length - 1) {
+      // Remaining distance for this step
+      for (int i = closestIndex; i < stepGeometry.length - 1; i++) {
+        totalDistance += maps_toolkit.SphericalUtil.computeDistanceBetween(
+          stepGeometry[i],
+          stepGeometry[i + 1],
+        );
+      }
+    } else {
+      // Unable to snap, return full step distance
+      totalDistance = 0.0;
+      for (int i = 0; i < stepGeometry.length - 1; i++) {
+        totalDistance += maps_toolkit.SphericalUtil.computeDistanceBetween(
+          stepGeometry[i],
+          stepGeometry[i + 1],
+        );
+      }
+    }
+
+    return totalDistance;
+  }
+
   @override
   void dispose() {
     _routingController.removeListener(
       _refreshNavigationInstructionsControllerState,
+    );
+    super.dispose();
+  }
+}
+
+class NavigationAudioController extends ChangeNotifier {
+  late NavigationInstructionsController _navigationInstructionsController;
+
+  leg_schema.LegDetailed? _instructionLeg;
+  leg_schema.LegDetailed? get instructionLeg => _instructionLeg;
+  leg_schema.Step? _instructionStep;
+  leg_schema.Step? get instructionStep => _instructionStep;
+
+  AudioStatus? _audioStatus;
+  AudioStatus? get audioStatus => _audioStatus;
+
+  AudioStage _audioStage = AudioStage.newStage;
+  AudioStage get audioStage => _audioStage;
+
+  NavigationAudioController(
+    NavigationInstructionsController navigationInstructionsController,
+  ) {
+    _navigationInstructionsController = navigationInstructionsController;
+    _navigationInstructionsController.addListener(
+      _refreshNavigationAudioControllerState,
+    );
+  }
+
+  void _refreshNavigationAudioControllerState() {
+    _audioStatus = _navigationInstructionsController.audioStatus;
+
+    // Audio instructions only during navigation
+    if (_navigationInstructionsController.navigationStatus !=
+        NavigationStatus.navigating) {
+      _instructionLeg = null;
+      _instructionStep = null;
+      _audioStage = AudioStage.newStage;
+      return;
+    }
+
+    // If no leg and step was snapped to, or the step is a DEPART instruction, skip audio
+    if (_navigationInstructionsController.instructionLeg == null ||
+        _navigationInstructionsController.instructionStep == null ||
+        (_navigationInstructionsController.instructionStep != null &&
+            _navigationInstructionsController
+                    .instructionStep
+                    ?.relativeDirection ==
+                RelativeDirection.DEPART)) {
+      return;
+    }
+
+    // If nothing in the instruction changed, skip audio update
+    if (_instructionLeg == _navigationInstructionsController.instructionLeg &&
+        _instructionStep == _navigationInstructionsController.instructionStep) {
+      return;
+    }
+
+    // Determine best audio stage for distance to next instruction
+    AudioStage newAudioStage = _getBestAudioStageForDistance(
+      _navigationInstructionsController.instructionStep!.distance,
+    );
+
+    // If audio stage hasn't changed, skip update
+    if (newAudioStage == _audioStage) {
+      return;
+    }
+
+    _instructionLeg = _navigationInstructionsController.instructionLeg;
+    _instructionStep = _navigationInstructionsController.instructionStep;
+    _audioStage = newAudioStage;
+    notifyListeners();
+  }
+
+  AudioStage _getBestAudioStageForDistance(double distance) {
+    if (distance <= Settings.navigationAudioStages[AudioStage.near]!) {
+      return AudioStage.near;
+    } else if (distance <= Settings.navigationAudioStages[AudioStage.medium]!) {
+      return AudioStage.medium;
+    } else if (distance <= Settings.navigationAudioStages[AudioStage.far]!) {
+      return AudioStage.far;
+    } else {
+      return AudioStage.newStage;
+    }
+  }
+
+  @override
+  void dispose() {
+    _navigationInstructionsController.removeListener(
+      _refreshNavigationAudioControllerState,
     );
     super.dispose();
   }
