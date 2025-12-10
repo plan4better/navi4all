@@ -15,10 +15,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commonModeWalking => 'Zu Fuß';
 
   @override
+  String get commonModeBicycle => 'Fahrrad';
+
+  @override
   String get commonModeBus => 'Bus';
 
   @override
-  String get commonModeTram => 'Straßenbahn';
+  String get commonModeTram => 'Tram';
 
   @override
   String get commonModeUBahn => 'U-Bahn';
@@ -27,7 +30,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commonModeSBahn => 'S-Bahn';
 
   @override
-  String get commonModeTrain => 'Bahn';
+  String get commonModeTrain => 'Zug';
+
+  @override
+  String get commonModeCar => 'Auto';
 
   @override
   String get commonHomeScreenButton => 'Startbildschirm';
@@ -417,6 +423,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navigationRelativeDirectionArrive => 'Ankommen';
 
   @override
+  String navigationStepDistanceToAction(String distance) {
+    return 'in $distance';
+  }
+
+  @override
   String navigationStepDistanceToActionMetres(String distance) {
     return 'in $distance Metern';
   }
@@ -445,7 +456,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get routingDisclaimerAcceptButton => 'Fortfahren';
 
   @override
-  String get availabilityChangeDialogTitle => 'Parkplatz Belegt';
+  String get availabilityChangeDialogTitle => 'Parkplatz belegt';
 
   @override
   String get availabilityChangeDialogMessage => 'Dieser Parkplatz ist jetzt belegt.\nMöchten Sie in der Nähe nach alternativen Plätzen suchen?';

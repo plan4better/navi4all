@@ -26,10 +26,22 @@ abstract class LegDetailed with _$LegDetailed {
     required int distance,
     required String geometry,
     required List<Step> steps,
+    Route? route,
   }) = _LegDetailed;
 
   factory LegDetailed.fromJson(Map<String, Object?> json) =>
       _$LegDetailedFromJson(json);
+}
+
+@freezed
+abstract class Route with _$Route {
+  const factory Route({
+    required String id,
+    @JsonKey(name: "short_name") String? shortName,
+    Mode? mode,
+  }) = _Route;
+
+  factory Route.fromJson(Map<String, Object?> json) => _$RouteFromJson(json);
 }
 
 @freezed

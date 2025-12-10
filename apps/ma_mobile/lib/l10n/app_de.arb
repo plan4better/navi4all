@@ -2,11 +2,13 @@
     "@@locale": "de",
     "appTitle": "ParkStark",
     "commonModeWalking": "Zu Fuß",
+    "commonModeBicycle": "Fahrrad",
     "commonModeBus": "Bus",
-    "commonModeTram": "Straßenbahn",
+    "commonModeTram": "Tram",
     "commonModeUBahn": "U-Bahn",
     "commonModeSBahn": "S-Bahn",
-    "commonModeTrain": "Bahn",
+    "commonModeTrain": "Zug",
+    "commonModeCar": "Auto",
     "commonHomeScreenButton": "Startbildschirm",
     "commonBackButtonSemantic": "Zurück",
     "commonMicButtonSemantic": "Spracheingabe",
@@ -239,6 +241,14 @@
     "navigationRelativeDirectionExitStation": "Bahnhof verlassen",
     "navigationRelativeDirectionFollowSigns": "Folgen Sie den Schildern",
     "navigationRelativeDirectionArrive": "Ankommen",
+    "navigationStepDistanceToAction": "in {distance}",
+    "@navigationStepDistanceToAction": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
     "navigationStepDistanceToActionMetres": "in {distance} Metern",
     "@navigationStepDistanceToActionMetres": {
         "placeholders": {

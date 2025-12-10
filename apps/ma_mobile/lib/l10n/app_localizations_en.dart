@@ -15,19 +15,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonModeWalking => 'Walking';
 
   @override
+  String get commonModeBicycle => 'Bicycle';
+
+  @override
   String get commonModeBus => 'Bus';
 
   @override
   String get commonModeTram => 'Tram';
 
   @override
-  String get commonModeUBahn => 'Subway';
+  String get commonModeUBahn => 'U-Bahn';
 
   @override
   String get commonModeSBahn => 'S-Bahn';
 
   @override
   String get commonModeTrain => 'Train';
+
+  @override
+  String get commonModeCar => 'Car';
 
   @override
   String get commonHomeScreenButton => 'Home Screen';
@@ -415,6 +421,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navigationRelativeDirectionArrive => 'Arrive';
+
+  @override
+  String navigationStepDistanceToAction(String distance) {
+    return 'in $distance';
+  }
 
   @override
   String navigationStepDistanceToActionMetres(String distance) {

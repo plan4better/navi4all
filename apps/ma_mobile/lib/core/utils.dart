@@ -37,6 +37,15 @@ class TextFormatter {
     return '${formatMetersDistanceFromMeters(distanceInMeters)} m';
   }
 
+  static String formatDistanceValueText(double distance) {
+    // Format distance based on its length, replace point with comma for locales that use comma
+    if (distance >= 1000) {
+      final distanceInKm = formatKilometersDistanceFromMeters(distance);
+      return '${distanceInKm.toString().replaceAll('.', ',')} km';
+    }
+    return '${formatMetersDistanceFromMeters(distance)} m';
+  }
+
   static int formatMetersDistanceFromMeters(double distance) {
     // Above 100m, round to the nearest 50m, below round to the nearest 10m
     if (distance > 100) {

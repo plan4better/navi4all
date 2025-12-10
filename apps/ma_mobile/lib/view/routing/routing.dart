@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,7 @@ import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/routing/coordinates.dart';
 import 'package:smartroots/view/common/accessible_icon_button.dart';
 import 'package:smartroots/view/place/place.dart';
+import 'package:smartroots/view/routing/leg_tile.dart';
 import 'package:smartroots/view/routing/map.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
 import 'package:smartroots/view/common/sheet_button.dart';
@@ -21,7 +23,6 @@ import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:smartroots/core/processing_status.dart';
 import 'package:smartroots/services/routing.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
 import 'package:smartroots/schemas/routing/mode.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/core/utils.dart';
@@ -38,20 +39,24 @@ class RoutingScreen extends StatefulWidget {
 
 class RoutingState extends State<RoutingScreen> {
   late Place _parkingLocation;
+  late NavigationInstructionsController _navigationInstructionsController;
   bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
   late Place _destination;
-  List<ItinerarySummary> _itineraries = [];
   ItineraryDetails? _itineraryDetails;
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
-  leg_schema.Step? _activeStep;
+  List<LegTile> _legTiles = [];
 
   @override
   void initState() {
     super.initState();
 
     _parkingLocation = widget.parkingLocation;
+
+    _navigationInstructionsController =
+        Provider.of<NavigationInstructionsController>(context, listen: false);
+    _navigationInstructionsController.addListener(_buildLegTiles);
 
     // flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
 
@@ -363,7 +368,6 @@ class RoutingState extends State<RoutingScreen> {
   Future<void> _fetchItineraries() async {
     setState(() {
       _processingStatus = ProcessingStatus.processing;
-      _itineraries = [];
       _itineraryDetails = null;
     });
 
@@ -420,16 +424,13 @@ class RoutingState extends State<RoutingScreen> {
         date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
         time: DateFormat('HH:mm:ss').format(DateTime.now()),
         timeIsArrival: false,
-        transportModes: ["CAR"],
+        transportModes: [Mode.CAR.name],
       );
       if (response.statusCode == 200) {
         final data = response.data["itineraries"] as List;
         itineraries = data
             .map((item) => ItinerarySummary.fromJson(item))
             .toList();
-        setState(() {
-          _itineraries = itineraries;
-        });
       } else {
         throw Exception('Failed to load itineraries');
       }
@@ -528,34 +529,6 @@ class RoutingState extends State<RoutingScreen> {
     }
   }
 
-  /* if (_navigationStatus == NavigationStatus.navigating) {
-      setState(() {
-        _navigationStatus = NavigationStatus.paused;
-      });
-
-      // Unsubscribe from location stream
-      _positionStream?.drain();
-      _positionStreamSubscription?.cancel();
-      _positionStream = null;
-      _positionStreamSubscription = null;
-    } else if (_navigationStatus == NavigationStatus.idle ||
-        _navigationStatus == NavigationStatus.paused) {
-      if (!disclaimerAccepted) {
-        _showDisclaimerDialog();
-      }
-
-      setState(() {
-        _navigationStatus = NavigationStatus.navigating;
-      });
-
-      // Subscribe to location stream
-      _positionStream = Geolocator.getPositionStream();
-      _positionStreamSubscription = _positionStream!.listen(
-        (Position position) => _onPositionChange(position),
-      );
-      _getUserLocation();
-    } */
-
   void _toggleAudioStatus() {
     AudioStatus audioStatus = Provider.of<RoutingController>(
       context,
@@ -568,138 +541,33 @@ class RoutingState extends State<RoutingScreen> {
     }
   }
 
-  /* void _onPositionChange(Position position) {
-    if (context.read<RoutingController>().navigationStatus !=
-            NavigationStatus.navigating ||
-        _itineraryDetails == null) {
-      return;
-    }
-
-    // Update user position
-    setState(() {
-      _userPosition = position;
+  void _buildLegTiles() {
+    List<LegTile> legTiles = [];
+    _navigationInstructionsController.upcomingInstructions.forEach((
+      MapEntry instruction,
+    ) {
+      legTiles.add(
+        LegTile(
+          leg: instruction.key,
+          activeLeg: _navigationInstructionsController.instructionLeg,
+          steps: instruction.value,
+          activeStep: _navigationInstructionsController.instructionStep,
+          isPrimaryLeg:
+              _navigationInstructionsController.upcomingInstructions.length ==
+              1,
+        ),
+      );
     });
 
-    // All points of leg geometry
-    leg_schema.LegDetailed leg = _itineraryDetails!.legs.first;
-    List<LatLng> legPoints = PolygonUtil.decode(leg.geometry);
+    setState(() {
+      _legTiles = legTiles;
+    });
+  }
 
-    // Remaining steps
-    List<leg_schema.Step> remainingSteps = _activeStep != null
-        ? leg.steps.sublist(leg.steps.indexOf(_activeStep!))
-        : leg.steps;
-    List<double?> remainingStepDistanceToAction = [];
-    for (int i = 0; i < remainingSteps.length; i++) {
-      remainingStepDistanceToAction.add(
-        i > 0 ? remainingSteps[i - 1].distance : null,
-      );
-    }
-
-    // Update active step based on user location
-    for (int i = 0; i < remainingSteps.length; i++) {
-      leg_schema.Step step = remainingSteps[i];
-      int stepStartIndex = PolygonUtil.locationIndexOnPath(
-        LatLng(step.lat, step.lon),
-        legPoints,
-        true,
-        tolerance: 2,
-      );
-      int stepEndIndex = PolygonUtil.locationIndexOnPath(
-        i < remainingSteps.length - 1
-            ? LatLng(remainingSteps[i + 1].lat, remainingSteps[i + 1].lon)
-            : LatLng(legPoints.last.latitude, legPoints.last.longitude),
-        legPoints,
-        true,
-        tolerance: 2,
-      );
-
-      if (stepStartIndex == -1 ||
-          stepEndIndex == -1 ||
-          stepEndIndex < stepStartIndex) {
-        continue;
-      }
-
-      List<LatLng> stepPoints = legPoints.sublist(stepStartIndex, stepEndIndex);
-
-      int positionIndex = PolygonUtil.locationIndexOnPath(
-        LatLng(position.latitude, position.longitude),
-        stepPoints,
-        true,
-        tolerance: 10,
-      );
-
-      if (positionIndex > -1) {
-        if (remainingSteps[i + 1] != _activeStep) {
-          setState(() {
-            _activeStep = remainingSteps[i + 1];
-          });
-
-          // Make text-to-speech announcement for new active step
-          int indexOfActiveStep = remainingSteps.indexOf(_activeStep!);
-          if (context.read<RoutingController>().audioStatus ==
-              AudioStatus.unmuted) {
-            String stepAnnouncement = "";
-            if (remainingStepDistanceToAction[indexOfActiveStep]! >= 1000) {
-              stepAnnouncement += AppLocalizations.of(context)!
-                  .navigationStepDistanceToActionKilometres(
-                    (remainingStepDistanceToAction[indexOfActiveStep]! / 1000)
-                        .toStringAsFixed(1),
-                  );
-            } else {
-              stepAnnouncement += AppLocalizations.of(context)!
-                  .navigationStepDistanceToActionMetres(
-                    remainingStepDistanceToAction[indexOfActiveStep]!
-                        .round()
-                        .toString(),
-                  );
-            }
-            stepAnnouncement +=
-                ". ${getRelativeDirectionTextMapping(_activeStep!.relativeDirection, context)}";
-
-            flutterTts.speak(stepAnnouncement);
-          }
-        }
-        break;
-      }
-    }
-  } */
-
-  List<ItineraryLegStepTile> get _legSteps {
-    if (_itineraryDetails == null || _itineraryDetails!.legs.isEmpty) return [];
-
-    List<leg_schema.Step> steps = _itineraryDetails!.legs.first.steps;
-    List<ItineraryLegStepTile> stepTiles = [];
-    for (int i = 0; i < steps.length; i++) {
-      stepTiles.add(
-        ItineraryLegStepTile(
-          step: steps[i],
-          distanceToStep: i > 0 ? steps[i - 1].distance : null,
-          isActive: steps[i] == _activeStep,
-        ),
-      );
-    }
-    stepTiles.add(
-      ItineraryLegStepTile(
-        step: leg_schema.Step(
-          distance: 0,
-          lat: _destination.coordinates.lat,
-          lon: _destination.coordinates.lon,
-          relativeDirection: RelativeDirection.ARRIVE,
-          absoluteDirection: AbsoluteDirection.UNKNOWN,
-          streetName: '',
-          bogusName: true,
-        ),
-        distanceToStep: steps.isNotEmpty ? steps.last.distance : null,
-        isActive: false,
-      ),
-    );
-
-    if (_activeStep == null) {
-      return stepTiles;
-    }
-    return stepTiles.sublist(
-      _itineraryDetails!.legs.first.steps.indexOf(_activeStep!),
-    );
+  @override
+  void dispose() {
+    _navigationInstructionsController.removeListener(_buildLegTiles);
+    super.dispose();
   }
 
   @override
@@ -708,24 +576,24 @@ class RoutingState extends State<RoutingScreen> {
       body: Stack(
         children: [
           RoutingMap(destination: _parkingLocation),
-          SlidingBottomSheet(
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                          vertical: 16.0,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Consumer<RoutingController>(
-                                    builder: (context, routingController, _) => SheetButton(
+          Consumer<RoutingController>(
+            builder: (context, routingController, _) => SlidingBottomSheet(
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0,
+                            vertical: 16.0,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: SheetButton(
                                       icon:
                                           routingController.navigationStatus ==
                                               NavigationStatus.idle
@@ -785,107 +653,119 @@ class RoutingState extends State<RoutingScreen> {
                                       shrinkWrap: false,
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 8),
-                                Consumer<RoutingController>(
-                                  builder: (context, routingController, _) =>
-                                      AccessibleIconButton(
-                                        icon:
-                                            routingController.audioStatus ==
-                                                AudioStatus.muted
-                                            ? Icons.volume_off
-                                            : Icons.volume_up,
-                                        semanticLabel:
-                                            routingController.audioStatus ==
-                                                AudioStatus.muted
-                                            ? AppLocalizations.of(
-                                                context,
-                                              )!.routeNavigationMuteButtonUnmuteText
-                                            : AppLocalizations.of(
-                                                context,
-                                              )!.routeNavigationMuteButtonMuteText,
-                                        onTap: () => _toggleAudioStatus(),
-                                      ),
-                                ),
-                                SizedBox(width: 8),
-                                AccessibleIconButton(
-                                  icon: Icons.close,
-                                  semanticLabel: AppLocalizations.of(
-                                    context,
-                                  )!.routingScreenExitRoutingButtonSemantic,
-                                  onTap: () {
-                                    context
-                                        .read<RoutingController>()
-                                        .stopNavigation();
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16),
-                            _itineraries.isNotEmpty
-                                ? Row(
-                                    children: [
-                                      Icon(
-                                        Icons.directions_car_outlined,
-                                        color: SmartRootsColors
-                                            .maBlueExtraExtraDark,
-                                      ),
-                                      SizedBox(width: 8.0),
-                                      Text(
-                                        TextFormatter.formatDurationText(
-                                          _itineraries.first.duration,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                  SizedBox(width: 8),
+                                  AccessibleIconButton(
+                                    icon:
+                                        routingController.audioStatus ==
+                                            AudioStatus.muted
+                                        ? Icons.volume_off
+                                        : Icons.volume_up,
+                                    semanticLabel:
+                                        routingController.audioStatus ==
+                                            AudioStatus.muted
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.routeNavigationMuteButtonUnmuteText
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.routeNavigationMuteButtonMuteText,
+                                    onTap: () => _toggleAudioStatus(),
+                                  ),
+                                  SizedBox(width: 8),
+                                  AccessibleIconButton(
+                                    icon: Icons.close,
+                                    semanticLabel: AppLocalizations.of(
+                                      context,
+                                    )!.routingScreenExitRoutingButtonSemantic,
+                                    onTap: () {
+                                      routingController.stopNavigation();
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 16),
+                              Consumer<NavigationStatsController>(
+                                builder:
+                                    (
+                                      context,
+                                      navigationStatsController,
+                                      _,
+                                    ) => Row(
+                                      children: [
+                                        Icon(
+                                          Icons.directions_car_outlined,
                                           color: SmartRootsColors
                                               .maBlueExtraExtraDark,
-                                          fontSize: 16,
                                         ),
-                                      ),
-                                      SizedBox(width: 6.0),
-                                      Icon(
-                                        Icons.circle,
-                                        size: 6,
-                                        color: SmartRootsColors
-                                            .maBlueExtraExtraDark,
-                                      ),
-                                      SizedBox(width: 6.0),
-                                      Text(
-                                        TextFormatter.formatDistanceText(
-                                          _itineraries.first,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        SizedBox(width: 8.0),
+                                        navigationStatsController
+                                                    .timeToArrival !=
+                                                null
+                                            ? Text(
+                                                TextFormatter.formatDurationText(
+                                                  navigationStatsController
+                                                      .timeToArrival!,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: SmartRootsColors
+                                                      .maBlueExtraExtraDark,
+                                                  fontSize: 16,
+                                                ),
+                                              )
+                                            : SizedBox.shrink(),
+                                        SizedBox(width: 6.0),
+                                        Icon(
+                                          Icons.circle,
+                                          size: 6,
                                           color: SmartRootsColors
                                               .maBlueExtraExtraDark,
-                                          fontSize: 16,
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox.shrink(),
-                          ],
+                                        SizedBox(width: 6.0),
+                                        navigationStatsController
+                                                    .distanceToArrival !=
+                                                null
+                                            ? Text(
+                                                TextFormatter.formatDistanceValueText(
+                                                  navigationStatsController
+                                                      .distanceToArrival!,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: SmartRootsColors
+                                                      .maBlueExtraExtraDark,
+                                                  fontSize: 16,
+                                                ),
+                                              )
+                                            : SizedBox.shrink(),
+                                      ],
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(height: 0, color: SmartRootsColors.maBlue),
-                    ],
+                        Divider(height: 0, color: SmartRootsColors.maBlue),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              listItems: _processingStatus == ProcessingStatus.completed
+                  ? _legTiles
+                  : null,
+              body:
+                  _processingStatus == ProcessingStatus.processing ||
+                      _processingStatus == ProcessingStatus.error
+                  ? NavigationProcessingTile(
+                      processingStatus: _processingStatus,
+                    )
+                  : SizedBox.shrink(),
+              initSize: 0.35,
+              maxSize: 0.7,
             ),
-            listItems: _processingStatus == ProcessingStatus.completed
-                ? _legSteps
-                : null,
-            body:
-                _processingStatus == ProcessingStatus.processing ||
-                    _processingStatus == ProcessingStatus.error
-                ? NavigationProcessingTile(processingStatus: _processingStatus)
-                : SizedBox.shrink(),
-            initSize: 0.35,
-            maxSize: 0.7,
           ),
           SafeArea(
             child: Align(
@@ -1022,7 +902,14 @@ class RoutingState extends State<RoutingScreen> {
                         button: false,
                         child: Material(
                           elevation: 4,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius:
+                              routingController.navigationStatus !=
+                                  NavigationStatus.navigating
+                              ? BorderRadius.only(
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
+                                )
+                              : BorderRadius.circular(64),
                           child: Container(
                             height: 56,
                             decoration: BoxDecoration(
@@ -1031,14 +918,22 @@ class RoutingState extends State<RoutingScreen> {
                                     routingController.navigationStatus !=
                                         NavigationStatus.navigating
                                     ? Radius.circular(0)
-                                    : Radius.circular(16),
+                                    : Radius.circular(64),
                                 topRight:
                                     routingController.navigationStatus !=
                                         NavigationStatus.navigating
                                     ? Radius.circular(0)
-                                    : Radius.circular(16),
-                                bottomLeft: Radius.circular(16),
-                                bottomRight: Radius.circular(16),
+                                    : Radius.circular(64),
+                                bottomLeft:
+                                    routingController.navigationStatus !=
+                                        NavigationStatus.navigating
+                                    ? Radius.circular(16)
+                                    : Radius.circular(64),
+                                bottomRight:
+                                    routingController.navigationStatus !=
+                                        NavigationStatus.navigating
+                                    ? Radius.circular(16)
+                                    : Radius.circular(64),
                               ),
                               color: Theme.of(context).colorScheme.secondary,
                             ),
@@ -1102,110 +997,6 @@ class RoutingState extends State<RoutingScreen> {
       ),
     );
   }
-}
-
-class ItineraryLegStepTile extends StatelessWidget {
-  final leg_schema.Step step;
-  final double? distanceToStep;
-  final bool isActive;
-
-  const ItineraryLegStepTile({
-    required this.step,
-    required this.distanceToStep,
-    required this.isActive,
-    super.key,
-  });
-
-  String? get _streetName {
-    return step.bogusName ? null : step.streetName;
-  }
-
-  String? _distance(BuildContext context) {
-    if (distanceToStep == null) {
-      return null;
-    }
-
-    if (distanceToStep! >= 1000) {
-      return AppLocalizations.of(
-        context,
-      )!.navigationStepDistanceToActionKilometres(
-        TextFormatter.formatKilometersDistanceFromMeters(
-          distanceToStep!,
-        ).toString().replaceAll('.', ','),
-      );
-    } else {
-      return AppLocalizations.of(context)!.navigationStepDistanceToActionMetres(
-        TextFormatter.formatMetersDistanceFromMeters(
-          distanceToStep!,
-        ).toString(),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-    excludeSemantics: true,
-    label:
-        '${_distance(context) != null ? '${_distance(context)!}, ' : ''}${_streetName != null ? '${_streetName!}, ' : ''}${getRelativeDirectionTextMapping(step.relativeDirection, context)}',
-    child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-      color: isActive
-          ? Theme.of(context).colorScheme.tertiary
-          : Theme.of(context).colorScheme.surface,
-      child: Row(
-        children: [
-          Icon(
-            getRelativeDirectionIconMapping(step.relativeDirection),
-            color: SmartRootsColors.maBlue,
-            size: 32,
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  getRelativeDirectionTextMapping(
-                    step.relativeDirection,
-                    context,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: SmartRootsColors.maBlueExtraExtraDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                _streetName != null
-                    ? Text(
-                        _streetName!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                _distance(context) != null
-                    ? Text(
-                        _distance(context)!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: SmartRootsColors.maBlueExtraExtraDark,
-                        ),
-                      )
-                    : SizedBox.shrink(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }
 
 class NavigationProcessingTile extends StatelessWidget {

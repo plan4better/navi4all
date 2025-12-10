@@ -51,6 +51,12 @@ class SmartRootsApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ActionTrailController(_routingController),
         ),
+        ChangeNotifierProvider(
+          create: (_) => NavigationStatsController(_routingController),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NavigationInstructionsController(_routingController),
+        ),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(

@@ -176,6 +176,26 @@ class RoutingController extends ChangeNotifier {
           stepEndIndex + 1,
         );
       }
+
+      // Append arrival step to last leg
+      if (leg == _itineraryDetails!.legs.last) {
+        leg_schema.Step arrivalStep = leg_schema.Step(
+          distance: 0.0,
+          lat: legCoordinates.last.latitude,
+          lon: legCoordinates.last.longitude,
+          relativeDirection: RelativeDirection.ARRIVE,
+          absoluteDirection: AbsoluteDirection.UNKNOWN,
+          streetName: '',
+          bogusName: true,
+        );
+        stepMap[arrivalStep] = [
+          maps_toolkit.LatLng(
+            legCoordinates.last.latitude,
+            legCoordinates.last.longitude,
+          ),
+        ];
+      }
+
       _actionTrail[leg] = stepMap;
     }
   }
@@ -487,6 +507,236 @@ class ActionTrailController extends ChangeNotifier {
   @override
   void dispose() {
     _routingController.removeListener(_refreshActionTrailControllerState);
+    super.dispose();
+  }
+}
+
+class NavigationStatsController extends ChangeNotifier {
+  late RoutingController _routingController;
+
+  int? _timeToArrival;
+  int? get timeToArrival => _timeToArrival;
+  double? _distanceToArrival;
+  double? get distanceToArrival => _distanceToArrival;
+
+  NavigationStatsController(RoutingController routingController) {
+    _routingController = routingController;
+    _routingController.addListener(_refreshNavigationStatsControllerState);
+  }
+
+  void _refreshNavigationStatsControllerState() {
+    // Fetch action trail
+    LinkedHashMap<
+      leg_schema.LegDetailed,
+      LinkedHashMap<leg_schema.Step, List<maps_toolkit.LatLng>?>
+    >
+    actionTrail = _routingController.actionTrail;
+    if (actionTrail.isEmpty) {
+      _timeToArrival = null;
+      _distanceToArrival = null;
+      notifyListeners();
+      return;
+    }
+
+    // If current position is unavailable, use default stats
+    if (_routingController.currentPosition == null) {
+      _timeToArrival = _routingController.actionTrail.keys.fold(
+        0,
+        (sum, leg) => sum! + leg.duration,
+      );
+      _distanceToArrival = _routingController.actionTrail.keys.fold(
+        0.0,
+        (sum, leg) => sum! + leg.distance,
+      );
+      notifyListeners();
+      return;
+    }
+
+    Position currentPosition = _routingController.currentPosition!;
+    leg_schema.LegDetailed? activeLeg = _routingController.activeLeg;
+    leg_schema.Step? activeStep = _routingController.activeStep;
+
+    double totalRemainingDistance = 0.0; // in meters
+    int totalRemainingTime = 0; // in seconds
+
+    List<leg_schema.LegDetailed> legs = actionTrail.keys.toList();
+    int activeLegIndex = activeLeg != null ? legs.indexOf(activeLeg) : 0;
+
+    // Iterate through remaining legs starting from active leg
+    for (int legIndex = activeLegIndex; legIndex < legs.length; legIndex++) {
+      leg_schema.LegDetailed leg = legs[legIndex];
+      LinkedHashMap<leg_schema.Step, List<maps_toolkit.LatLng>?> stepMap =
+          actionTrail[leg]!;
+      List<leg_schema.Step> steps = stepMap.keys.toList();
+
+      // For the active leg, process steps starting from active step
+      if (legIndex == activeLegIndex && activeStep != null) {
+        int activeStepIndex = steps.indexOf(activeStep);
+
+        for (
+          int stepIndex = activeStepIndex;
+          stepIndex < steps.length;
+          stepIndex++
+        ) {
+          leg_schema.Step step = steps[stepIndex];
+          List<maps_toolkit.LatLng>? stepGeometry = stepMap[step];
+
+          // For the active step, calculate remaining distance from current position
+          if (stepIndex == activeStepIndex) {
+            if (stepGeometry != null && stepGeometry.isNotEmpty) {
+              maps_toolkit.LatLng currentLatLng = maps_toolkit.LatLng(
+                currentPosition.latitude,
+                currentPosition.longitude,
+              );
+
+              // Find closest point on step geometry
+              int closestIndex = maps_toolkit.PolygonUtil.locationIndexOnPath(
+                currentLatLng,
+                stepGeometry,
+                true,
+                tolerance: 50.0,
+              );
+
+              if (closestIndex >= 0 && closestIndex < stepGeometry.length - 1) {
+                // Remaining distance for this step
+                for (int i = closestIndex; i < stepGeometry.length - 1; i++) {
+                  totalRemainingDistance +=
+                      maps_toolkit.SphericalUtil.computeDistanceBetween(
+                        stepGeometry[i],
+                        stepGeometry[i + 1],
+                      );
+                }
+
+                // Remaining time for this step
+                double stepProgress = closestIndex / (stepGeometry.length - 1);
+                totalRemainingTime +=
+                    ((1 - stepProgress) *
+                            step.distance /
+                            leg.distance *
+                            leg.duration)
+                        .round();
+              } else {
+                // Unable to snap, use full step distance
+                totalRemainingDistance += step.distance;
+                totalRemainingTime +=
+                    (step.distance / leg.distance * leg.duration).round();
+              }
+            }
+          } else {
+            // For subsequent steps in active leg, add full distance/time
+            totalRemainingDistance += step.distance;
+            totalRemainingTime += (step.distance / leg.distance * leg.duration)
+                .round();
+          }
+        }
+      } else {
+        // For legs after the active leg, add full distance/time
+        totalRemainingDistance += leg.distance;
+        totalRemainingTime += leg.duration;
+      }
+    }
+
+    _timeToArrival = totalRemainingTime;
+    _distanceToArrival = totalRemainingDistance;
+
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _routingController.removeListener(_refreshNavigationStatsControllerState);
+    super.dispose();
+  }
+}
+
+class NavigationInstructionsController extends ChangeNotifier {
+  late RoutingController _routingController;
+
+  leg_schema.LegDetailed? _instructionLeg;
+  leg_schema.LegDetailed? get instructionLeg => _instructionLeg;
+  leg_schema.Step? _instructionStep;
+  leg_schema.Step? get instructionStep => _instructionStep;
+
+  final List<MapEntry<leg_schema.LegDetailed, List<leg_schema.Step>>>
+  _upcomingInstructions = [];
+  UnmodifiableListView<MapEntry<leg_schema.LegDetailed, List<leg_schema.Step>>>
+  get upcomingInstructions => UnmodifiableListView(_upcomingInstructions);
+
+  NavigationInstructionsController(RoutingController routingController) {
+    _routingController = routingController;
+    _routingController.addListener(
+      _refreshNavigationInstructionsControllerState,
+    );
+  }
+
+  void _refreshNavigationInstructionsControllerState() {
+    // Fetch navigation state
+    LinkedHashMap<
+      leg_schema.LegDetailed,
+      LinkedHashMap<leg_schema.Step, List<maps_toolkit.LatLng>?>
+    >
+    actionTrail = _routingController.actionTrail;
+    leg_schema.LegDetailed? activeLeg = _routingController.activeLeg;
+    leg_schema.Step? activeStep = _routingController.activeStep;
+
+    // Clear instructions
+    _instructionLeg = null;
+    _instructionStep = null;
+    _upcomingInstructions.clear();
+
+    // Nothing more to do if navigation state is uninitialized
+    if (actionTrail.isEmpty) {
+      _instructionLeg = null;
+      _instructionStep = null;
+      notifyListeners();
+      return;
+    }
+
+    // Build upcoming instructions
+    // This frames the instructions in a distance-to-upcoming-action format
+    List<leg_schema.LegDetailed> legs = actionTrail.keys.toList();
+    int activeLegIndex = activeLeg != null ? legs.indexOf(activeLeg) : 0;
+    for (int i = activeLegIndex; i < legs.length; i++) {
+      leg_schema.LegDetailed leg = legs[i];
+
+      List<leg_schema.Step> steps = actionTrail[leg]!.keys.toList();
+      int activeStepIndex = 0;
+      if (i == activeLegIndex && activeStep != null) {
+        activeStepIndex = steps.indexOf(activeStep) + 1;
+      }
+
+      // Build new upcoming steps list using distance-to-step
+      List<leg_schema.Step> upcomingSteps = [];
+      for (int j = activeStepIndex; j < steps.length; j++) {
+        double previousStepDistance = 0.0;
+        if (j > 0) {
+          previousStepDistance = steps[j - 1].distance;
+        }
+
+        upcomingSteps.add(steps[j].copyWith(distance: previousStepDistance));
+      }
+
+      _upcomingInstructions.add(MapEntry(leg, upcomingSteps));
+    }
+
+    // Set instruction leg and step
+    _instructionLeg = upcomingInstructions.isNotEmpty
+        ? upcomingInstructions.first.key
+        : null;
+    _instructionStep =
+        upcomingInstructions.isNotEmpty &&
+            upcomingInstructions.first.value.isNotEmpty
+        ? upcomingInstructions.first.value.first
+        : null;
+
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _routingController.removeListener(
+      _refreshNavigationInstructionsControllerState,
+    );
     super.dispose();
   }
 }

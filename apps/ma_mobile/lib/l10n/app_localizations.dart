@@ -107,6 +107,12 @@ abstract class AppLocalizations {
   /// **'Walking'**
   String get commonModeWalking;
 
+  /// No description provided for @commonModeBicycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bicycle'**
+  String get commonModeBicycle;
+
   /// No description provided for @commonModeBus.
   ///
   /// In en, this message translates to:
@@ -122,7 +128,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonModeUBahn.
   ///
   /// In en, this message translates to:
-  /// **'Subway'**
+  /// **'U-Bahn'**
   String get commonModeUBahn;
 
   /// No description provided for @commonModeSBahn.
@@ -136,6 +142,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Train'**
   String get commonModeTrain;
+
+  /// No description provided for @commonModeCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get commonModeCar;
 
   /// No description provided for @commonHomeScreenButton.
   ///
@@ -862,6 +874,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arrive'**
   String get navigationRelativeDirectionArrive;
+
+  /// No description provided for @navigationStepDistanceToAction.
+  ///
+  /// In en, this message translates to:
+  /// **'in {distance}'**
+  String navigationStepDistanceToAction(String distance);
 
   /// No description provided for @navigationStepDistanceToActionMetres.
   ///
