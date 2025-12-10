@@ -596,7 +596,7 @@ class NavigationStatsController extends ChangeNotifier {
                 currentLatLng,
                 stepGeometry,
                 true,
-                tolerance: 50.0,
+                tolerance: 10.0,
               );
 
               if (closestIndex >= 0 && closestIndex < stepGeometry.length - 1) {
@@ -766,7 +766,7 @@ class NavigationInstructionsController extends ChangeNotifier {
       currentLatLng,
       stepGeometry,
       true,
-      tolerance: 50.0,
+      tolerance: 10.0,
     );
 
     if (closestIndex >= 0 && closestIndex < stepGeometry.length - 1) {

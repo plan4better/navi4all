@@ -10,6 +10,7 @@ import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/core/theme/values.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/schemas/routing/audio_stage.dart';
 import 'package:smartroots/schemas/routing/coordinates.dart';
 import 'package:smartroots/view/common/accessible_icon_button.dart';
 import 'package:smartroots/view/place/place.dart';
@@ -569,29 +570,29 @@ class RoutingState extends State<RoutingScreen> {
   }
 
   Future<void> _triggerNavigationAudio() async {
+    if (_navigationAudioController.audioStatus == AudioStatus.muted ||
+        _navigationAudioController.instructionStep == null) {
+      return;
+    }
+
     // Make text-to-speech announcement for new active step
-    if (_navigationAudioController.audioStatus == AudioStatus.unmuted) {
-      String stepAnnouncement = "";
+    String stepAnnouncement = "";
+    if (_navigationAudioController.audioStage != AudioStage.near) {
+      // Exclude distance for final audio stage
       if (_navigationAudioController.instructionStep!.distance >= 1000) {
         stepAnnouncement += AppLocalizations.of(context)!
             .navigationStepDistanceToActionKilometres(
-              TextFormatter.formatKilometersDistanceFromMeters(
-                _navigationAudioController.instructionStep!.distance,
-              ).toString(),
+              '${TextFormatter.formatKilometersDistanceFromMeters(_navigationAudioController.instructionStep!.distance)}. ',
             );
       } else {
-        stepAnnouncement += AppLocalizations.of(context)!
-            .navigationStepDistanceToActionMetres(
-              TextFormatter.formatMetersDistanceFromMeters(
-                _navigationAudioController.instructionStep!.distance,
-              ).toString(),
-            );
+        stepAnnouncement +=
+            '${AppLocalizations.of(context)!.navigationStepDistanceToActionMetres(TextFormatter.formatMetersDistanceFromMeters(_navigationAudioController.instructionStep!.distance).toString())}. ';
       }
-      stepAnnouncement +=
-          ". ${getRelativeDirectionTextMapping(_navigationAudioController.instructionStep!.relativeDirection, context)}";
-
-      flutterTts.speak(stepAnnouncement);
     }
+    stepAnnouncement +=
+        ". ${getRelativeDirectionTextMapping(_navigationAudioController.instructionStep!.relativeDirection, context)}";
+
+    flutterTts.speak(stepAnnouncement);
   }
 
   @override
