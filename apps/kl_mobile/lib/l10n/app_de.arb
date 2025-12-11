@@ -236,6 +236,14 @@
     },
     "itineraryModeTabWalking": "Zu Fuß",
     "itineraryModeTabPublicTransport": "ÖPNV",
+    "navigationStepDistanceToAction": "in {distance}",
+    "@navigationStepDistanceToAction": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
     "navigationStepDistanceToActionMetres": "in {distance} Metern",
     "@navigationStepDistanceToActionMetres": {
         "placeholders": {
@@ -355,5 +363,9 @@
     },
     "itinerariesScreenSemantic": "Reisebildschirm.",
     "routingScreenSemantic": "Navigationsbildschirm.",
-    "routingScreenExitRoutingButtonSemantic": "Navigation beenden."
+    "routingScreenExitRoutingButtonSemantic": "Navigation beenden.",
+    "routingScreenReroutingDialogTitle": "Neuberechnung der Route",
+    "routingScreenReroutingDialogMessage": "Sie haben die geplante Route verlassen. Möchten Sie eine neue Route finden?",
+    "routingScreenReroutingDialogCancelButton": "Abbrechen",
+    "routingScreenReroutingDialogConfirmButton": "Neuberechnen"
 }

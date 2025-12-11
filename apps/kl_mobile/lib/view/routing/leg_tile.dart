@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:smartroots/core/theme/colors.dart';
-import 'package:smartroots/core/theme/icons.dart';
-import 'package:smartroots/core/theme/labels.dart';
-import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
-import 'package:smartroots/schemas/routing/mode.dart';
-import 'package:smartroots/view/routing/step_tile.dart';
+import 'package:navi4all/core/theme/colors.dart';
+import 'package:navi4all/core/theme/icons.dart';
+import 'package:navi4all/schemas/routing/leg.dart' as leg_schema;
+import 'package:navi4all/schemas/routing/mode.dart';
+import 'package:navi4all/view/routing/step_tile.dart';
 
 class LegTile extends StatelessWidget {
   final leg_schema.LegDetailed leg;
@@ -25,15 +24,22 @@ class LegTile extends StatelessWidget {
   Widget _buildTransitWidget(BuildContext context) {
     return (leg.mode != Mode.WALK &&
             leg.mode != Mode.BICYCLE &&
-            leg.mode != Mode.SCOOTER &&
             leg.mode != Mode.CAR)
         ? Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 16.0,
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(color: Navi4AllColors.klPink),
+              borderRadius: BorderRadius.circular(32.0),
+            ),
             child: Text(
               leg.route!.shortName!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           )
         : SizedBox.shrink();
@@ -63,12 +69,13 @@ class LegTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
               border: Border.all(
                 color: leg == activeLeg
-                    ? SmartRootsColors.maBlueExtraExtraDark
-                    : SmartRootsColors.maBlue,
+                    ? Navi4AllColors.klRed
+                    : Navi4AllColors.klPink,
               ),
             )
           : null,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           !isPrimaryLeg
               ? Padding(
@@ -77,16 +84,16 @@ class LegTile extends StatelessWidget {
                     children: [
                       Icon(
                         ModeIcons.get(leg.mode),
-                        color: SmartRootsColors.maBlue,
+                        color: Navi4AllColors.klRed,
                       ),
                       SizedBox(width: 16),
                       Text(
-                        SmartRootsLabels.getModeString(context, leg.mode),
+                        getModeTextMapping(leg.mode, context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: SmartRootsColors.maBlue,
+                          color: Navi4AllColors.klRed,
                         ),
                       ),
                     ],

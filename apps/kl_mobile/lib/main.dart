@@ -7,6 +7,7 @@ import 'package:navi4all/controllers/place_controller.dart';
 import 'package:navi4all/controllers/profile_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/theme_controller.dart';
+import 'package:navi4all/controllers/routing_controller.dart';
 // import 'package:navi4all/core/config.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +23,7 @@ void main() {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) => runApp(const Navi4AllApp()));
+  ]).then((_) => runApp(Navi4AllApp()));
 
   // Initialize Matomo analytics
   /* MatomoTracker.instance.initialize(
@@ -33,7 +34,29 @@ void main() {
 }
 
 class Navi4AllApp extends StatelessWidget {
-  const Navi4AllApp({super.key});
+  late RoutingController _routingController;
+  late CurrentPositionController _currentPositionController;
+  late ActionTrailController _actionTrailController;
+  late NavigationStatsController _navigationStatsController;
+  late NavigationInstructionsController _navigationInstructionsController;
+  late NavigationAudioController _navigationAudioController;
+  late NavigationDigressingController _navigationDigressingController;
+
+  Navi4AllApp({super.key}) {
+    _routingController = RoutingController();
+    _currentPositionController = CurrentPositionController(_routingController);
+    _actionTrailController = ActionTrailController(_routingController);
+    _navigationStatsController = NavigationStatsController(_routingController);
+    _navigationInstructionsController = NavigationInstructionsController(
+      _routingController,
+    );
+    _navigationAudioController = NavigationAudioController(
+      _navigationInstructionsController,
+    );
+    _navigationDigressingController = NavigationDigressingController(
+      _routingController,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +68,15 @@ class Navi4AllApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CanvasController()),
         ChangeNotifierProvider(create: (_) => PlaceController()),
         ChangeNotifierProvider(create: (_) => ItineraryController()),
+        ChangeNotifierProvider(create: (_) => _routingController),
+        ChangeNotifierProvider(create: (_) => _currentPositionController),
+        ChangeNotifierProvider(create: (_) => _actionTrailController),
+        ChangeNotifierProvider(create: (_) => _navigationStatsController),
+        ChangeNotifierProvider(
+          create: (_) => _navigationInstructionsController,
+        ),
+        ChangeNotifierProvider(create: (_) => _navigationAudioController),
+        ChangeNotifierProvider(create: (_) => _navigationDigressingController),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(

@@ -389,6 +389,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get itineraryModeTabPublicTransport => 'ÖPNV';
 
   @override
+  String navigationStepDistanceToAction(String distance) {
+    return 'in $distance';
+  }
+
+  @override
   String navigationStepDistanceToActionMetres(String distance) {
     return 'in $distance Metern';
   }
@@ -605,4 +610,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get routingScreenExitRoutingButtonSemantic => 'Navigation beenden.';
+
+  @override
+  String get routingScreenReroutingDialogTitle => 'Neuberechnung der Route';
+
+  @override
+  String get routingScreenReroutingDialogMessage => 'Sie haben die geplante Route verlassen. Möchten Sie eine neue Route finden?';
+
+  @override
+  String get routingScreenReroutingDialogCancelButton => 'Abbrechen';
+
+  @override
+  String get routingScreenReroutingDialogConfirmButton => 'Neuberechnen';
 }

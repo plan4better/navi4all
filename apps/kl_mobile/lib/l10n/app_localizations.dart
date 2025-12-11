@@ -803,6 +803,12 @@ abstract class AppLocalizations {
   /// **'Transit'**
   String get itineraryModeTabPublicTransport;
 
+  /// No description provided for @navigationStepDistanceToAction.
+  ///
+  /// In en, this message translates to:
+  /// **'in {distance}'**
+  String navigationStepDistanceToAction(String distance);
+
   /// No description provided for @navigationStepDistanceToActionMetres.
   ///
   /// In en, this message translates to:
@@ -1210,6 +1216,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exit navigation.'**
   String get routingScreenExitRoutingButtonSemantic;
+
+  /// No description provided for @routingScreenReroutingDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rerouting'**
+  String get routingScreenReroutingDialogTitle;
+
+  /// No description provided for @routingScreenReroutingDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have deviated from the planned route. Would you like to find a new route?'**
+  String get routingScreenReroutingDialogMessage;
+
+  /// No description provided for @routingScreenReroutingDialogCancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get routingScreenReroutingDialogCancelButton;
+
+  /// No description provided for @routingScreenReroutingDialogConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reroute'**
+  String get routingScreenReroutingDialogConfirmButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

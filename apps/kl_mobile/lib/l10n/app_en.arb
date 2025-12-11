@@ -236,6 +236,14 @@
     },
     "itineraryModeTabWalking": "Walking",
     "itineraryModeTabPublicTransport": "Transit",
+    "navigationStepDistanceToAction": "in {distance}",
+    "@navigationStepDistanceToAction": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
     "navigationStepDistanceToActionMetres": "in {distance} metres",
     "@navigationStepDistanceToActionMetres": {
         "placeholders": {
@@ -355,5 +363,9 @@
     },
     "itinerariesScreenSemantic": "Journeys screen.",
     "routingScreenSemantic": "Navigation screen.",
-    "routingScreenExitRoutingButtonSemantic": "Exit navigation."
+    "routingScreenExitRoutingButtonSemantic": "Exit navigation.",
+    "routingScreenReroutingDialogTitle": "Rerouting",
+    "routingScreenReroutingDialogMessage": "You have deviated from the planned route. Would you like to find a new route?",
+    "routingScreenReroutingDialogCancelButton": "Cancel",
+    "routingScreenReroutingDialogConfirmButton": "Reroute"
 }
