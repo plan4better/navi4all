@@ -171,7 +171,7 @@ class RoutingState extends State<RoutingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.errorUnableToFetchTravelTime,
+            AppLocalizations.of(context)!.errorUnableToFetchItineraries,
           ),
         ),
       );
@@ -201,7 +201,7 @@ class RoutingState extends State<RoutingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.errorUnableToFetchTravelTime,
+            AppLocalizations.of(context)!.errorUnableToFetchItineraries,
           ),
         ),
       );

@@ -480,7 +480,7 @@ class RoutingState extends State<RoutingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.errorUnableToFetchDrivingTime,
+            AppLocalizations.of(context)!.errorUnableToFetchItineraries,
           ),
         ),
       );
