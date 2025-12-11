@@ -13,13 +13,13 @@ import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
 
 class RoutingController extends ChangeNotifier {
   // Constants
-  static const double densificationThreshold = 2.0;
+  static const double densificationThreshold = 1.0;
   static const double snappingThreshold = 10.0;
   static const Map<Mode, double> digressionThresholds = {
     Mode.BICYCLE: 50.0,
     Mode.BUS: 100.0,
     Mode.CABLE_CAR: 100.0,
-    Mode.CAR: 100.0,
+    Mode.CAR: 50.0,
     Mode.COACH: 100.0,
     Mode.FERRY: 100.0,
     Mode.FUNICULAR: 100.0,
@@ -234,9 +234,11 @@ class RoutingController extends ChangeNotifier {
   }
 
   void _subscribeToLocationStream() {
-    _positionSubscription = Geolocator.getPositionStream().listen(
-      _onLocationChanged,
-    );
+    _positionSubscription = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+      ),
+    ).listen(_onLocationChanged);
   }
 
   void _unsubscribeFromLocationStream() {

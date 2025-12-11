@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:navi4all/controllers/itinerary_controller.dart';
 import 'package:navi4all/view/routing/rerouting_dialog.dart';
-// import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:navi4all/controllers/routing_controller.dart';
-// import 'package:navi4all/core/analytics/events.dart';
 import 'package:navi4all/core/theme/colors.dart';
 import 'package:navi4all/core/theme/values.dart';
 import 'package:navi4all/l10n/app_localizations.dart';
@@ -20,7 +18,6 @@ import 'package:navi4all/view/common/sheet_button.dart';
 import 'package:navi4all/schemas/routing/itinerary.dart';
 import 'package:navi4all/core/processing_status.dart';
 import 'package:navi4all/services/routing.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:navi4all/schemas/routing/mode.dart';
 import 'package:navi4all/schemas/routing/place.dart';
 import 'package:navi4all/core/utils.dart';
@@ -61,11 +58,6 @@ class RoutingState extends State<RoutingScreen> {
       listen: false,
     );
     _itineraryController.addListener(_onItinerariesRefreshed);
-    _navigationDigressingController =
-        Provider.of<NavigationDigressingController>(context, listen: false);
-    _navigationDigressingController.addListener(
-      _watchNavigationDigressingState,
-    );
     _navigationInstructionsController =
         Provider.of<NavigationInstructionsController>(context, listen: false);
     _navigationInstructionsController.addListener(_buildLegTiles);
@@ -74,6 +66,11 @@ class RoutingState extends State<RoutingScreen> {
       listen: false,
     );
     _navigationAudioController.addListener(_triggerNavigationAudio);
+    _navigationDigressingController =
+        Provider.of<NavigationDigressingController>(context, listen: false);
+    _navigationDigressingController.addListener(
+      _watchNavigationDigressingState,
+    );
 
     // Fetch itineraries
     _fetchItineraries();
@@ -128,16 +125,6 @@ class RoutingState extends State<RoutingScreen> {
                           disclaimerAccepted = false;
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
-
-                          // Analytics event
-                          /* MatomoTracker.instance.trackEvent(
-                            eventInfo: EventInfo(
-                              category: EventCategory.routingScreen.toString(),
-                              action: EventAction
-                                  .routingScreenDisclaimerRejected
-                                  .toString(),
-                            ),
-                          ); */
                         },
                       ),
                     ),
@@ -151,16 +138,6 @@ class RoutingState extends State<RoutingScreen> {
                           disclaimerAccepted = true;
                           _toggleNavigationState();
                           Navigator.of(context).pop();
-
-                          // Analytics event
-                          /* MatomoTracker.instance.trackEvent(
-                            eventInfo: EventInfo(
-                              category: EventCategory.routingScreen.toString(),
-                              action: EventAction
-                                  .routingScreenDisclaimerAccepted
-                                  .toString(),
-                            ),
-                          ); */
                         },
                       ),
                     ),
@@ -172,31 +149,6 @@ class RoutingState extends State<RoutingScreen> {
         );
       },
     );
-  }
-
-  Future<Position?> _getUserLocation() async {
-    // Check location permission status
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      // User will need to enable permissions from app settings
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.userLocationDeniedSnackbarText,
-          ),
-        ),
-      );
-      return null;
-    }
-
-    // Fetch user location
-    return await Geolocator.getCurrentPosition();
   }
 
   Future<void> _fetchItineraries() async {

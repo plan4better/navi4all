@@ -557,4 +557,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get routingScreenExitRoutingButtonSemantic => 'Navigation beenden.';
+
+  @override
+  String get routingScreenReroutingDialogTitle => 'Neuberechnung der Route';
+
+  @override
+  String get routingScreenReroutingDialogMessage => 'Sie haben die geplante Route verlassen. Möchten Sie eine neue Route finden?';
+
+  @override
+  String get routingScreenReroutingDialogCancelButton => 'Abbrechen';
+
+  @override
+  String get routingScreenReroutingDialogConfirmButton => 'Neuberechnen';
 }

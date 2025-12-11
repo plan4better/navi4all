@@ -38,6 +38,7 @@ class SmartRootsApp extends StatelessWidget {
   late NavigationStatsController _navigationStatsController;
   late NavigationInstructionsController _navigationInstructionsController;
   late NavigationAudioController _navigationAudioController;
+  late NavigationDigressingController _navigationDigressingController;
 
   SmartRootsApp({super.key}) {
     _routingController = RoutingController();
@@ -49,6 +50,9 @@ class SmartRootsApp extends StatelessWidget {
     );
     _navigationAudioController = NavigationAudioController(
       _navigationInstructionsController,
+    );
+    _navigationDigressingController = NavigationDigressingController(
+      _routingController,
     );
   }
 
@@ -68,6 +72,7 @@ class SmartRootsApp extends StatelessWidget {
           create: (_) => _navigationInstructionsController,
         ),
         ChangeNotifierProvider(create: (_) => _navigationAudioController),
+        ChangeNotifierProvider(create: (_) => _navigationDigressingController),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) => MaterialApp(

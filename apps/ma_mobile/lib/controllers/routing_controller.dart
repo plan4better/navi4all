@@ -9,12 +9,29 @@ import 'package:smartroots/schemas/routing/audio_stage.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
 import 'package:smartroots/schemas/routing/mode.dart';
-import 'package:smartroots/schemas/routing/place.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
 
 class RoutingController extends ChangeNotifier {
   // Constants
-  static const double densificationThreshold = 2.0;
+  static const double densificationThreshold = 1.0;
+  static const double snappingThreshold = 10.0;
+  static const Map<Mode, double> digressionThresholds = {
+    Mode.BICYCLE: 50.0,
+    Mode.BUS: 100.0,
+    Mode.CABLE_CAR: 100.0,
+    Mode.CAR: 50.0,
+    Mode.COACH: 100.0,
+    Mode.FERRY: 100.0,
+    Mode.FUNICULAR: 100.0,
+    Mode.GONDOLA: 100.0,
+    Mode.RAIL: 100.0,
+    Mode.SUBWAY: 100.0,
+    Mode.TRAM: 100.0,
+    Mode.TRANSIT: 100.0,
+    Mode.WALK: 25.0,
+    Mode.TROLLEYBUS: 100.0,
+    Mode.MONORAIL: 100.0,
+  };
 
   // State tracking
   RoutingControllerState _state = RoutingControllerState.uninitialized;
@@ -25,10 +42,6 @@ class RoutingController extends ChangeNotifier {
   AudioStatus get audioStatus => _audioStatus;
 
   // Routing parameters
-  Place? _origin;
-  Place? get origin => _origin;
-  Place? _destination;
-  Place? get destination => _destination;
   ItineraryDetails? _itineraryDetails;
   ItineraryDetails? get itineraryDetails => _itineraryDetails;
 
@@ -53,13 +66,7 @@ class RoutingController extends ChangeNotifier {
   bool _isCurrentPositionSnapped = false;
   bool get isCurrentPositionSnapped => _isCurrentPositionSnapped;
 
-  void setParameters({
-    required Place origin,
-    required Place destination,
-    required ItineraryDetails itineraryDetails,
-  }) {
-    _origin = origin;
-    _destination = destination;
+  void setParameters({required ItineraryDetails itineraryDetails}) {
     _itineraryDetails = itineraryDetails;
     _buildActionTrail();
     _state = RoutingControllerState.initialized;
@@ -163,7 +170,6 @@ class RoutingController extends ChangeNotifier {
             stepEndIndex < stepStartIndex) {
           if (leg.mode != Mode.WALK &&
               leg.mode != Mode.BICYCLE &&
-              leg.mode != Mode.SCOOTER &&
               leg.mode != Mode.CAR) {
             // For transit legs, allow missing geometry
             stepMap[step] = null;
@@ -216,8 +222,6 @@ class RoutingController extends ChangeNotifier {
     _audioStatus = AudioStatus.unmuted;
 
     // Reset routing parameters
-    _origin = null;
-    _destination = null;
     _itineraryDetails = null;
 
     // Reset navigation tracking
@@ -230,9 +234,11 @@ class RoutingController extends ChangeNotifier {
   }
 
   void _subscribeToLocationStream() {
-    _positionSubscription = Geolocator.getPositionStream().listen(
-      _onLocationChanged,
-    );
+    _positionSubscription = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+      ),
+    ).listen(_onLocationChanged);
   }
 
   void _unsubscribeFromLocationStream() {
@@ -243,17 +249,12 @@ class RoutingController extends ChangeNotifier {
   void _onLocationChanged(Position position) {
     _currentPosition = position;
 
-    // TODO: Handle arrival
-    // TODO: Handle departure
-    // TODO: Compute remaining time and distance
-    // TODO: Handle rerouting
     // TODO: Handle transit legs
 
     // Update active leg and step
     for (leg_schema.LegDetailed leg in _actionTrail.keys) {
       if (leg.mode != Mode.WALK &&
           leg.mode != Mode.BICYCLE &&
-          leg.mode != Mode.SCOOTER &&
           leg.mode != Mode.CAR) {
         // TODO: Handle transit legs differently
         // Especially since their geometry is not linked to a step
@@ -288,7 +289,7 @@ class RoutingController extends ChangeNotifier {
           maps_toolkit.LatLng(position.latitude, position.longitude),
           stepCoordinates,
           true,
-          tolerance: 10.0,
+          tolerance: snappingThreshold,
         );
         if (indexOnPath > -1) {
           _activeLeg = leg;
@@ -303,13 +304,19 @@ class RoutingController extends ChangeNotifier {
     if (_activeLeg != null &&
         (_activeLeg!.mode == Mode.WALK ||
             _activeLeg!.mode == Mode.BICYCLE ||
-            _activeLeg!.mode == Mode.SCOOTER ||
             _activeLeg!.mode == Mode.CAR)) {
       Position? snappedPosition = _attemptSnapToStep(position);
       if (snappedPosition != null) {
         _isCurrentPositionSnapped = true;
         _currentPosition = snappedPosition;
       }
+    }
+
+    // Check if user is digressing
+    if (_checkDigressing()) {
+      _state = RoutingControllerState.digressing;
+    } else {
+      _state = RoutingControllerState.navigating;
     }
 
     notifyListeners();
@@ -324,7 +331,7 @@ class RoutingController extends ChangeNotifier {
       maps_toolkit.LatLng(position.latitude, position.longitude),
       stepPoints,
       true,
-      tolerance: 10,
+      tolerance: snappingThreshold,
     );
 
     if (positionIndex > -1 && positionIndex < stepPoints.length - 1) {
@@ -353,11 +360,43 @@ class RoutingController extends ChangeNotifier {
     }
     return null;
   }
+
+  bool _checkDigressing() {
+    // User may digress only if current position is not snapped and active leg exists
+    if (_currentPosition == null ||
+        _isCurrentPositionSnapped ||
+        _activeLeg == null) {
+      return false;
+    }
+
+    // Active leg geometry
+    List<maps_toolkit.LatLng> legCoordinates = maps_toolkit.PolygonUtil.decode(
+      _activeLeg!.geometry,
+    );
+
+    // Index of position on active leg
+    int positionIndex = maps_toolkit.PolygonUtil.locationIndexOnPath(
+      maps_toolkit.LatLng(
+        _currentPosition!.latitude,
+        _currentPosition!.longitude,
+      ),
+      legCoordinates,
+      true,
+      tolerance: digressionThresholds[_activeLeg!.mode]!,
+    );
+
+    // If index is unavailable, user is digressing
+    return positionIndex == -1;
+  }
 }
 
-enum RoutingControllerState { uninitialized, initialized, error, navigating }
-
-enum RoutingActionStatus { upcoming, active, await, completed }
+enum RoutingControllerState {
+  uninitialized,
+  initialized,
+  error,
+  navigating,
+  digressing,
+}
 
 class CurrentPositionController extends ChangeNotifier {
   late RoutingController _routingController;
@@ -465,6 +504,12 @@ class ActionTrailController extends ChangeNotifier {
           legCoordinates.addAll(stepCoordinates);
         }
       }
+
+      // If no step-level geometry, decode leg geometry
+      if (legCoordinates.isEmpty) {
+        legCoordinates = maps_toolkit.PolygonUtil.decode(leg.geometry);
+      }
+
       _actionTrailRendered.add(MapEntry(leg.mode, legCoordinates));
     }
 
@@ -596,7 +641,7 @@ class NavigationStatsController extends ChangeNotifier {
                 currentLatLng,
                 stepGeometry,
                 true,
-                tolerance: 10.0,
+                tolerance: RoutingController.snappingThreshold,
               );
 
               if (closestIndex >= 0 && closestIndex < stepGeometry.length - 1) {
@@ -766,7 +811,7 @@ class NavigationInstructionsController extends ChangeNotifier {
       currentLatLng,
       stepGeometry,
       true,
-      tolerance: 10.0,
+      tolerance: RoutingController.snappingThreshold,
     );
 
     if (closestIndex >= 0 && closestIndex < stepGeometry.length - 1) {
@@ -884,6 +929,36 @@ class NavigationAudioController extends ChangeNotifier {
   void dispose() {
     _navigationInstructionsController.removeListener(
       _refreshNavigationAudioControllerState,
+    );
+    super.dispose();
+  }
+}
+
+class NavigationDigressingController extends ChangeNotifier {
+  late RoutingController _routingController;
+
+  RoutingControllerState? _routingControllerState;
+  RoutingControllerState? get routingControllerState => _routingControllerState;
+
+  NavigationDigressingController(RoutingController routingController) {
+    _routingController = routingController;
+    _routingController.addListener(_refreshNavigationDigressingControllerState);
+  }
+
+  void _refreshNavigationDigressingControllerState() {
+    // Compare with cached state
+    if (_routingControllerState == _routingController.state) {
+      return;
+    }
+
+    _routingControllerState = _routingController.state;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _routingController.removeListener(
+      _refreshNavigationDigressingControllerState,
     );
     super.dispose();
   }

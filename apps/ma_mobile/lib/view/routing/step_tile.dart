@@ -62,18 +62,22 @@ class StepTile extends StatelessWidget {
                             ),
                           )
                         : SizedBox.shrink(),
-                    Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.navigationStepDistanceToAction(
-                        TextFormatter.formatDistanceValueText(step.distance),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: SmartRootsColors.maBlueExtraExtraDark,
-                      ),
-                    ),
+                    step.relativeDirection != RelativeDirection.DEPART
+                        ? Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.navigationStepDistanceToAction(
+                              TextFormatter.formatDistanceValueText(
+                                step.distance,
+                              ),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: SmartRootsColors.maBlueExtraExtraDark,
+                            ),
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),

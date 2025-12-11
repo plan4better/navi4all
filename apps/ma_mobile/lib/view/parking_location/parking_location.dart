@@ -5,6 +5,7 @@ import 'package:smartroots/controllers/favorites_controller.dart';
 import 'package:smartroots/core/analytics/events.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
+import 'package:smartroots/schemas/routing/mode.dart';
 import 'package:smartroots/view/common/accessible_icon_button.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
@@ -12,7 +13,6 @@ import 'package:smartroots/view/common/sheet_button.dart';
 import 'package:smartroots/view/parking_location/map.dart';
 import 'dart:core';
 
-import 'package:intl/intl.dart';
 import 'package:smartroots/services/routing.dart';
 import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:smartroots/core/processing_status.dart';
@@ -86,6 +86,9 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
       _processingStatus = ProcessingStatus.processing;
     });
 
+    // Delay allows map to initialize
+    await Future.delayed(Duration(milliseconds: 500));
+
     // Check location permission status
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission != LocationPermission.whileInUse &&
@@ -96,32 +99,21 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
     // Fetch user location
     final userLatLng = await Geolocator.getCurrentPosition();
 
-    List<ItinerarySummary> itineraries = [];
-    RoutingService routingService = RoutingService();
     try {
-      final response = await routingService.getItineraries(
+      // Fetch data
+      RoutingService routingService = RoutingService();
+      List<ItinerarySummary> results = await routingService.getItineraries(
         originLat: userLatLng.latitude,
         originLon: userLatLng.longitude,
         destinationLat: widget.parkingLocation.coordinates.lat,
         destinationLon: widget.parkingLocation.coordinates.lon,
-        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        time: DateFormat('HH:mm:ss').format(DateTime.now()),
+        time: DateTime.now(),
+        transportModes: [Mode.CAR.name],
         timeIsArrival: false,
-        transportModes: ["CAR"],
       );
-      if (response.statusCode == 200) {
-        final data = response.data["itineraries"] as List;
-        itineraries = data
-            .map((item) => ItinerarySummary.fromJson(item))
-            .toList();
-        setState(() {
-          _itineraries = itineraries;
-        });
-      } else {
-        throw Exception('Failed to load itineraries');
-      }
 
       setState(() {
+        _itineraries = results;
         _processingStatus = ProcessingStatus.completed;
       });
     } catch (e) {

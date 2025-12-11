@@ -13,27 +13,37 @@ class RoutingService extends APIService {
     required DateTime time,
     bool timeIsArrival = false,
     required List<String> transportModes,
-    required double walkingSpeed,
-    required bool walkingAvoid,
-    required double bicycleSpeed,
-    required bool accessible,
+    double? walkingSpeed,
+    bool? walkingAvoid,
+    double? bicycleSpeed,
+    bool? accessible,
     int numItineraries = 3,
   }) async {
+    // Build request body
+    Map<String, dynamic> data = {
+      'origin': {'lat': originLat, 'lon': originLon},
+      'destination': {'lat': destinationLat, 'lon': destinationLon},
+      'date': DateFormat('yyyy-MM-dd').format(time),
+      'time': DateFormat('HH:mm:ss').format(time),
+      'time_is_arrival': timeIsArrival,
+      'transport_modes': transportModes,
+      'num_itineraries': numItineraries,
+    };
+    if (walkingSpeed != null && walkingAvoid != null) {
+      data['walk'] = {'speed': walkingSpeed, 'avoid': walkingAvoid};
+    }
+    if (bicycleSpeed != null) {
+      data['bicycle'] = {'speed': bicycleSpeed};
+    }
+    if (accessible != null) {
+      data['accessible'] = accessible;
+    }
+
+    // Make request
     Response response = await apiClient.post(
       '/routing/plan',
       queryParameters: {'engine': Settings.apiRoutingEngine},
-      data: {
-        'origin': {'lat': originLat, 'lon': originLon},
-        'destination': {'lat': destinationLat, 'lon': destinationLon},
-        'date': DateFormat('yyyy-MM-dd').format(time),
-        'time': DateFormat('HH:mm:ss').format(time),
-        'time_is_arrival': timeIsArrival,
-        'transport_modes': transportModes,
-        'walk': {'speed': walkingSpeed, 'avoid': walkingAvoid},
-        'bicycle': {'speed': bicycleSpeed},
-        'accessible': accessible,
-        'num_itineraries': numItineraries,
-      },
+      data: data,
     );
 
     if (response.statusCode != 200) {

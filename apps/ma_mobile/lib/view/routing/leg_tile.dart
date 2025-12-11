@@ -25,15 +25,22 @@ class LegTile extends StatelessWidget {
   Widget _buildTransitWidget(BuildContext context) {
     return (leg.mode != Mode.WALK &&
             leg.mode != Mode.BICYCLE &&
-            leg.mode != Mode.SCOOTER &&
             leg.mode != Mode.CAR)
         ? Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 16.0,
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(color: SmartRootsColors.maBlue),
+              borderRadius: BorderRadius.circular(32.0),
+            ),
             child: Text(
               leg.route!.shortName!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           )
         : SizedBox.shrink();
@@ -69,6 +76,7 @@ class LegTile extends StatelessWidget {
             )
           : null,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           !isPrimaryLeg
               ? Padding(

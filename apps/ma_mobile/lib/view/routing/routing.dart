@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/availability_controller.dart';
@@ -41,6 +40,7 @@ class RoutingState extends State<RoutingScreen> {
   late Place _parkingLocation;
   late NavigationInstructionsController _navigationInstructionsController;
   late NavigationAudioController _navigationAudioController;
+  late NavigationDigressingController _navigationDigressingController;
   bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
@@ -63,6 +63,11 @@ class RoutingState extends State<RoutingScreen> {
       listen: false,
     );
     _navigationAudioController.addListener(_triggerNavigationAudio);
+    _navigationDigressingController =
+        Provider.of<NavigationDigressingController>(context, listen: false);
+    _navigationDigressingController.addListener(
+      _watchNavigationDigressingState,
+    );
 
     // Initialise origin and destination places
     _origin = Place(
@@ -372,13 +377,15 @@ class RoutingState extends State<RoutingScreen> {
   Future<void> _fetchItineraries() async {
     setState(() {
       _processingStatus = ProcessingStatus.processing;
-      _itineraryDetails = null;
     });
 
     // Delay allows map to initialize
-    await Future.delayed(Duration(milliseconds: 250));
-    flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
+    await Future.delayed(Duration(milliseconds: 500));
 
+    // Initialise TTS language
+    await flutterTts.setLanguage(AppLocalizations.of(context)!.localeName);
+
+    // Initialize origin and destination places
     if (_origin.id == SmartRootsValues.userLocation ||
         _destination.id == SmartRootsValues.userLocation) {
       final userLocation = await _getUserLocation();
@@ -418,41 +425,23 @@ class RoutingState extends State<RoutingScreen> {
       }
     }
 
-    List<ItinerarySummary> itineraries = [];
-    RoutingService routingService = RoutingService();
     try {
-      final response = await routingService.getItineraries(
+      // Fetch data
+      RoutingService routingService = RoutingService();
+      List<ItinerarySummary> results = await routingService.getItineraries(
         originLat: _origin.coordinates.lat,
         originLon: _origin.coordinates.lon,
         destinationLat: _destination.coordinates.lat,
         destinationLon: _destination.coordinates.lon,
-        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        time: DateFormat('HH:mm:ss').format(DateTime.now()),
-        timeIsArrival: false,
+        time: DateTime.now(),
         transportModes: [Mode.CAR.name],
+        timeIsArrival: false,
       );
-      if (response.statusCode == 200) {
-        final data = response.data["itineraries"] as List;
-        itineraries = data
-            .map((item) => ItinerarySummary.fromJson(item))
-            .toList();
-      } else {
-        throw Exception('Failed to load itineraries');
-      }
 
-      if (itineraries.isNotEmpty) {
-        await _fetchItineraryDetails(itineraries.first.itineraryId);
-
-        // Initialize routing controller
-        Provider.of<RoutingController>(context, listen: false).setParameters(
-          origin: _origin,
-          destination: _destination,
-          itineraryDetails: _itineraryDetails!,
-        );
+      if (results.isNotEmpty) {
+        await _fetchItineraryDetails(results.first.itineraryId);
       } else {
-        setState(() {
-          _processingStatus = ProcessingStatus.error;
-        });
+        throw Exception(AppLocalizations.of(context)!.navigationNoRouteFound);
       }
     } catch (e) {
       setState(() {
@@ -461,7 +450,7 @@ class RoutingState extends State<RoutingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.errorUnableToFetchDrivingTime,
+            AppLocalizations.of(context)!.errorUnableToFetchItineraries,
           ),
         ),
       );
@@ -469,20 +458,19 @@ class RoutingState extends State<RoutingScreen> {
   }
 
   Future<void> _fetchItineraryDetails(String itineraryId) async {
-    ItineraryDetails? itineraryDetails;
     RoutingService routingService = RoutingService();
     try {
-      final response = await routingService.getItineraryDetails(
+      final itineraryDetails = await routingService.getItineraryDetails(
         itineraryId: itineraryId,
       );
-      if (response.statusCode == 200) {
-        itineraryDetails = ItineraryDetails.fromJson(response.data);
-      } else {
-        throw Exception('Failed to load itinerary details');
-      }
+
+      // Initialize routing controller
+      Provider.of<RoutingController>(
+        context,
+        listen: false,
+      ).setParameters(itineraryDetails: itineraryDetails);
 
       setState(() {
-        _itineraryDetails = itineraryDetails;
         _processingStatus = ProcessingStatus.completed;
       });
     } catch (e) {
@@ -546,6 +534,31 @@ class RoutingState extends State<RoutingScreen> {
     }
   }
 
+  Future<void> _watchNavigationDigressingState() async {
+    // Check if user is digressing
+    if (_navigationDigressingController.routingControllerState ==
+        RoutingControllerState.digressing) {
+      // Play a sound to indicate rerouting
+      flutterTts.speak(
+        AppLocalizations.of(context)!.routingScreenReroutingDialogTitle,
+      );
+
+      // Attempt to reroute automatically
+      // Stop navigation
+      RoutingController routingController = Provider.of<RoutingController>(
+        context,
+        listen: false,
+      );
+      routingController.stopNavigation();
+
+      // Prepare navigation with new itinerary
+      await _fetchItineraries();
+
+      // Restart navigation
+      routingController.startNavigation();
+    }
+  }
+
   void _buildLegTiles() {
     List<LegTile> legTiles = [];
     _navigationInstructionsController.upcomingInstructions.forEach((
@@ -589,8 +602,10 @@ class RoutingState extends State<RoutingScreen> {
             '${AppLocalizations.of(context)!.navigationStepDistanceToActionMetres(TextFormatter.formatMetersDistanceFromMeters(_navigationAudioController.instructionStep!.distance).toString())}. ';
       }
     }
-    stepAnnouncement +=
-        ". ${getRelativeDirectionTextMapping(_navigationAudioController.instructionStep!.relativeDirection, context)}";
+    stepAnnouncement += getRelativeDirectionTextMapping(
+      _navigationAudioController.instructionStep!.relativeDirection,
+      context,
+    );
 
     flutterTts.speak(stepAnnouncement);
   }
@@ -599,6 +614,9 @@ class RoutingState extends State<RoutingScreen> {
   void dispose() {
     _navigationInstructionsController.removeListener(_buildLegTiles);
     _navigationAudioController.removeListener(_triggerNavigationAudio);
+    _navigationDigressingController.removeListener(
+      _watchNavigationDigressingState,
+    );
     super.dispose();
   }
 
