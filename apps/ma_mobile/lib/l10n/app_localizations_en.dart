@@ -333,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedbackTypeHint => 'Feedback type';
 
   @override
-  String get feedbackTypeLocalData => 'Local Data';
+  String get feedbackTypeLocalData => 'Problem with Parking Spot';
 
   @override
   String get feedbackTypeAppFunctionality => 'App Features';

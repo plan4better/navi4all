@@ -63,25 +63,28 @@ class SelectionTile extends StatelessWidget {
                       )
                     : SizedBox.shrink(),
                 SizedBox(width: 12.0),
-                Column(
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle != null
-                        ? SizedBox(height: 4.0)
-                        : SizedBox.shrink(),
-                    subtitle != null
-                        ? Text(
-                            subtitle!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : SizedBox.shrink(),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle != null
+                          ? SizedBox(height: 4.0)
+                          : SizedBox.shrink(),
+                      subtitle != null
+                          ? Text(
+                              subtitle!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          : SizedBox.shrink(),
+                    ],
+                  ),
                 ),
               ],
             ),

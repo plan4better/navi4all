@@ -48,7 +48,7 @@ class SelectionTile extends StatelessWidget {
                 leadingIcon != null
                     ? Icon(
                         leadingIcon!,
-                        color: Theme.of(context).textTheme.displayMedium?.color,
+                        color: SmartRootsColors.maBlueExtraExtraDark,
                       )
                     : leadingImage != null
                     ? ClipRRect(
@@ -61,31 +61,34 @@ class SelectionTile extends StatelessWidget {
                       )
                     : SizedBox.shrink(),
                 SizedBox(width: 12.0),
-                Column(
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: SmartRootsColors.maBlueExtraExtraDark,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: SmartRootsColors.maBlueExtraExtraDark,
+                        ),
                       ),
-                    ),
-                    subtitle != null
-                        ? SizedBox(height: 4.0)
-                        : SizedBox.shrink(),
-                    subtitle != null
-                        ? Text(
-                            subtitle!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: SmartRootsColors.maBlueExtraExtraDark,
-                            ),
-                          )
-                        : SizedBox.shrink(),
-                  ],
+                      subtitle != null
+                          ? SizedBox(height: 4.0)
+                          : SizedBox.shrink(),
+                      subtitle != null
+                          ? Text(
+                              subtitle!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SmartRootsColors.maBlueExtraExtraDark,
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/feedback/feedback_type.dart';
 import 'package:smartroots/view/common/accessible_button.dart';
+import 'package:smartroots/view/common/selection_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -30,7 +31,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     String messageBody = '';
     if (_selectedFeedbackType != FeedbackType.unselected) {
       messageBody +=
-          '${AppLocalizations.of(context)!.feedbackTypeHint}: $_selectedFeedbackType\n\n';
+          '${AppLocalizations.of(context)!.feedbackTypeHint}: ${_selectedFeedbackType.name}\n\n';
     }
     messageBody +=
         '${AppLocalizations.of(context)!.feedbackSubjectHint}: ${_subjectController.text}\n\n';
@@ -128,74 +129,38 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                         ),
                         SizedBox(height: 8),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: SegmentedButton(
-                                showSelectedIcon: false,
-                                emptySelectionAllowed: true,
-                                style: ButtonStyle(
-                                  side: WidgetStateProperty.all(
-                                    BorderSide(
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                    ),
-                                  ),
-                                  padding: WidgetStateProperty.all(
-                                    EdgeInsets.symmetric(vertical: 16),
-                                  ),
-                                ),
-                                segments: [
-                                  ButtonSegment(
-                                    value: FeedbackType.localData,
-                                    icon: Icon(
-                                      Icons.place_outlined,
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                    ),
-                                    label: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.feedbackTypeLocalData,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: SmartRootsColors
-                                            .maBlueExtraExtraDark,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  ButtonSegment(
-                                    value: FeedbackType.appFunctionality,
-                                    icon: Icon(
-                                      Icons.phone_android_outlined,
-                                      color:
-                                          SmartRootsColors.maBlueExtraExtraDark,
-                                    ),
-                                    label: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.feedbackTypeAppFunctionality,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: SmartRootsColors
-                                            .maBlueExtraExtraDark,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                selected: {_selectedFeedbackType},
-                                onSelectionChanged: (newSelection) {
-                                  setState(() {
-                                    _selectedFeedbackType = newSelection.first;
-                                  });
-                                },
-                              ),
+                            SelectionTile(
+                              leadingIcon: Icons.place_outlined,
+                              title: AppLocalizations.of(
+                                context,
+                              )!.feedbackTypeLocalData,
+                              isSelected:
+                                  _selectedFeedbackType ==
+                                  FeedbackType.localData,
+                              onTap: () {
+                                setState(() {
+                                  _selectedFeedbackType =
+                                      FeedbackType.localData;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 8),
+                            SelectionTile(
+                              leadingIcon: Icons.phone_android_outlined,
+                              title: AppLocalizations.of(
+                                context,
+                              )!.feedbackTypeAppFunctionality,
+                              isSelected:
+                                  _selectedFeedbackType ==
+                                  FeedbackType.appFunctionality,
+                              onTap: () {
+                                setState(() {
+                                  _selectedFeedbackType =
+                                      FeedbackType.appFunctionality;
+                                });
+                              },
                             ),
                           ],
                         ),

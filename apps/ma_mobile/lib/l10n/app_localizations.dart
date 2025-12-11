@@ -698,7 +698,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackTypeLocalData.
   ///
   /// In en, this message translates to:
-  /// **'Local Data'**
+  /// **'Problem with Parking Spot'**
   String get feedbackTypeLocalData;
 
   /// No description provided for @feedbackTypeAppFunctionality.
