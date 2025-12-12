@@ -698,13 +698,13 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackTypeLocalData.
   ///
   /// In en, this message translates to:
-  /// **'Problem with Parking Spot'**
+  /// **'Problem with parking spot'**
   String get feedbackTypeLocalData;
 
   /// No description provided for @feedbackTypeAppFunctionality.
   ///
   /// In en, this message translates to:
-  /// **'App Features'**
+  /// **'App features'**
   String get feedbackTypeAppFunctionality;
 
   /// No description provided for @feedbackSubjectHint.
@@ -718,6 +718,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your feedback'**
   String get feedbackMessageHint;
+
+  /// No description provided for @feedbackImageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach image'**
+  String get feedbackImageTitle;
+
+  /// No description provided for @feedbackImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In the next step, attach an image in support of your feedback (optional).'**
+  String get feedbackImageHint;
+
+  /// No description provided for @feedbackResetButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get feedbackResetButton;
 
   /// No description provided for @feedbackSubmitButton.
   ///

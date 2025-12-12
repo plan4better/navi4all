@@ -285,7 +285,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get feedbackTypeHint => 'Feedbacktyp';
 
   @override
-  String get feedbackTypeLocalData => 'Lokale Daten';
+  String get feedbackTypeLocalData => 'Problem mit lokalen Daten';
 
   @override
   String get feedbackTypeAppFunctionality => 'App-Funktionen';
@@ -295,6 +295,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get feedbackMessageHint => 'Ihr Nachricht';
+
+  @override
+  String get feedbackImageTitle => 'Bild anhängen';
+
+  @override
+  String get feedbackImageHint => 'Im nächsten Schritt können Sie ein Bild zur Unterstützung Ihres Feedbacks anhängen (optional).';
+
+  @override
+  String get feedbackResetButton => 'Zurücksetzen';
 
   @override
   String get feedbackSubmitButton => 'Absenden';

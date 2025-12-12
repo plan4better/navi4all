@@ -30,7 +30,7 @@ class SheetButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(32)),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,

@@ -333,16 +333,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedbackTypeHint => 'Feedback type';
 
   @override
-  String get feedbackTypeLocalData => 'Problem with Parking Spot';
+  String get feedbackTypeLocalData => 'Problem with parking spot';
 
   @override
-  String get feedbackTypeAppFunctionality => 'App Features';
+  String get feedbackTypeAppFunctionality => 'App features';
 
   @override
   String get feedbackSubjectHint => 'Subject';
 
   @override
   String get feedbackMessageHint => 'Your feedback';
+
+  @override
+  String get feedbackImageTitle => 'Attach image';
+
+  @override
+  String get feedbackImageHint => 'In the next step, attach an image in support of your feedback (optional).';
+
+  @override
+  String get feedbackResetButton => 'Reset';
 
   @override
   String get feedbackSubmitButton => 'Submit';

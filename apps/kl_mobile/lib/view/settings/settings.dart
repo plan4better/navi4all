@@ -205,7 +205,7 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         leading: Icon(
-                          Icons.visibility_rounded,
+                          Icons.visibility_outlined,
                           color: Theme.of(
                             context,
                           ).textTheme.displayMedium?.color,
@@ -227,7 +227,7 @@ class SettingsScreen extends StatelessWidget {
                       Divider(color: Navi4AllColors.klPink, height: 0),
                       ListTile(
                         leading: Icon(
-                          Icons.play_circle_rounded,
+                          Icons.play_circle_outlined,
                           color: Theme.of(
                             context,
                           ).textTheme.displayMedium?.color,
@@ -253,7 +253,7 @@ class SettingsScreen extends StatelessWidget {
                       Divider(color: Navi4AllColors.klPink, height: 0),
                       ListTile(
                         leading: Icon(
-                          Icons.feedback_rounded,
+                          Icons.feedback_outlined,
                           color: Theme.of(
                             context,
                           ).textTheme.displayMedium?.color,
@@ -277,7 +277,7 @@ class SettingsScreen extends StatelessWidget {
                       Divider(color: Navi4AllColors.klPink, height: 0),
                       ListTile(
                         leading: Icon(
-                          Icons.support_agent_rounded,
+                          Icons.support_agent_outlined,
                           color: Theme.of(
                             context,
                           ).textTheme.displayMedium?.color,
@@ -297,7 +297,7 @@ class SettingsScreen extends StatelessWidget {
                       Divider(color: Navi4AllColors.klPink, height: 0),
                       ListTile(
                         leading: Icon(
-                          Icons.privacy_tip_rounded,
+                          Icons.privacy_tip_outlined,
                           color: Theme.of(
                             context,
                           ).textTheme.displayMedium?.color,

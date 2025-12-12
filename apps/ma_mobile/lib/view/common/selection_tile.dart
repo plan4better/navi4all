@@ -35,7 +35,7 @@ class SelectionTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(32.0),
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
+            padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32.0),
               border: Border.all(color: SmartRootsColors.maBlue, width: 1.5),
