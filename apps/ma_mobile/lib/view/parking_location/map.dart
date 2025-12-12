@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:core';
 
@@ -26,10 +27,20 @@ class ParkingSiteMap extends StatefulWidget {
   State<StatefulWidget> createState() => _ParkingSiteMapState();
 }
 
-class _ParkingSiteMapState extends State<ParkingSiteMap> {
+class _ParkingSiteMapState extends State<ParkingSiteMap>
+    with WidgetsBindingObserver {
   late MapLibreMapController _mapController;
+  Timer? _refreshTimer;
   bool _canInteractWithMap = false;
+  late Place _parkingLocation;
   List<Place> _parkingLocations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _parkingLocation = widget.parkingLocation;
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   Future<void> _onStyleLoaded() async {
     // Load custom marker icons
@@ -45,19 +56,16 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     final list3 = bytes3.buffer.asUint8List();
     await _mapController.addImage("parking_avbl_unknown.png", list3);
 
-    // Fetch and draw map layers
-    _drawMapLayers().then((_) {
-      // Add feature tap listener
-      _mapController.onFeatureTapped.add(_onFeatureTapped);
-    });
-
     await Future.delayed(const Duration(milliseconds: 250));
     setState(() => _canInteractWithMap = true);
+
+    // Fetch and draw map layers
+    _drawMapLayers();
   }
 
   Future<void> _drawMapLayers() async {
-    // Draw parking location
-    _drawPlace();
+    // Fetch parking locations and draw markers
+    await _refreshData();
 
     // Only continue if alternative parking locations are to be shown
     if (!widget.showAlternatives) {
@@ -67,9 +75,6 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     // Draw radius circle
     _drawRadius();
 
-    // Fetch parking sites and draw markers
-    await _fetchParkingSites();
-
     // Compute new camera zoom and position to fit radius
     double zoomLevel = 14.0 - log(Settings.defaultRadius / 450) / log(2);
     zoomLevel = zoomLevel.clamp(9.0, 16.0);
@@ -77,9 +82,9 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: LatLng(
-            widget.parkingLocation.coordinates.lat -
+            _parkingLocation.coordinates.lat -
                 (Settings.defaultRadius / 200000),
-            widget.parkingLocation.coordinates.lon,
+            _parkingLocation.coordinates.lon,
           ),
           zoom: zoomLevel,
         ),
@@ -88,13 +93,65 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     );
   }
 
-  Future<void> _fetchParkingSites() async {
+  Future<void> _refreshData() async {
+    // Schedule periodic data refresh
+    if (_refreshTimer == null || !_refreshTimer!.isActive) {
+      _refreshTimer = Timer.periodic(
+        Duration(seconds: Settings.dataRefreshIntervalSeconds),
+        (_) => _refreshData(),
+      );
+    }
+
+    if (!_canInteractWithMap) {
+      return;
+    }
+
+    // Fetch and display primary parking location
+    await _fetchPrimaryParkingLocation();
+
+    if (!widget.showAlternatives) {
+      return;
+    }
+
+    // Fetch and display alternative parking locations
+    await _fetchAlternativeParkingLocations();
+
+    // Add feature tap listener
+    _mapController.onFeatureTapped.clear();
+    _mapController.onFeatureTapped.add(_onFeatureTapped);
+  }
+
+  Future<void> _fetchPrimaryParkingLocation() async {
+    POIParkingService parkingService = POIParkingService();
+    try {
+      Place? parkingLocation;
+      parkingLocation = await parkingService.getParkingLocationDetails(
+        placeId: _parkingLocation.id,
+        placeType: _parkingLocation.type,
+      );
+
+      if (parkingLocation != null) {
+        _parkingLocation = parkingLocation;
+        _drawPlace();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _fetchAlternativeParkingLocations() async {
     POIParkingService parkingService = POIParkingService();
     try {
       List<Place> parkingLocations;
       Map<String, dynamic> geoJson;
       (parkingLocations, geoJson) = await parkingService.getParkingLocations(
-        focusPoint: widget.parkingLocation.coordinates,
+        focusPoint: _parkingLocation.coordinates,
         radius: Settings.defaultRadius,
       );
       setState(() {
@@ -115,8 +172,8 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   void _drawRadius() {
     // Draw a polygon (circle approximation) with given radius in meters
     final center = LatLng(
-      widget.parkingLocation.coordinates.lat,
-      widget.parkingLocation.coordinates.lon,
+      _parkingLocation.coordinates.lat,
+      _parkingLocation.coordinates.lon,
     );
     final int points = 60; // More points = smoother circle
     final double radiusInMeters = Settings.defaultRadius.toDouble();
@@ -168,8 +225,8 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     for (var feature in geoJson['features']) {
       // Skip if location is the selected parking location
       var coords = feature['geometry']['coordinates'];
-      if (coords[1] == widget.parkingLocation.coordinates.lat &&
-          coords[0] == widget.parkingLocation.coordinates.lon) {
+      if (coords[1] == _parkingLocation.coordinates.lat &&
+          coords[0] == _parkingLocation.coordinates.lon) {
         continue;
       }
 
@@ -257,8 +314,10 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   }
 
   Future<void> _drawPlace() async {
+    await _mapController.clearSymbols();
+
     String iconName;
-    if (!widget.parkingLocation.attributes?["has_realtime_data"]) {
+    if (!_parkingLocation.attributes?["has_realtime_data"]) {
       iconName = "parking_avbl_unknown.png";
     } else if (widget
         .parkingLocation
@@ -271,8 +330,8 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
     await _mapController.addSymbol(
       SymbolOptions(
         geometry: LatLng(
-          widget.parkingLocation.coordinates.lat,
-          widget.parkingLocation.coordinates.lon,
+          _parkingLocation.coordinates.lat,
+          _parkingLocation.coordinates.lon,
         ),
         iconImage: iconName,
         iconSize: 0.85,
@@ -324,6 +383,25 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // Cancel periodic data refresh
+      _refreshTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
+    _mapController.onFeatureTapped.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -350,8 +428,8 @@ class _ParkingSiteMapState extends State<ParkingSiteMap> {
               ),
               initialCameraPosition: CameraPosition(
                 target: LatLng(
-                  widget.parkingLocation.coordinates.lat - 0.003,
-                  widget.parkingLocation.coordinates.lon,
+                  _parkingLocation.coordinates.lat - 0.003,
+                  _parkingLocation.coordinates.lon,
                 ),
                 zoom: 13.5,
               ),

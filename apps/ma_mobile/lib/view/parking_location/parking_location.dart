@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/favorites_controller.dart';
 import 'package:smartroots/core/analytics/events.dart';
+import 'package:smartroots/core/config.dart';
 import 'package:smartroots/core/theme/colors.dart';
 import 'package:smartroots/l10n/app_localizations.dart';
 import 'package:smartroots/schemas/routing/mode.dart';
+import 'package:smartroots/services/poi_parking.dart';
 import 'package:smartroots/view/common/accessible_icon_button.dart';
 import 'package:smartroots/schemas/routing/place.dart';
 import 'package:smartroots/view/common/sliding_bottom_sheet.dart';
@@ -22,11 +26,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:smartroots/view/routing/routing.dart';
 
 class ParkingLocationScreen extends StatefulWidget {
-  final Place? place;
   final Place parkingLocation;
   final bool showAlternatives;
   const ParkingLocationScreen({
-    this.place,
     required this.parkingLocation,
     this.showAlternatives = false,
     super.key,
@@ -36,7 +38,10 @@ class ParkingLocationScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _ParkingLocationScreenState();
 }
 
-class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
+class _ParkingLocationScreenState extends State<ParkingLocationScreen>
+    with WidgetsBindingObserver {
+  Timer? _refreshTimer;
+  late Place _parkingLocation;
   bool _isFavorite = false;
   List<ItinerarySummary> _itineraries = [];
   ProcessingStatus _processingStatus = ProcessingStatus.idle;
@@ -44,15 +49,56 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
   @override
   void initState() {
     super.initState();
+    _parkingLocation = widget.parkingLocation;
+    WidgetsBinding.instance.addObserver(this);
+    _refreshData();
     _checkIfFavorite();
     _fetchItineraries();
+  }
+
+  Future<void> _refreshData() async {
+    // Schedule periodic data refresh
+    if (_refreshTimer == null || !_refreshTimer!.isActive) {
+      _refreshTimer = Timer.periodic(
+        Duration(seconds: Settings.dataRefreshIntervalSeconds),
+        (_) => _refreshData(),
+      );
+    }
+
+    // Fetch and display primary parking location
+    await _fetchPrimaryParkingLocation();
+  }
+
+  Future<void> _fetchPrimaryParkingLocation() async {
+    POIParkingService parkingService = POIParkingService();
+    try {
+      Place? parkingLocation;
+      parkingLocation = await parkingService.getParkingLocationDetails(
+        placeId: _parkingLocation.id,
+        placeType: _parkingLocation.type,
+      );
+
+      if (parkingLocation != null) {
+        setState(() {
+          _parkingLocation = parkingLocation!;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _checkIfFavorite() async {
     _isFavorite = await Provider.of<FavoritesController>(
       context,
       listen: false,
-    ).checkIsFavorite(widget.parkingLocation);
+    ).checkIsFavorite(_parkingLocation);
     setState(() {});
   }
 
@@ -61,12 +107,12 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
       await Provider.of<FavoritesController>(
         context,
         listen: false,
-      ).removeFavorite(widget.parkingLocation);
+      ).removeFavorite(_parkingLocation);
     } else {
       await Provider.of<FavoritesController>(
         context,
         listen: false,
-      ).addFavorite(widget.parkingLocation);
+      ).addFavorite(_parkingLocation);
 
       // Analytics event
       MatomoTracker.instance.trackEvent(
@@ -105,8 +151,8 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
       List<ItinerarySummary> results = await routingService.getItineraries(
         originLat: userLatLng.latitude,
         originLon: userLatLng.longitude,
-        destinationLat: widget.parkingLocation.coordinates.lat,
-        destinationLon: widget.parkingLocation.coordinates.lon,
+        destinationLat: _parkingLocation.coordinates.lat,
+        destinationLon: _parkingLocation.coordinates.lon,
         time: DateTime.now(),
         transportModes: [Mode.CAR.name],
         timeIsArrival: false,
@@ -131,12 +177,30 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // Cancel periodic data refresh
+      _refreshTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           ParkingSiteMap(
-            parkingLocation: widget.parkingLocation,
+            parkingLocation: _parkingLocation,
             showAlternatives: widget.showAlternatives,
           ),
           SlidingBottomSheet(
@@ -158,7 +222,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                 children: [
                                   ExcludeSemantics(
                                     child: Text(
-                                      widget.parkingLocation.name,
+                                      _parkingLocation.name,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -171,7 +235,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                   ),
                                   ExcludeSemantics(
                                     child: Text(
-                                      widget.parkingLocation.address,
+                                      _parkingLocation.address,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -214,9 +278,9 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                 )!.parkingLocationScreenRouteExternalButtonSemantic,
                                 onTap: () {
                                   MapsLauncher.launchCoordinates(
-                                    widget.parkingLocation.coordinates.lat,
-                                    widget.parkingLocation.coordinates.lon,
-                                    widget.parkingLocation.name,
+                                    _parkingLocation.coordinates.lat,
+                                    _parkingLocation.coordinates.lon,
+                                    _parkingLocation.name,
                                   ).then((value) {
                                     if (!value) {
                                       ScaffoldMessenger.of(
@@ -263,7 +327,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => RoutingScreen(
-                                        parkingLocation: widget.parkingLocation,
+                                        parkingLocation: _parkingLocation,
                                       ),
                                     ),
                                   );
@@ -360,7 +424,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                               .parkingLocationScreenOccupancyStatusSemantic(
                                 TextFormatter.getOccupancyText(
                                   context,
-                                  widget.parkingLocation,
+                                  _parkingLocation,
                                 ),
                               ),
                           child: Row(
@@ -394,7 +458,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                               Text(
                                 TextFormatter.getOccupancyText(
                                   context,
-                                  widget.parkingLocation,
+                                  _parkingLocation,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -425,10 +489,9 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                   elevation: 4,
                   borderRadius: BorderRadius.circular(28),
                   child: Semantics(
-                    label: AppLocalizations.of(context)!
-                        .placeScreenSearchBarSemantic(
-                          widget.parkingLocation.name,
-                        ),
+                    label: AppLocalizations.of(
+                      context,
+                    )!.placeScreenSearchBarSemantic(_parkingLocation.name),
                     excludeSemantics: true,
                     button: true,
                     focused: true,
@@ -453,7 +516,7 @@ class _ParkingLocationScreenState extends State<ParkingLocationScreen> {
                             ),
                             Expanded(
                               child: Text(
-                                widget.parkingLocation.name,
+                                _parkingLocation.name,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: SmartRootsColors.maBlueExtraExtraDark,

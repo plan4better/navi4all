@@ -387,10 +387,8 @@ class PlaceListItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ParkingLocationScreen(
-              place: place,
-              parkingLocation: parkingLocation,
-            ),
+            builder: (context) =>
+                ParkingLocationScreen(parkingLocation: parkingLocation),
           ),
         );
       },
