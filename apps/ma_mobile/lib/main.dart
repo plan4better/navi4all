@@ -63,7 +63,7 @@ class SmartRootsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeController(context)),
         ChangeNotifierProvider(create: (_) => FavoritesController(context)),
         ChangeNotifierProvider(create: (_) => AvailabilityController()),
-        ChangeNotifierProvider(create: (_) => AutocompleteController()),
+        ChangeNotifierProvider(create: (_) => AutocompleteController(context)),
         ChangeNotifierProvider(create: (_) => _routingController),
         ChangeNotifierProvider(create: (_) => _currentPositionController),
         ChangeNotifierProvider(create: (_) => _actionTrailController),
