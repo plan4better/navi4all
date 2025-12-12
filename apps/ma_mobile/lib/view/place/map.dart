@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:core';
 
@@ -22,22 +23,23 @@ class PlaceMap extends StatefulWidget {
   State<StatefulWidget> createState() => _PlaceMapState();
 }
 
-class _PlaceMapState extends State<PlaceMap> {
+class _PlaceMapState extends State<PlaceMap> with WidgetsBindingObserver {
   late MapLibreMapController _mapController;
+  Timer? _refreshTimer;
   bool _canInteractWithMap = false;
   List<Place> _parkingLocations = [];
   int? _lastRadius;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   Future<void> _onStyleLoaded() async {
     // Clear existing markers and listeners
     await _mapController.clearCircles();
     _mapController.onCircleTapped.clear();
-
-    // Fetch and draw map layers
-    _fetchMapLayers().then((_) {
-      // Add feature tap listener
-      _mapController.onFeatureTapped.add(_onFeatureTapped);
-    });
 
     // Load custom marker icons
     final bytes4 = await rootBundle.load('assets/place.png');
@@ -46,20 +48,22 @@ class _PlaceMapState extends State<PlaceMap> {
 
     await Future.delayed(const Duration(milliseconds: 250));
     setState(() => _canInteractWithMap = true);
+
+    // Fetch and draw map layers
+    _drawMapLayers();
   }
 
-  Future<void> _fetchMapLayers() async {
+  Future<void> _drawMapLayers() async {
     // Clear existing layers
     _mapController.clearSymbols();
-    _mapController.clearCircles();
     _mapController.clearFills();
 
     // Draw radius circle
     _lastRadius = widget.radius;
     _drawRadius();
 
-    // Fetch parking sites and draw markers
-    await _fetchParkingSites();
+    // Fetch parking locations and draw markers
+    await _refreshData();
 
     // Draw place marker
     _drawPlace();
@@ -81,7 +85,28 @@ class _PlaceMapState extends State<PlaceMap> {
     );
   }
 
-  Future<void> _fetchParkingSites() async {
+  Future<void> _refreshData() async {
+    // Schedule periodic data refresh
+    if (_refreshTimer == null || !_refreshTimer!.isActive) {
+      _refreshTimer = Timer.periodic(
+        Duration(seconds: Settings.dataRefreshIntervalSeconds),
+        (_) => _refreshData(),
+      );
+    }
+
+    if (!_canInteractWithMap) {
+      return;
+    }
+
+    // Fetch and display parking locations
+    await _fetchParkingLocations();
+
+    // Add feature tap listener
+    _mapController.onFeatureTapped.clear();
+    _mapController.onFeatureTapped.add(_onFeatureTapped);
+  }
+
+  Future<void> _fetchParkingLocations() async {
     POIParkingService parkingService = POIParkingService();
     try {
       List<Place> parkingLocations;
@@ -106,10 +131,29 @@ class _PlaceMapState extends State<PlaceMap> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // Cancel periodic data refresh
+      _refreshTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
+    _mapController.onFeatureTapped.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (_lastRadius != null && widget.radius != _lastRadius) {
       // Radius changed, update map
-      _fetchMapLayers();
+      _drawMapLayers();
     }
 
     return Stack(

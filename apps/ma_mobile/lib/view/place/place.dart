@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:smartroots/core/analytics/events.dart';
@@ -22,18 +24,33 @@ class PlaceScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _PlaceScreenState();
 }
 
-class _PlaceScreenState extends State<PlaceScreen> {
+class _PlaceScreenState extends State<PlaceScreen> with WidgetsBindingObserver {
+  Timer? _refreshTimer;
   int _selectedRadius = Settings.defaultRadius;
   int _changedRadius = Settings.defaultRadius;
   List<Place> _parkingLocations = [];
 
   @override
   void initState() {
-    _fetchParkingSites();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _refreshData();
   }
 
-  Future<void> _fetchParkingSites() async {
+  Future<void> _refreshData() async {
+    // Schedule periodic data refresh
+    if (_refreshTimer == null || !_refreshTimer!.isActive) {
+      _refreshTimer = Timer.periodic(
+        Duration(seconds: Settings.dataRefreshIntervalSeconds),
+        (_) => _refreshData(),
+      );
+    }
+
+    // Fetch parking locations
+    await _fetchParkingLocations();
+  }
+
+  Future<void> _fetchParkingLocations() async {
     POIParkingService parkingService = POIParkingService();
     try {
       List<Place> result;
@@ -166,7 +183,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           onTap: () {
                             setState(() {
                               _selectedRadius = _changedRadius;
-                              _fetchParkingSites();
+                              _refreshData();
                               Navigator.of(context).pop();
                             });
 
@@ -191,6 +208,24 @@ class _PlaceScreenState extends State<PlaceScreen> {
         );
       },
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // Cancel periodic data refresh
+      _refreshTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
