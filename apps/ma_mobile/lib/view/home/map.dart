@@ -257,7 +257,9 @@ class _HomeMapState extends State<HomeMap> {
       List<Place> parkingLocations;
       Map<String, dynamic> geoJson;
       (parkingLocations, geoJson) = await parkingService.getParkingLocations();
-      _parkingLocations = parkingLocations;
+      setState(() {
+        _parkingLocations = parkingLocations;
+      });
       _updateMarkers(geoJson);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -484,10 +486,22 @@ class _HomeMapState extends State<HomeMap> {
   }
 
   void _updateMarkers(Map<String, dynamic> geoJson) async {
+    // Remove existing parking layers and sources
+    for (String layerId in (await _mapController.getLayerIds())) {
+      if (layerId.startsWith('parking_')) {
+        await _mapController.removeLayer(layerId);
+      }
+    }
+    for (String sourceId in (await _mapController.getSourceIds())) {
+      if (sourceId.startsWith('parking_')) {
+        await _mapController.removeSource(sourceId);
+      }
+    }
+
     // Separate features by availability status
-    List<Map<String, dynamic>> availableFeatures = [];
-    List<Map<String, dynamic>> occupiedFeatures = [];
     List<Map<String, dynamic>> unknownFeatures = [];
+    List<Map<String, dynamic>> occupiedFeatures = [];
+    List<Map<String, dynamic>> availableFeatures = [];
 
     for (var feature in geoJson['features']) {
       var properties = feature['properties'];
@@ -516,9 +530,9 @@ class _HomeMapState extends State<HomeMap> {
 
     // Add sources for each availability group
     await _mapController.addSource(
-      'parking_available',
+      'parking_unknown',
       GeojsonSourceProperties(
-        data: availableGeoJson,
+        data: unknownGeoJson,
         cluster: true,
         clusterMaxZoom: 16,
         clusterRadius: 30,
@@ -536,9 +550,9 @@ class _HomeMapState extends State<HomeMap> {
     );
 
     await _mapController.addSource(
-      'parking_unknown',
+      'parking_available',
       GeojsonSourceProperties(
-        data: unknownGeoJson,
+        data: availableGeoJson,
         cluster: true,
         clusterMaxZoom: 16,
         clusterRadius: 30,
@@ -561,42 +575,10 @@ class _HomeMapState extends State<HomeMap> {
       ],
     );
 
-    // Add layer for unclustered points - Occupied (Red)
-    await _mapController.addLayer(
-      'parking_occupied',
-      'parking_occupied_layer',
-      CircleLayerProperties(
-        circleColor: '#F4B1A4',
-        circleRadius: 6.0,
-        circleStrokeWidth: 1.0,
-        circleStrokeColor: '#FFFFFF',
-      ),
-      filter: [
-        '!',
-        ['has', 'point_count'],
-      ],
-    );
-
-    // Add layer for unclustered points - Available (Green)
-    await _mapController.addLayer(
-      'parking_available',
-      'parking_available_layer',
-      CircleLayerProperties(
-        circleColor: '#089161',
-        circleRadius: 6.0,
-        circleStrokeWidth: 1.0,
-        circleStrokeColor: '#FFFFFF',
-      ),
-      filter: [
-        '!',
-        ['has', 'point_count'],
-      ],
-    );
-
     // Add cluster circles - Unknown (Blue)
     await _mapController.addLayer(
       'parking_unknown',
-      'unknown_clusters',
+      'parking_unknown_clusters',
       CircleLayerProperties(
         circleColor: '#3685E2',
         circleRadius: [
@@ -624,7 +606,7 @@ class _HomeMapState extends State<HomeMap> {
 
     await _mapController.addLayer(
       'parking_unknown',
-      'unknown_cluster_count',
+      'parking_unknown_cluster_count',
       SymbolLayerProperties(
         textField: ['get', 'point_count_abbreviated'],
         textFont: ['Roboto Bold'],
@@ -636,10 +618,26 @@ class _HomeMapState extends State<HomeMap> {
       filter: ['has', 'point_count'],
     );
 
+    // Add layer for unclustered points - Occupied (Red)
+    await _mapController.addLayer(
+      'parking_occupied',
+      'parking_occupied_layer',
+      CircleLayerProperties(
+        circleColor: '#F4B1A4',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
+    );
+
     // Add cluster circles - Occupied (Red)
     await _mapController.addLayer(
       'parking_occupied',
-      'occupied_clusters',
+      'parking_occupied_clusters',
       CircleLayerProperties(
         circleColor: '#F4B1A4',
         circleRadius: [
@@ -667,7 +665,7 @@ class _HomeMapState extends State<HomeMap> {
 
     await _mapController.addLayer(
       'parking_occupied',
-      'occupied_cluster_count',
+      'parking_occupied_cluster_count',
       SymbolLayerProperties(
         textField: ['get', 'point_count_abbreviated'],
         textFont: ['Roboto Bold'],
@@ -679,10 +677,26 @@ class _HomeMapState extends State<HomeMap> {
       filter: ['has', 'point_count'],
     );
 
+    // Add layer for unclustered points - Available (Green)
+    await _mapController.addLayer(
+      'parking_available',
+      'parking_available_layer',
+      CircleLayerProperties(
+        circleColor: '#089161',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
+    );
+
     // Add cluster circles - Available (Green)
     await _mapController.addLayer(
       'parking_available',
-      'available_clusters',
+      'parking_available_clusters',
       CircleLayerProperties(
         circleColor: '#089161',
         circleRadius: [
@@ -710,7 +724,7 @@ class _HomeMapState extends State<HomeMap> {
 
     await _mapController.addLayer(
       'parking_available',
-      'available_cluster_count',
+      'parking_available_cluster_count',
       SymbolLayerProperties(
         textField: ['get', 'point_count_abbreviated'],
         textFont: ['Roboto Bold'],

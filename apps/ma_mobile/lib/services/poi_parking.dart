@@ -113,20 +113,43 @@ class POIParkingService {
       }).toList();
     }
 
-    // Order parking locations by distance to focus point
+    // Order parking locations by availablity
+    parkingLocations.sort((a, b) {
+      bool? aAvailable = a.attributes?["disabled_parking_available"];
+      bool? bAvailable = b.attributes?["disabled_parking_available"];
+
+      if (aAvailable == true && bAvailable != true) {
+        return -1;
+      } else if (aAvailable != true && bAvailable == true) {
+        return 1;
+      } else if (aAvailable == false && bAvailable != false) {
+        return -1;
+      } else if (aAvailable != false && bAvailable == false) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    // Order parking locations by distance to focus point within same availability group
     if (focusPoint != null) {
       parkingLocations.sort((a, b) {
-        double distanceA =
-            ((a.coordinates.lat - focusPoint.lat) *
-                (a.coordinates.lat - focusPoint.lat)) +
-            ((a.coordinates.lon - focusPoint.lon) *
-                (a.coordinates.lon - focusPoint.lon));
-        double distanceB =
-            ((b.coordinates.lat - focusPoint.lat) *
-                (b.coordinates.lat - focusPoint.lat)) +
-            ((b.coordinates.lon - focusPoint.lon) *
-                (b.coordinates.lon - focusPoint.lon));
-        return distanceA.compareTo(distanceB);
+        bool? aAvailable = a.attributes?["disabled_parking_available"];
+        bool? bAvailable = b.attributes?["disabled_parking_available"];
+
+        if (aAvailable == bAvailable) {
+          num aDistance = maps_toolkit.SphericalUtil.computeDistanceBetween(
+            maps_toolkit.LatLng(focusPoint.lat, focusPoint.lon),
+            maps_toolkit.LatLng(a.coordinates.lat, a.coordinates.lon),
+          );
+          num bDistance = maps_toolkit.SphericalUtil.computeDistanceBetween(
+            maps_toolkit.LatLng(focusPoint.lat, focusPoint.lon),
+            maps_toolkit.LatLng(b.coordinates.lat, b.coordinates.lon),
+          );
+          return aDistance.compareTo(bDistance);
+        } else {
+          return 0;
+        }
       });
     }
 

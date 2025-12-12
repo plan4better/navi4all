@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
 import 'package:smartroots/controllers/theme_controller.dart';
@@ -25,7 +26,6 @@ class _PlaceMapState extends State<PlaceMap> {
   late MapLibreMapController _mapController;
   bool _canInteractWithMap = false;
   List<Place> _parkingLocations = [];
-  final Map<String, Place> _featureIdToParkingLocation = {};
   int? _lastRadius;
 
   Future<void> _onStyleLoaded() async {
@@ -35,8 +35,8 @@ class _PlaceMapState extends State<PlaceMap> {
 
     // Fetch and draw map layers
     _fetchMapLayers().then((_) {
-      // Add symbol tap listener
-      _mapController.onCircleTapped.add(_onCircleTapped);
+      // Add feature tap listener
+      _mapController.onFeatureTapped.add(_onFeatureTapped);
     });
 
     // Load custom marker icons
@@ -84,35 +84,22 @@ class _PlaceMapState extends State<PlaceMap> {
   Future<void> _fetchParkingSites() async {
     POIParkingService parkingService = POIParkingService();
     try {
-      List<Place> result;
-      (result, _) = await parkingService.getParkingLocations(
+      List<Place> parkingLocations;
+      Map<String, dynamic> geoJson;
+      (parkingLocations, geoJson) = await parkingService.getParkingLocations(
         focusPoint: widget.place.coordinates,
         radius: widget.radius,
       );
-
       setState(() {
-        _parkingLocations = result;
+        _parkingLocations = parkingLocations;
       });
-      _updateMarkers();
+      _updateMarkers(geoJson);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
           ),
-        ),
-      );
-    }
-  }
-
-  void _onCircleTapped(Circle circle) {
-    final Place? parkingLocation = _featureIdToParkingLocation[circle.id];
-    if (parkingLocation != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ParkingLocationScreen(parkingLocation: parkingLocation),
         ),
       );
     }
@@ -164,39 +151,6 @@ class _PlaceMapState extends State<PlaceMap> {
         !_canInteractWithMap
             ? Container(color: Theme.of(context).colorScheme.surface)
             : SizedBox.shrink(),
-        /*SafeArea(
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16, bottom: 128),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {},
-                    child: Icon(Icons.layers),
-                  ),
-                  SizedBox(height: 16),
-                  FloatingActionButton(
-                    onPressed: () {
-                      _mapController.requestMyLocationLatLng().then((latLng) {
-                        if (latLng != null) {
-                          _mapController.animateCamera(
-                            CameraUpdate.newCameraPosition(
-                              CameraPosition(target: latLng, zoom: 14.0),
-                            ),
-                            duration: const Duration(seconds: 2),
-                          );
-                        }
-                      });
-                    },
-                    child: Icon(Icons.my_location),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),*/
       ],
     );
   }
@@ -249,33 +203,142 @@ class _PlaceMapState extends State<PlaceMap> {
     );
   }
 
-  void _updateMarkers() {
-    for (Place parkingLocation in _parkingLocations) {
-      String markerColor = "#3685E2";
-      if (!parkingLocation.attributes?["has_realtime_data"]) {
-        markerColor = "#3685E2";
-      } else if (parkingLocation.attributes?["disabled_parking_available"]) {
-        markerColor = "#089161";
-      } else {
-        markerColor = "#F4B1A4";
+  void _updateMarkers(Map<String, dynamic> geoJson) async {
+    // Remove existing parking layers and sources
+    for (String layerId in (await _mapController.getLayerIds())) {
+      if (layerId.startsWith('parking_')) {
+        await _mapController.removeLayer(layerId);
       }
+    }
+    for (String sourceId in (await _mapController.getSourceIds())) {
+      if (sourceId.startsWith('parking_')) {
+        await _mapController.removeSource(sourceId);
+      }
+    }
 
-      _mapController
-          .addCircle(
-            CircleOptions(
-              geometry: LatLng(
-                parkingLocation.coordinates.lat,
-                parkingLocation.coordinates.lon,
-              ),
-              circleColor: markerColor,
-              circleRadius: 6.0,
-              circleStrokeWidth: 1.0,
-              circleStrokeColor: "#FFFFFF",
-            ),
-          )
-          .then((symbol) {
-            _featureIdToParkingLocation[symbol.id] = parkingLocation;
-          });
+    // Separate features by availability status
+    List<Map<String, dynamic>> unknownFeatures = [];
+    List<Map<String, dynamic>> occupiedFeatures = [];
+    List<Map<String, dynamic>> availableFeatures = [];
+
+    for (var feature in geoJson['features']) {
+      var properties = feature['properties'];
+      if (properties['disabled_parking_available'] == true) {
+        availableFeatures.add(feature);
+      } else if (properties['has_realtime_data'] == true) {
+        occupiedFeatures.add(feature);
+      } else {
+        unknownFeatures.add(feature);
+      }
+    }
+
+    // Create separate GeoJSON for each group
+    Map<String, dynamic> unknownGeoJson = {
+      'type': 'FeatureCollection',
+      'features': unknownFeatures,
+    };
+    Map<String, dynamic> occupiedGeoJson = {
+      'type': 'FeatureCollection',
+      'features': occupiedFeatures,
+    };
+    Map<String, dynamic> availableGeoJson = {
+      'type': 'FeatureCollection',
+      'features': availableFeatures,
+    };
+
+    // Add sources for each availability group
+    await _mapController.addSource(
+      'parking_unknown',
+      GeojsonSourceProperties(data: unknownGeoJson),
+    );
+
+    await _mapController.addSource(
+      'parking_occupied',
+      GeojsonSourceProperties(data: occupiedGeoJson),
+    );
+
+    await _mapController.addSource(
+      'parking_available',
+      GeojsonSourceProperties(data: availableGeoJson),
+    );
+
+    // Add layer for unclustered points - Unknown (Blue)
+    await _mapController.addLayer(
+      'parking_unknown',
+      'parking_unknown_layer',
+      CircleLayerProperties(
+        circleColor: '#3685E2',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+    );
+
+    // Add layer for unclustered points - Occupied (Red)
+    await _mapController.addLayer(
+      'parking_occupied',
+      'parking_occupied_layer',
+      CircleLayerProperties(
+        circleColor: '#F4B1A4',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+    );
+
+    // Add layer for unclustered points - Available (Green)
+    await _mapController.addLayer(
+      'parking_available',
+      'parking_available_layer',
+      CircleLayerProperties(
+        circleColor: '#089161',
+        circleRadius: 6.0,
+        circleStrokeWidth: 1.0,
+        circleStrokeColor: '#FFFFFF',
+      ),
+    );
+  }
+
+  void _onFeatureTapped(
+    Point<double> point,
+    LatLng coordinates,
+    String id,
+    String layerId,
+    Annotation? annotation,
+  ) {
+    // Fetch selected place by feature ID, sorted by distance
+    // This is necessary as feature IDs may not be unique
+    Place? selectedPlace;
+    List<Place> orderedParkingLocations = _parkingLocations.where((location) {
+      return location.id == id;
+    }).toList();
+    orderedParkingLocations.sort((a, b) {
+      double distanceA = Geolocator.distanceBetween(
+        coordinates.latitude,
+        coordinates.longitude,
+        a.coordinates.lat,
+        a.coordinates.lon,
+      );
+      double distanceB = Geolocator.distanceBetween(
+        coordinates.latitude,
+        coordinates.longitude,
+        b.coordinates.lat,
+        b.coordinates.lon,
+      );
+      return distanceA.compareTo(distanceB);
+    });
+    selectedPlace = orderedParkingLocations.isNotEmpty
+        ? orderedParkingLocations.first
+        : null;
+
+    if (selectedPlace != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ParkingLocationScreen(parkingLocation: selectedPlace!),
+        ),
+      );
     }
   }
 }
