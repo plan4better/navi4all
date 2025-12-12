@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:core';
 
@@ -27,10 +28,91 @@ class HomeMap extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeMapState();
 }
 
-class _HomeMapState extends State<HomeMap> {
+class _HomeMapState extends State<HomeMap> with WidgetsBindingObserver {
   late MapLibreMapController _mapController;
+  Timer? _refreshTimer;
   bool _canInteractWithMap = false;
   List<Place> _parkingLocations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _onStyleLoaded() async {
+    // Clear existing markers and listeners
+    _mapController.onFeatureTapped.clear();
+
+    // Load custom marker icons
+    final bytes = await rootBundle.load('assets/parking_avbl_yes.png');
+    final list = bytes.buffer.asUint8List();
+    await _mapController.addImage("parking_avbl_yes.png", list);
+
+    final bytes2 = await rootBundle.load('assets/parking_avbl_no.png');
+    final list2 = bytes2.buffer.asUint8List();
+    await _mapController.addImage("parking_avbl_no.png", list2);
+
+    final bytes3 = await rootBundle.load('assets/parking_avbl_unknown.png');
+    final list3 = bytes3.buffer.asUint8List();
+    await _mapController.addImage("parking_avbl_unknown.png", list3);
+
+    await Future.delayed(const Duration(milliseconds: 250));
+    setState(() => _canInteractWithMap = true);
+
+    // Fetch and display parking locations
+    _refreshData().then((_) {
+      // Pan to user location by default if location access was granted
+      Geolocator.checkPermission().then((permission) {
+        if (permission != LocationPermission.denied &&
+            permission != LocationPermission.deniedForever) {
+          _panToUserLocation();
+        }
+      });
+    });
+  }
+
+  Future<void> _refreshData() async {
+    // Schedule periodic data refresh
+    if (_refreshTimer == null || !_refreshTimer!.isActive) {
+      _refreshTimer = Timer.periodic(
+        Duration(seconds: Settings.dataRefreshIntervalSeconds),
+        (_) => _refreshData(),
+      );
+    }
+
+    if (!_canInteractWithMap) {
+      return;
+    }
+
+    // Fetch and display parking locations
+    await _fetchParkingLocations();
+
+    // Add feature tap listener
+    _mapController.onFeatureTapped.clear();
+    _mapController.onFeatureTapped.add(_onFeatureTapped);
+  }
+
+  Future<void> _fetchParkingLocations() async {
+    POIParkingService parkingService = POIParkingService();
+    try {
+      List<Place> parkingLocations;
+      Map<String, dynamic> geoJson;
+      (parkingLocations, geoJson) = await parkingService.getParkingLocations();
+      setState(() {
+        _parkingLocations = parkingLocations;
+      });
+      _updateMarkers(geoJson);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
+          ),
+        ),
+      );
+    }
+  }
 
   Future<void> _panToUserLocation() async {
     // Check location permission status
@@ -216,62 +298,6 @@ class _HomeMapState extends State<HomeMap> {
     );
   }
 
-  Future<void> _onStyleLoaded() async {
-    // Clear existing markers and listeners
-    _mapController.onFeatureTapped.clear();
-
-    // Load custom marker icons
-    final bytes = await rootBundle.load('assets/parking_avbl_yes.png');
-    final list = bytes.buffer.asUint8List();
-    await _mapController.addImage("parking_avbl_yes.png", list);
-
-    final bytes2 = await rootBundle.load('assets/parking_avbl_no.png');
-    final list2 = bytes2.buffer.asUint8List();
-    await _mapController.addImage("parking_avbl_no.png", list2);
-
-    final bytes3 = await rootBundle.load('assets/parking_avbl_unknown.png');
-    final list3 = bytes3.buffer.asUint8List();
-    await _mapController.addImage("parking_avbl_unknown.png", list3);
-
-    // Fetch and display parking locations
-    _fetchParkingSites().then((_) {
-      // Add feature tap listener
-      _mapController.onFeatureTapped.add(_onFeatureTapped);
-
-      // Pan to user location by default if location access was granted
-      Geolocator.checkPermission().then((permission) {
-        if (permission != LocationPermission.denied &&
-            permission != LocationPermission.deniedForever) {
-          _panToUserLocation();
-        }
-      });
-    });
-
-    await Future.delayed(const Duration(milliseconds: 250));
-    setState(() => _canInteractWithMap = true);
-  }
-
-  Future<void> _fetchParkingSites() async {
-    POIParkingService parkingService = POIParkingService();
-    try {
-      List<Place> parkingLocations;
-      Map<String, dynamic> geoJson;
-      (parkingLocations, geoJson) = await parkingService.getParkingLocations();
-      setState(() {
-        _parkingLocations = parkingLocations;
-      });
-      _updateMarkers(geoJson);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.errorUnableToFetchParkingSites,
-          ),
-        ),
-      );
-    }
-  }
-
   Future<void> _onMapClicked(
     Point<double> point,
     LatLng latLng, {
@@ -386,6 +412,25 @@ class _HomeMapState extends State<HomeMap> {
     }
 
     _onMapClicked(point, coordinates, featureId: id, isCluster: isCluster);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // Cancel periodic data refresh
+      _refreshTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
+    _mapController.onFeatureTapped.clear();
+    super.dispose();
   }
 
   @override
