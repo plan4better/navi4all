@@ -46,5 +46,7 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Navi4All needs access to your location for search and navigation.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
