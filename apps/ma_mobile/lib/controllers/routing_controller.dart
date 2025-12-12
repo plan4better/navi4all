@@ -10,6 +10,7 @@ import 'package:smartroots/schemas/routing/itinerary.dart';
 import 'package:smartroots/schemas/routing/leg.dart' as leg_schema;
 import 'package:smartroots/schemas/routing/mode.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as maps_toolkit;
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class RoutingController extends ChangeNotifier {
   // Constants
@@ -234,6 +235,7 @@ class RoutingController extends ChangeNotifier {
   }
 
   void _subscribeToLocationStream() {
+    WakelockPlus.enable();
     _positionSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.bestForNavigation,
@@ -244,6 +246,7 @@ class RoutingController extends ChangeNotifier {
   void _unsubscribeFromLocationStream() {
     _positionSubscription?.cancel();
     _positionSubscription = null;
+    WakelockPlus.disable();
   }
 
   void _onLocationChanged(Position position) {
