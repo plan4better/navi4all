@@ -24,6 +24,7 @@ class POIParkingService {
         'lon_min': Settings.parkApiLonMin,
         'lat_max': Settings.parkApiLatMax,
         'lon_max': Settings.parkApiLonMax,
+        'calculate_has_realtime_data': 'false',
       },
       validateStatus: (status) => true,
     ),
@@ -355,8 +356,12 @@ class POIParkingService {
       address: item['address'] ?? '',
       description: TextFormatter.extractCityFromAddress(item['address'] ?? ''),
       coordinates: Coordinates(
-        lat: double.parse(item['lat']),
-        lon: double.parse(item['lon']),
+        lat: item['lat'].runtimeType == double
+            ? item['lat']
+            : double.parse(item['lat']),
+        lon: item['lon'].runtimeType == double
+            ? item['lon']
+            : double.parse(item['lon']),
       ),
     ).copyWith(attributes: attributes);
     return place;
@@ -416,8 +421,12 @@ class POIParkingService {
       address: item['address'] ?? '',
       description: TextFormatter.extractCityFromAddress(item['address'] ?? ''),
       coordinates: Coordinates(
-        lat: double.parse(item['lat']),
-        lon: double.parse(item['lon']),
+        lat: item['lat'].runtimeType == double
+            ? item['lat']
+            : double.parse(item['lat']),
+        lon: item['lon'].runtimeType == double
+            ? item['lon']
+            : double.parse(item['lon']),
       ),
     ).copyWith(attributes: attributes);
 
