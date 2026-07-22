@@ -29,15 +29,19 @@
 
 ### Environment Configuration
 
-Sensitive/configurable values are provided via compile-time Dart defines.
+1. Install and setup Flutter
 
-1. Create your local env file:
+   Follow the [official installation guide](https://docs.flutter.dev/install/quick) from Flutter to get started on your local system and IDE of choice.
+
+2. Create your local `.env` configuration
+
+   Sensitive/configurable values are provided via compile-time Dart defines.
 
    ```bash
    cp .env.example .env
    ```
 
-2. Adjust values in `.env` (this file is gitignored).
+3. Adjust values in `.env` (this file is gitignored).
 
 Note:
 
