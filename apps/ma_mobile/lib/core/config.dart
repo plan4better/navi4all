@@ -143,6 +143,10 @@ class Settings {
     'PARK_API_BASE_URL',
     const String.fromEnvironment('PARK_API_BASE_URL'),
   );
+  static final String parkApiHeaderUserAgent = _requiredString(
+    'PARK_API_HEADER_USER_AGENT',
+    const String.fromEnvironment('PARK_API_HEADER_USER_AGENT'),
+  );
   static final List<String> parkApiSourceUids = _requiredStringList(
     'PARK_API_SOURCE_UIDS',
     const String.fromEnvironment('PARK_API_SOURCE_UIDS'),

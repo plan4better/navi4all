@@ -18,6 +18,7 @@ class POIParkingService {
       baseUrl: Settings.parkApiBaseUrl,
       connectTimeout: Duration(seconds: Settings.apiConnectTimeout),
       receiveTimeout: Duration(seconds: Settings.apiReceiveTimeout),
+      headers: {'User-Agent': Settings.parkApiHeaderUserAgent},
       queryParameters: {
         'purpose': 'CAR',
         'lat_min': Settings.parkApiLatMin,
