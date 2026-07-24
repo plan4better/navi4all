@@ -995,6 +995,30 @@ abstract class AppLocalizations {
   /// **'No route found'**
   String get navigationNoRouteFound;
 
+  /// No description provided for @routingDisclaimerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention'**
+  String get routingDisclaimerTitle;
+
+  /// No description provided for @routingDisclaimerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please exercise caution and verify route details independently. Always follow local traffic laws and regulations and pay attention to road conditions.'**
+  String get routingDisclaimerMessage;
+
+  /// No description provided for @routingDisclaimerCancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get routingDisclaimerCancelButton;
+
+  /// No description provided for @routingDisclaimerAcceptButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get routingDisclaimerAcceptButton;
+
   /// No description provided for @availabilityChangeDialogTitle.
   ///
   /// In en, this message translates to:

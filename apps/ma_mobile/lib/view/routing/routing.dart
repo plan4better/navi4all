@@ -43,6 +43,7 @@ class RoutingState extends State<RoutingScreen> {
   late NavigationInstructionsController _navigationInstructionsController;
   late NavigationAudioController _navigationAudioController;
   late NavigationDigressingController _navigationDigressingController;
+  bool disclaimerAccepted = false;
   final FlutterTts flutterTts = FlutterTts();
   late Place _origin;
   late Place _destination;
@@ -251,6 +252,111 @@ class RoutingState extends State<RoutingScreen> {
     );
   }
 
+  void _showDisclaimerDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: OrientationBuilder(
+            builder: (context, orientation) => Container(
+              width: orientation == Orientation.portrait
+                  ? double.infinity
+                  : MediaQuery.of(context).size.width * 0.5,
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.routingDisclaimerTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.routingDisclaimerMessage,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SheetButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.routingDisclaimerCancelButton,
+                          onTap: () {
+                            disclaimerAccepted = false;
+                            Navigator.of(context).pop();
+
+                            // Analytics event
+                            MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.routingScreen
+                                    .toString(),
+                                action: EventAction
+                                    .routingScreenDisclaimerRejected
+                                    .toString(),
+                                name:
+                                    eventActionLabels[EventAction
+                                        .routingScreenDisclaimerRejected]!,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SheetButton(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.routingDisclaimerAcceptButton,
+                          onTap: () {
+                            disclaimerAccepted = true;
+                            _toggleNavigationState();
+                            Navigator.of(context).pop();
+
+                            // Analytics event
+                            MatomoTracker.instance.trackEvent(
+                              eventInfo: EventInfo(
+                                category: EventCategory.routingScreen
+                                    .toString(),
+                                action: EventAction
+                                    .routingScreenDisclaimerAccepted
+                                    .toString(),
+                                name:
+                                    eventActionLabels[EventAction
+                                        .routingScreenDisclaimerAccepted]!,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<Position?> _getUserLocation() async {
     // Check location permission status
     LocationPermission permission = await Geolocator.checkPermission();
@@ -391,6 +497,10 @@ class RoutingState extends State<RoutingScreen> {
 
     switch (navigationStatus) {
       case NavigationStatus.idle:
+        if (!disclaimerAccepted) {
+          _showDisclaimerDialog();
+          break;
+        }
         Provider.of<RoutingController>(
           context,
           listen: false,

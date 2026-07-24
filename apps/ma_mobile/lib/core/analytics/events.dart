@@ -13,6 +13,8 @@ enum EventAction {
   parkingLocationScreenFavouriteAdded,
   parkingLocationScreenRouteInternalClicked,
   parkingLocationScreenRouteExternalClicked,
+  routingScreenDisclaimerAccepted,
+  routingScreenDisclaimerRejected,
   routingScreenAvailabilityChangeOccurred,
   routingScreenAvailabilityChangeAlternativeSearchConfirmed,
   routingScreenAvailabilityChangeAlternativeSearchCancelled,
@@ -33,6 +35,10 @@ Map<EventAction, String> eventActionLabels = {
       'Parkplatzbildschirm - Interne Route angeklickt',
   EventAction.parkingLocationScreenRouteExternalClicked:
       'Parkplatzbildschirm - Externe Route angeklickt',
+  EventAction.routingScreenDisclaimerAccepted:
+      'Routenbildschirm - Haftungsausschluss akzeptiert',
+  EventAction.routingScreenDisclaimerRejected:
+      'Routenbildschirm - Haftungsausschluss abgelehnt',
   EventAction.routingScreenAvailabilityChangeOccurred:
       'Routenbildschirm - Verfügbarkeitsänderung erfolgt',
   EventAction.routingScreenAvailabilityChangeAlternativeSearchConfirmed:

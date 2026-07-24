@@ -493,6 +493,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navigationNoRouteFound => 'Keine Route gefunden';
 
   @override
+  String get routingDisclaimerTitle => 'Achtung';
+
+  @override
+  String get routingDisclaimerMessage => 'Bitte seien Sie vorsichtig und überprüfen Sie die Routeninformationen selbst. Befolgen Sie immer die örtlichen Verkehrsregeln und -vorschriften und achten Sie auf die Straßenverhältnisse.';
+
+  @override
+  String get routingDisclaimerCancelButton => 'Abbrechen';
+
+  @override
+  String get routingDisclaimerAcceptButton => 'Fortfahren';
+
+  @override
   String get availabilityChangeDialogTitle => 'Parkplatz belegt';
 
   @override
